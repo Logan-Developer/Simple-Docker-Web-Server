@@ -1,4 +1,4 @@
-FROM php:apache
+FROM php:8-apache
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
