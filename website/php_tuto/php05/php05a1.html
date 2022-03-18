@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les tableaux</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			Les tableaux (array) dans PHP sont en réalité bien plus que de
+			simples tableaux. D'après <a
+				href="http://php.net/manual/fr/language.types.array.php" target="_blank">la doc</a>
+			: “Ce type est optimisé pour différentes utilisations ; il peut être
+			considéré comme un tableau, une liste, une table de hachage, un
+			dictionnaire, une collection, une pile, une file d'attente et
+			probablement plus.”
+		</p>
+		<p>Les tableaux dans PHP servent donc à tout et en conséquence on
+			les utilise dans tous les scripts, soit de façon voulue par notre
+			code, soit de façon imposée par PHP (cf les superglobales $_POST,
+			$_GET, etc).
+		<p>
+		<p>La création des tableaux est on ne peut plus simple, leur
+			flexibilité est immense et PHP offre de nombreuses fonctions pour
+			travailler avec des tableaux.</p>
+
+		<p>
+		Un tableau est une struture de données contenant un certain nombre d'éléments.
+		Chaque élément a une <b>valeur</b> et est situé à un <b>indice</b>. On peut voir
+		un élément d'un tableau comme une valeur associée à un indice (ou à une <b>clé</b>).
+		La taille d'un tableau est égal au nombre d'éléments qu'il contient.
+		</p>
+		<p>
+		Dans un tableau, il ne peut pas y avoir 2 éléments avec le même indice (ou la même clé) :
+		on dit que l'indice ou la clé est "<b>unique</b>".
+		</p>
+		<p> Les taille d'un tableau PHP n'est pas fixée à l'avance : on peut ajouter ou retirer des éléments
+		à tout moment : les tableaux PHP sont <b>dynamiques</b>.
+		</p>
+
+		<p class="fp-puce fp-bottom0">
+			PHP supporte deux types de tableaux : <b>à indices numériques</b> et <b>associatif</b>
+			:
+		</p>
+		<ul class="fp-ul-puce">
+			<li>Dans un tableau à indices numériques, les clés sont des <b>entiers</b> (&ge; 0).
+			</li>
+			<li>Dans un tableau associatif, les clés sont des <b>chaînes
+					de caractères</b>.
+			</li>
+		</ul>
+
+		<p class="fp-puce">Les valeurs des éléments d'un tableau peuvent être de
+			n'importe quel type.</p>
+		<p class="fp-puce">Des valeurs de types différents peuvent être
+			stockés dans le même tableau.</p>
+		<p>
+			En interne, <b>PHP stocke tous les tableaux sous la forme de
+				tableaux associatifs</b>. <br> C'est au développeur de choisir les
+			bonnes fonctions pour traiter soit un tableau à indices numériques, soit un tableau
+			associatif. <br> Les fonctions traitant les <b>tableaux
+				à indices numériques</b> reposent sur la régle suivante : <b>tous les indices du
+				tableau sont des entiers consécutifs commençant à 0</b>. <br> Les éléments
+			d'un tableau associatif sont triés suivant l'ordre d'insertion des
+			éléments. <br>On peut créer des tableaux "mixtes" dont les clés peuvent
+			être numériques et / ou alphabétiques. Dans ce cas, il faut utiliser
+			pour le traitement les fonctions dédiées aux tableaux associatifs.
+		<ul class="fp-ul-1em">
+			<li>La création d'un tableau est très facile : affecter une
+				valeur avec la syntaxe <span class="fp-code">$t[] = 'une
+					valeur';</span> va créér le tableau <span class="fp-code">$t</span> si <span
+				class="fp-code">$t</span> n'est pas déjà un tableau. Le tableau possède alors
+				un seul élément situé à l'indice 0.
+			</li>
+			<li>Si <span class="fp-code">$t</span> est déjà un tableau, un
+				nouvel élement va être ajouté à la fin du tableau. Quand l'indice n'est pas spécifié,
+				PHP utilise un <b>incrément</b> (+1) de la <b>plus grande clé entière</b>.
+			</li>
+			<li>Pour accèder à la valeur d'un élément dans un tableau, on utilise des
+				crochets : <span class="fp-code">$t[10]</span>, <span
+				class="fp-code">$t['abcd']</span>, <span class="fp-code">$t[$i]</span>,
+				etc.
+			</li>
+			<li>La fonction <a
+				href="https://www.php.net/manual/fr/function.count.php" target="_blank">count()</a>
+				renvoie le nombre d'élément dans un tableau (associatif comme
+				à indices numériques).
+			</li>
+		</ul>
+
+		<h3>Tableaux à indices numériques</h3>
+		<section>
+			<p class="fp-puce">On peut créer un tableau à indices numériques en affectant
+				directement des valeurs à une variable en utilisant la notation à
+				crochet.</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : création d'un tableau à indices numériques
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Création d\'un tableau à indices numériques');
+
+htmlInfo('En affectant directement des valeurs');
+$t[] = 'François';
+$t[] = 'Piat';
+$t[] = 409;
+
+echo 'Nb éléments : ', count($t);
+echo '&lt;pre&gt;', print_r($t, true), '&lt;/pre&gt;';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Le code de l'exemple précédent va créer la variable <span
+					class="fp-code">$t</span> de type tableau, car on utilise la
+				notation à crochet au moment de la première affectation d'une valeur
+				à cette variable (ligne 7). Comme on ne précise pas d'indice dans
+				l'affectation, PHP va automatiquement affecter la première valeur à l'indice 0. 
+				A la ligne
+				suivante, comme on ne précise pas non plus d'indice dans
+				l'affectation, PHP va automatiquement affecter la valeur à
+				l'indice le plus grand déjà utilisé (ici 0) + 1, soit ici l'indice 1. Etc, etc.
+			</p>
+
+			<p class="fp-puce">La numérotation des indices peut ne pas
+				commencer à 0.</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : création d'un tableau à indices numériques
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Création d\'un tableau à indices numériques');
+
+htmlInfo('L\'indice de départ n\'est pas 0');
+
+for ($i = 10; $i &lt; 15; $i++) {
+  $t[$i] = 'une valeur';
+}
+
+echo 'Nb éléments : ', count($t);
+echo '&lt;pre&gt;', print_r($t, true), '&lt;/pre&gt;';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-puce">Les valeurs des indices peuvent ne pas être
+				consécutives.</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : création d'un tableau à indices numériques
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Création d\'un tableau à indices numériques');
+
+htmlInfo('Valeurs d\indice non consécutives');
+
+$t[0] = 'ce tableau';
+$t[2] = 'a des';
+$t[6] = 'trous';
+$t[] = 'ce qui';
+$t[3] = 'risque de';
+$t[] = 'poser des ';
+$t[] = 'problèmes';
+
+echo 'Nb éléments : ', count($t);
+echo '&lt;pre&gt;', print_r($t, true), '&lt;/pre&gt;';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Attention aux trous dans les tableaux à indices numériques.</h3>
+		<section>
+			<p>Si dans un tableau à indices numériques, les indices ne sont pas
+				consécutifs, PHP ne comblera pas automatiquement les trous. Cela
+				peut parfois poser des problèmes dans les itérations à travers ce
+				type de tableau, comme le montre l'exemple suivant :
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : tableau à trous
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+error_reporting(E_ALL);
+require('bib_fonctions.php');
+
+htmlDebut('Tableau à trous');
+
+$t[0] = 'François';
+$t[1] = 'Piat';
+$t[5] = 409;
+$t[7] = '03 81 66 20 66';
+
+echo 'Nombre d\'éléments : ', count($t);
+
+for ($i = 0, $iMax = count($t); $i &lt; $iMax; $i++) {
+	echo '&lt;br&gt;Indice = ', $i,
+		' | Elément = ', $t[$i];
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-bottom0">On a ici 2 problèmes :</p>
+			<ul class="fp-ul-puce">
+				<li>la boucle fait 4 itérations à partir de 0 et donc les
+					éléments aux indices 5 et 7 ne sont jamais atteints,</li>
+				<li>les éléments inexistants aux indices 2 et 3 sont atteints.</li>
+			</ul>
+
+			<p>
+				La solution pour faire des itérations dans les éléments d'un tel
+				tableau est d'utiliser une instruction <span class="fp-code">foreach</span>à
+				la place de l'instruction <span class="fp-code">for</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : tableau à trous
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau à trous');
+
+$t[0] = 'François';
+$t[1] = 'Piat';
+$t[5] = 409;
+$t[7] = '03 81 66 20 66';
+
+htmlInfo('Boucle avec for');
+
+for ($i = 0, $iMax = count($t); $i &lt; $iMax; $i++) {
+	echo '&lt;br&gt;Indice = ', $i,
+		' | Elément = ', $t[$i];
+}
+
+htmlInfo('Boucle avec foreach - 1');
+
+foreach ($t as $elt) {
+	echo '&lt;br&gt;Elément = ', $elt;
+}
+
+htmlInfo('Boucle avec foreach - 2');
+
+foreach ($t as $cle =&gt; $elt) {
+	echo '&lt;br&gt;cle = ', $cle,
+		' | Elément = ', $elt;
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2 fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.isset.php" target="_blank">isset()</a>
+				permet de déterminer si une variable est <b>définie</b> ET est <b>différente de NULL</b>. 
+				Elle renvoie alors <span class="fp-code">TRUE</span>. Sinon, elle renvoie <span class="fp-code">FALSE</span>.
+				<br>
+				On peut l'utiliser pour savoir
+				si une clé existe dans un tableau. 
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : savoir si une clé existe
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Savoir si une clé existe');
+
+$t[0] = 'François';
+$t[1] = 'Piat';
+$t[5] = 409;
+$t[7] = '03 81 66 20 66';
+
+htmlInfo('Indice 2 présent ?');
+if (isset($t[2])) {
+	echo 'Oui';
+} else {
+	echo 'Non';
+}
+
+htmlInfo('Indice 5 présent ?');
+echo isset($t[2]) ? 'Oui' : 'Non';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Tableaux associatifs</h3>
+		<section>
+			<p class="fp-puce">
+				Dans un tableau associatif, les clés des éléments sont des <b>chaines de caractères
+				</b>. Ce type de tableau est aussi appelé table de
+				hachage, dictionnaire, table de symboles, map, ... Il est extrêment
+				utilisé dans PHP.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : création d'un tableau associatif
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Création d\'un tableau associatif');
+
+$t['B41d'] = 'Pierre';
+$t['C24a'] = 'Paul';
+$t['D12z'] = 'Jacques';
+
+echo 'Nb éléments : ', count($t);
+echo '&lt;pre&gt;', print_r($t, true), '&lt;/pre&gt;';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-puce">
+				Bien sûr avec un tel tableau, une boucle <span class="fp-code">for</span> est impossible. 
+				Il faut utiliser l'instruction <span class="fp-code">foreach</span>
+				dans une ou l'autre de ses formes :
+			<pre data-code="PHP">
+foreach ($t as $val)
+ou 
+foreach ($t as $cle =&gt; $val)</pre>
+			<p class="fp-puce">
+				Dans la 1ere forme, <span class="fp-code">$t</span> représente le
+				tableau sur lequel on veut itérer, et <span class="fp-code">$val</span>
+				est une variable dans laquelle nous aurons la valeur de l'élément en
+				cours dans la boucle.
+			</p>
+			<p class="fp-puce">
+				Dans la 2eme forme, <span class="fp-code">$t</span> représente le
+				tableau sur lequel on veut itérer, <span class="fp-code">$cle</span>
+				est une variable dans laquelle nous aurons la valeur de la clé en
+				cours, et <span class="fp-code">$val</span> est une variable dans
+				laquelle nous aurons la valeur de l'élément en cours dans la boucle.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : boucle foreach
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Boucle foreach');
+
+$t['B41d'] = 'Pierre';
+$t['C24a'] = 'Paul';
+$t['D12z'] = 'Jacques';
+
+htmlInfo('1ere forme');
+
+foreach ($t as $val) {
+	echo '&lt;br&gt;Valeur = ', $val;
+}
+
+htmlInfo('2eme forme');
+
+foreach ($t as $cle =&gt; $val) {
+	echo '&lt;br&gt;cle = ', $cle,
+		' | valeur = ', $val;
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

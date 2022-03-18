@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les fonctions</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+
+</head>
+<body>
+
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<ul id="MENU-page"></ul>
+
+		<p>PHP ne fait pas de différence entre les fonctions (qui
+			retournent une valeur) et les procédures (qui ne retournent pas de
+			valeur). Ces 2 types de bloc de code réutilisable sont traités de la
+			même façon : par une fonction qui va renvoyer ou pas quelque chose.</p>
+
+
+		<p class="fp-puce">
+			Pour qu'une fonction retourne une valeur il faut employer le <strong>mot
+				clé</strong> <span class="fp-code FP-gras">return</span>, suivi de la valeur
+			à renvoyer.
+		</p>
+		<p class="fp-puce">La valeur de retour est à comprendre au sens
+			large du terme : valeur littérale, valeur d'une variable, valeur
+			d'une expression, objet. N'importe quel type de données peut être :
+			numérique, booléen, chaîne de caractères, tableau, objets.</p>
+		<p class="fp-puce">
+			<span class="fp-code">return</span> ne peut renvoyer qu'une seule
+			valeur de retour à la fois. Pour renvoyer plusieurs valeurs avec un
+			même <span class="fp-code">return</span>, il faut renvoyer un tableau
+			comme valeur de retour.
+		</p>
+		<p class="fp-puce">
+			On peut mettre autant de <span class="fp-code">return</span> dans le
+			corps d'une fonction que nécessaire. Quand l'interpréteur PHP
+			rencontre <span class="fp-code">return</span>, il arrête
+			immédiatement l'exécution du code de la fonction et passe à
+			l'exécution de l'instruction qui suit l'appel de la fonction.
+		</p>
+
+		<p>
+			Le code suivant est la fonction <span class="fp-code">afficher</span>,
+			modifiée pour qu'elle retourne du code HTML.
+		</p>
+
+		<pre data-code="PHP">function afficher($texte, $titre, $coul = '#FFFF00') {
+  if ($texte == '' && $titre == '') {
+  	return '';
+  }
+  
+  if (is_numeric($coul)) {
+  	$coul = '#'.dechex($coul);
+  }
+  
+  $html = '';
+    
+  if ($titre != '') {
+  	$html = '&lt;h3 style="background:'.$coul.'"&gt;';
+  	$html .= $titre.'&lt;/h3&gt;';
+  }
+  
+  if ($texte == '') {
+  	return $html;
+  }
+
+  return $html.'&lt;p&gt;'.$texte.'&lt;/p&gt;';
+}</pre>
+		<p>
+			La fonction commence par tester la valeur des paramètres <span
+				class="fp-code">$texte</span> et <span class="fp-code">$titre</span>.
+			Si ils ont une valeur vide la fonction renvoie une valeur vide car il
+			n'y a rien à afficher (donc fin de la fonction). <br> Le test
+			suivant sur la valeur du paramètre <span class="fp-code">$coul</span>
+			a déjà été vu. <br> Nous avons ensuite l'initialisation de la
+			variable <span class="fp-code">$html</span> qui contiendra la valeur
+			de retour. <br> Puis, si le paramètre <span class="fp-code">$titre</span>
+			contient bien un titre, le code HTML correspondant à l'affichage de
+			ce titre est généré dans <span class="fp-code">$html</span>. <br>
+			Ensuite, si le paramètre <span class="fp-code">$texte</span> est
+			vide, la variable <span class="fp-code">$html</span> est retournée
+			(donc fin de la fonction). <br> Finalement, le code HTML
+			correspond au texte est concaténé à la variable <span class="fp-code">$html</span>
+			et la valeur de cette expression est renvoyée.
+		</p>
+		<p>Bien sûr l'appel de la fonction doit être modifié pour
+			récupèrer la valeur renvoyée par la fonction (voir l'exemple suivant)</p>
+
+		<form action="" method="post" class="TEST-form">
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : retourner une valeur
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Test fonction&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function afficher($texte, $titre, $coul = '#FFFF00') {
+  if ($texte == '' && $titre == '') {
+  	return '';
+  }
+  
+  if (is_numeric($coul)) {
+  	$coul = '#'.dechex($coul);
+  }
+  
+  $html = '';
+    
+  if ($titre != '') {
+  	$html = '&lt;h3 style="background:'.$coul.'"&gt;';
+  	$html .= $titre.'&lt;/h3&gt;';
+  }
+  if ($texte == '') {
+  	return $html;
+  }
+
+  return $html.'&lt;p&gt;'.$texte.'&lt;/p&gt;';
+}
+
+//------------------------------------------------------
+$txt = 'Lorem ipsum dolor sit amet, consectetur 
+	adipiscing elit.';
+
+$retour = afficher($txt, 'Introduction', 16776960);
+echo $retour;
+
+$txt = 'Phasellus vel erat eu elit mattis 
+	lobortis non elementum risus.';
+
+echo afficher($txt, 'Développement', '#FFFF00');
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+		</form>
+
+		<a id="exo_valeur_retour"></a>
+		<h3 class="fp-exo">Exercice : valeur de retour</h3>
+		<section>
+			<p>
+				Modifiez la fonction <span class="fp-code">calculer</span> de
+				l'exercice précédent pour qu'elle renvoie la valeur calculée au lieu
+				de l'afficher. Mettez en place la vérification des paramètres reçus
+				: le 1er paramètre doit être '+' ou '*', les paramètres suivants
+				doivent être des nombres. Si la vérification est négative, un
+				message d'erreur (chaîne de caractères) doit être retourné.
+			</p>
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exo_valeur_retour_solu', 1)">Une
+					solution possible</a>
+			</p>
+
+			<div id="exo_valeur_retour_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : valeur de retour
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;Calculer&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+&lt;?php
+function calculer() {
+  $nbArg = func_num_args();
+  
+  if ($nbArg &lt; 2) {
+    return 'Nombre de paramètres insuffisants';
+  }
+	
+  $op = func_get_arg(0);
+	
+  if ($op == '+') {
+    $resultat = 0;
+  } elseif ($op == '*') {
+    $resultat = 1;
+  } else {
+    return 'Opération indéfinie';
+  }
+
+  for ($i = 1; $i &lt; $nbArg; $i++) {
+	$arg = func_get_arg($i);
+	if (!is_numeric(func_get_arg($i))) {
+      return 'Le paramètre '.$i.' n\'est pas numérique';
+	}
+	
+    ($op == '+') ? $resultat += $arg : $resultat *= $arg;
+  }
+  return $resultat;
+}
+
+echo '&lt;hr&gt;', calculer('+', 1, 2 ,3, 4);
+
+echo '&lt;hr&gt;', calculer('*', 1, 2, 3, 4);
+
+echo '&lt;hr&gt;', calculer();
+
+echo '&lt;hr&gt;', calculer('-', 1, 2, 3, 4);
+
+echo '&lt;hr&gt;', calculer('+', 1, 'deux', 3);
+?&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</textarea>
+				</form>
+			</div>
+
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

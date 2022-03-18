@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les fonctions</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+
+</head>
+<body>
+
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<ul id="MENU-page"></ul>
+
+		<p>Dans la plupart des cas, sans paramètres et arguments les
+			fonctions ne serviraient pas à grand chose. Nous allons voir comment
+			définir ces paramètres, leur donner des valeurs par défaut, ou
+			réaliser des fonctions avec un nombre variable de paramètres.</p>
+
+		<h3>Pas de déclaration de type</h3>
+		<section>
+			<p>
+				Dans le premier exemple que nous avons vu, la fonction <span
+					class="fp-code">afficher</span> acceptait 3 paramètres : <span
+					class="fp-code">$texte</span> , <span class="fp-code">$titre</span>
+				et <span class="fp-code">$coul</span>.
+			</p>
+
+			<pre data-code="PHP">
+function afficher($texte, $titre, $coul) {
+  echo '&lt;h3 style="background:', $coul, '"&gt;'; 
+  echo $titre;
+  echo '&lt;/h3&gt;';
+  echo '&lt;p&gt;', $texte, '&lt;/p&gt;';
+}</pre>
+
+			<p class="fp-puce fp-inter2">Comme PHP est un langage à typage
+				dynamique, on ne précise pas le type du paramètre attendu.</p>
+			<p class="fp-puce">N'importe quel type de données peut être passé
+				comme paramètre à une fonction : tout type scalaire (nombre, chaîne
+				et booléen), tout type composé (tableau et objet), tout type spécial
+				(ressource et null).</p>
+			<p>
+				Dans l'exemple suivant la fonction <span class="fp-code">afficher</span>
+				est modifiée pour qu'elle fonctionne avec le paramètre <span
+					class="fp-code">$coul</span> qui soit une chaîne de caractères ou
+				un nombre.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : paramètres
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Test fonction&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function afficher($texte, $titre, $coul) {
+  if (is_numeric($coul)) {
+  	$coul = '#'.dechex($coul);
+  }
+  echo '&lt;h3 style="background:', $coul, '"&gt;'; 
+  echo $titre;
+  echo '&lt;/h3&gt;';
+  echo '&lt;p&gt;', $texte, '&lt;/p&gt;';
+}
+
+$txt = 'Lorem ipsum dolor sit amet, consectetur 
+	adipiscing elit.';
+
+afficher($txt, 'Introduction', 16776960);
+
+$txt = 'Phasellus vel erat eu elit mattis 
+	lobortis non elementum risus.';
+
+afficher($txt, 'Développement', '#FFFF00');
+?&gt;  
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+
+			<p class="fp-puce fp-inter2">Le paramètre passé peut être la
+				valeur d'une variable, une expression littérale ou la valeur de
+				l'évaluation d'une expression.</p>
+			<p>Dans :</p>
+			<pre data-code="PHP">
+afficher($txt, 'Introduction', 16776960);
+</pre>
+			<p>
+				<span class="fp-code">$txt</span> est une variable, <span
+					class="fp-code">'Introduction'</span> et <span class="fp-code">16776960</span>
+				sont des expressions littérales.
+			</p>
+			<p>On pourrait aussi utiliser le résultat d'une expression comme
+				par exemple :</p>
+			<pre data-code="PHP">
+afficher($txt, strtoupper('Introduction'), 16776000 + 960);
+</pre>
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : paramètres
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Test fonction&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function afficher($texte, $titre, $coul) {
+  if (is_numeric($coul)) {
+  	$coul = '#'.dechex($coul);
+  }
+  echo '&lt;h3 style="background:', $coul, '"&gt;'; 
+  echo $titre;
+  echo '&lt;/h3&gt;';
+  echo '&lt;p&gt;', $texte, '&lt;/p&gt;';
+}
+
+$txt = 'Lorem ipsum dolor sit amet, consectetur 
+	adipiscing elit.';
+
+afficher($txt, strtoupper('Introduction'), 16776000 + 960);
+?&gt;  
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			<p>Depuis PHP 7, si on tente d'appeler une fonction avec un nombre insuffisant de paramètres,
+			une erreur fatale arrête le script.</p>
+			
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : paramètres
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Test fonction&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function afficher($texte, $titre, $coul) {
+  if (is_numeric($coul)) {
+  	$coul = '#'.dechex($coul);
+  }
+  echo '&lt;h3 style="background:', $coul, '"&gt;'; 
+  echo $titre;
+  echo '&lt;/h3&gt;';
+  echo '&lt;p&gt;', $texte, '&lt;/p&gt;';
+}
+
+$txt = 'Lorem ipsum dolor sit amet, consectetur 
+	adipiscing elit.';
+
+afficher($txt, 'Introduction', 16776000);
+afficher($txt, 'Erreur fatale'); //=> erreur fatale
+                                 // qui arrête le script
+afficher($txt, 'pas exécuté', 16776000);
+?&gt;  
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			
+		</section>
+
+		<h3>Arguments avec valeur par défaut</h3>
+		<section>
+			<p class="fp-puce">
+				Nous pouvons définir des arguments avec des valeurs par défaut en
+				utilisant la syntaxe <span class="fp-code">$param =
+					valeur_par_défaut</span>.<br> <span class="fp-code">valeur_par_défaut</span>
+				doit obligatoirement être une constante, et ne peut être ni une variable, ni un membre de classe, 
+				ni un appel de fonction. PHP vous autorise à utiliser des tableau ainsi que le type spécial NULL comme 
+				valeur par défaut.
+			</p>
+			<p>Quand nous appelons une telle fonction, si nous voulons
+				utiliser ses valeurs par défaut, il suffit de ne pas donner de
+				valeur correspondant au paramètre.</p>
+			<p>
+				Pour mettre une couleur par défaut dans notre fonction <span
+					class="fp-code">afficher</span>, on modifie sa déclaration :
+			</p>
+			<pre data-code="PHP">
+function afficher($texte, $titre, $coul = '#FFFF00') {
+...
+}
+</pre>
+			<p>et son appel :
+			<pre data-code="PHP">
+afficher($txt, 'Introduction');
+</pre>
+			<p>en omettant le 3éme paramètre.</p>
+
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : arguments avec valeur par défaut
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;arguments avec valeur par défaut&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function afficher($texte, $titre, $coul = '#FFFF00') {
+  if (is_numeric($coul)) {
+  	$coul = '#'.dechex($coul);
+  }
+  echo '&lt;h3 style="background:', $coul, '"&gt;'; 
+  echo $titre;
+  echo '&lt;/h3&gt;';
+  echo '&lt;p&gt;', $texte, '&lt;/p&gt;';
+}
+
+$txt = 'Lorem ipsum dolor sit amet, consectetur 
+	adipiscing elit.';
+
+afficher($txt, 'Introduction');
+
+$txt = 'Phasellus vel erat eu elit mattis 
+	lobortis non elementum risus.';
+
+afficher($txt, 'Développement', '#FF0000');
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			<p class="fp-remarque">Si vous utilisez des arguments avec valeur par défaut avec d'autres 
+			sans valeur par défaut, les premiers doivent être placés à la suite de tous les arguments 
+			sans valeur par défaut. Sinon, cela ne fonctionnera pas.</p>
+		</section>
+		
+
+		<h3>Passage d'arguments par valeur</h3>
+		<p class="fp-remarque">Argument est le nom donné au paramètre
+			quand il est utilisé à l'intérieur de la fonction.</p>
+
+		<section>
+			<p class="fp-puce">Dans la majorité des cas, les paramètres transmis à une fonction le sont
+				par valeur : le paramètre utilisé lors de l'appel de la fonction est
+				évalué et la valeur résultante est assignée à l'argument
+				correspondant dans la fonction. Une <b>copie</b> de la valeur est faite en
+				mémoire. Si nous changeons la valeur de l'argument dans la fonction,
+				cela ne change pas la valeur du paramètre correspondant à
+				l'extérieur de la fonction.</p>
+			<p class="fp-puce">Le passage d'argument par valeur est la méthode par défaut
+				utilisée par PHP.</p>
+
+		</section>
+
+		<h3>Passage d'arguments par référence</h3>
+		<section>
+			<p class="fp-puce">
+				Quand on passe un argument par référence, on passe l'adresse mémoire
+				du paramètre. Aucune copie de la valeur n'est faite. Si la fonction
+				modifie la valeur de l'argument, la valeur du paramètre
+				correspondant à l'extérieur de la fonction sera automatiquement
+				modifiée puisque les 2 éléments pointent sur la même adresse
+				mémoire.<br>D'une certaine façon, le passage d'arguments par
+				référence permet de dépasser la portée des variables.
+			</p>
+			<p class="fp-puce">
+				Quand le nom de l'argument est précédé du caractère <span
+					class="fp-code">&amp;</span> (ampersand) dans l'entête de la
+				fonction, il est passé par référence :
+			</p>
+			<pre data-code="PHP">function une_fonction(&amp;$par_ref, $par_val) { ...</pre>
+
+			<p class="fp-puce">Le passage d'argument par référence est intéressant dans le
+				cas de variables de grandes tailles (chaînes de caractères,
+				tableaux, etc).</p>
+			<div class="fp-remarque">
+				Le passage d'arguments par référence est uniquement possible avec
+				des variables.
+				<pre data-code="PHP">une_fonction(&amp;'abcd', &amp;1234);</pre>
+				provoquera une erreur.
+			</div>
+			
+						<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple 1</strong> : passage d'un scalaire par valeur/référence
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;
+&lt;title&gt;passage d'un scalaire par valeur/référence&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function f1 ($par_val){
+	++$par_val;
+}
+
+function f2 (&$par_ref){
+	++$par_ref;
+}
+
+$a = 1;
+f1($a);
+echo '&lt;hr&gt;', $a;
+
+$b = 1;
+f2($b);
+echo '&lt;hr&gt;', $b;
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple 2</strong> : passage d'un tableau par valeur/référence
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;
+&lt;title&gt;passage d'un tableau par valeur/référence&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function f1 ($ar_val){
+	++$ar_val[0];
+}
+
+function f2 (&$ar_ref){
+	++$ar_ref[1];
+}
+
+$a = array(10, 10);
+f1($a);
+echo '&lt;hr&gt;';
+var_dump($a);
+
+$b = $a; //$b reçoit une copie de $a
+f2($b);
+echo '&lt;hr&gt;';
+var_dump($a);
+var_dump($b);
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			<div class="fp-remarque">
+				Le cas des objets est traité dans le chapitre qui leur est consacré.
+			</div>
+		</section>
+
+		<h3>Nombre variable de paramètres</h3>
+		<section>
+			<p class="fp-puce">Avec PHP, les fonctions peuvent avoir un nombre variable de
+				paramètres. Pour définir une telle fonction, il suffit de ne pas
+				donner de paramètres dans la déclaration de la fonction :</p>
+			<pre data-code="PHP">
+function parametres_variables() {
+	...
+}</pre>
+
+			<p class="fp-bottom0 fp-puce">PHP fournit trois fonctions qui donnent des
+				informations sur les paramètres passés à une fonction :</p>
+			<ul class="fp-ul-puce">
+				<li><a
+					href="https://www.php.net/manual/fr/function.func-get-args.php"
+					class="lienTech code" target="_blank">func_get_args</a> retourne les arguments
+					d'une fonction sous forme de tableau</li>
+				<li><a
+					href="https://www.php.net/manual/fr/function.func-get-arg.php" target="_blank">func_get_arg</a>
+					retourne un élément de la liste des arguments</li>
+				<li><a
+					href="https://www.php.net/manual/fr/function.func-num-args.php" target="_blank">func_num_args</a>
+					retourne le nombre d'arguments passés à la fonction.</li>
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : nombre variable de paramètres
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Nombre variable de paramètres&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function additionner() {
+  // Exemple avec utilisation d'une boucle foreach
+  // et de la function func_get_args pour récupérer 
+  // la valeur des arguments
+
+  $somme = 0;
+  $args = func_get_args();
+  
+  foreach ($args as $nombre) {
+    $somme += $nombre;
+  }
+  echo '&lt;hr&gt;Somme = ', $somme, '&lt;hr&gt;';
+}
+
+//------------------------------------------------------
+additionner(1, 2, 3, 4);
+
+additionner(12, 34, 56, 78, 910, 1112);
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : nombre variable de paramètres
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Nombre variable de paramètres&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+function additionner() {
+  // Exemple avec utilisation d'une boucle for 
+  // et de la function func_get_arg pour récupérer 
+  // la valeur des arguments
+  
+  $somme = 0;
+  $nbArg = func_num_args();
+  
+  for ($i = 0; $i &lt; $nbArg; $i++) {
+    $somme += func_get_arg($i);
+  }
+  echo '&lt;hr&gt;Somme = ', $somme, '&lt;hr&gt;';
+}
+
+//------------------------------------------------------
+additionner(1, 2, 3, 4);
+
+additionner(12, 34, 56, 78, 910, 1112);
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+			<div class="fp-remarque">
+				Le code de la fonction
+				<pre data-code="PHP">
+  $somme = 0;
+  $nbArg = func_num_args();
+  
+  for ($i = 0; $i &lt; $nbArg; $i++) {
+    $somme += func_get_arg($i);
+  }</pre>
+				pourrait être remplacé par une boucle for sans bloc de code :
+				<pre data-code="PHP">
+  for ($i = $somme = 0, $nbArg = func_num_args(); 
+  		$i &lt; $nbArg;
+  		$somme += func_get_arg($i++));</pre>
+				Pour moi, la lisibilité et la compréhension du code en est affectée.
+			</div>
+		</section>
+
+		<a id="exo_fct_calculer"></a>
+		<h3 class="fp-exo">Exercice : fonction calculer</h3>
+		<section>
+			<p>
+				En utilisant le principe du nombre variable de paramètre, écrivez la
+				fonction <span class="fp-code">calculer</span> qui donne comme
+				résultat la multiplication ou l'addition des éléments qui lui sont
+				passés en paramètre. Il est convenu que le premier paramètre passé
+				défini l'opération à faire.
+			</p>
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exo_fct_calculer_solu', 1)">Une
+					solution possible</a>
+			</p>
+
+			<div id="exo_fct_calculer_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : fonction calculer
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;Calculer&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+&lt;?php
+function calculer() {
+	$nbArg = func_num_args();
+
+	$resultat = func_get_arg(1);
+	
+	if (func_get_arg(0) == '+') {
+		for ($i = 2; $i &lt; $nbArg; $i++) {
+			$resultat += func_get_arg($i);
+		}
+	
+	} elseif (func_get_arg(0) == '*') {
+		for ($i = 2; $i &lt; $nbArg; $i++) {
+			$resultat *= func_get_arg($i);
+		}
+	}
+	echo '&lt;hr&gt;Résultat = ', $resultat, '&lt;hr&gt;';
+}
+
+calculer('+', 1, 2 ,3, 4);
+
+calculer('*', 1, 2, 3, 4);
+?&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</textarea>
+				</form>
+			</div>
+
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

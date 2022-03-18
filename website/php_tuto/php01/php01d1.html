@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les instructions de contrôle</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<ul id="MENU-page"></ul>
+		<p>Le transtypage automatique qui peut être fait pour les
+			comparaisons doit être pris en compte pour que ces instructions
+			donnent les résultats attendus.</p>
+
+		<h3>Instruction conditionnelle if</h3>
+		<section>
+
+			<p class="fp-puce">
+				Comme dans tous les langages, c'est l'instruction la plus utilisée.
+				Le test d'une condition renvoie soit <span class="fp-code">true</span>,
+				soit <span class="fp-code">false</span>. Si la condition est vraie,
+				le traitement est effectué.
+			</p>
+			<p class="fp-puce">
+				Avec un bloc d'instructions introduit par <span class="fp-code">else,</span>
+				nous pouvons spécifier un traitement si la condition est fausse.
+				Nous pouvons aussi enchaîner des tests avec l'instruction <span
+					class="fp-code">elseif</span>.
+			</p>
+
+			<table class="TAB-sans-bord">
+				<tr>
+					<td><pre data-code="PHP">
+if (condition) {
+	instruction;
+	...
+}</pre></td>
+					<td class="fp-t-center"><img src="../phpimg/if.gif"
+						width="145" height="238" alt=""></td>
+				</tr>
+				<tr>
+					<td><pre data-code="PHP">
+if (condition) {
+	instruction;
+	...
+} else {
+	instruction;
+	...
+}</pre></td>
+					<td class="fp-t-center"><img src="../phpimg/else.gif"
+						width="212" height="238" alt=""></td>
+				</tr>
+				<tr>
+					<td><pre data-code="PHP">
+if (condition_1) {
+	instruction;
+	...
+} elseif (condition_2) {
+	instruction;
+	...
+} elseif (condition_3) {
+	instruction;
+	...
+} else {
+	instruction;
+	...
+}</pre></td>
+					<td class="fp-t-center"><img src="../phpimg/elseif.gif"
+						width="313" height="347" alt=""></td>
+				</tr>
+			</table>
+
+			<p class="fp-remarque fp-clear">Les accolades entourant les blocs
+				de traitement ne sont obligatoires que s'il y a plusieurs
+				instructions dans les blocs, mais je vous recommande fortement de
+				toujours utiliser les accolades.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : Instruction conditionnelle if
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Instruction conditionnelle if&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+$x = 1;
+$y = 2;
+$z = 3;
+//------------------------------------------------------
+if ($x == 1) {
+  echo 'x est égal à 1';
+  $x ++;
+}
+//------------------------------------------------------
+if ($x != 1) {
+  echo '&lt;hr&gt;x est différent de 1';
+} else {
+  echo '&lt;hr&gt;x est égal à 1';
+}
+//------------------------------------------------------
+if ($x == $y) {
+  echo '&lt;hr&gt;';
+  echo 'x est égal à y';
+
+} elseif ($y == $z) {
+  echo '&lt;hr&gt;';
+  echo 'y est égal à z';
+
+} elseif ($x == $z) {
+  echo '&lt;hr&gt;x est égal à z';
+
+} else {
+  echo '&lt;hr&gt;';
+  echo 'rien n\'est égal à rien';
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+			<p>
+				Vous devez être vigilant au transtypage automatique qui est fait par
+				PHP pour comparer des valeurs qui ne sont pas du même type et
+				éventuellement utiliser l'opérateur <span class="fp-code">===</span>
+				plutôt que l'opérateur <span class="fp-code">==</span>.
+			</p>
+
+		</section>
+
+		<h3>Instruction conditionnelle switch</h3>
+		<section>
+
+			<p>Quand la valeur d'une variable particulière détermine
+				différents choix de traitement, nous pouvons utiliser l'instruction
+				conditionnelle switch.</p>
+
+			<pre data-code="PHP">
+switch (expression) {
+case valeur_1:
+	instruction;
+	...
+	break;
+case valeur_2:
+	instruction;
+	...
+	break;
+default:
+	instruction;
+	...
+}</pre>
+
+			<p>
+				La valeur de <span class="fp-code">expression</span> est comparée à
+				la valeur définie par chaque <span class="fp-code">case</span>. <span
+					class="fp-code">instruction</span> est n'importe quelle instruction
+				ou suite d'instructions PHP.
+			</p>
+			<p>
+				Si une égalité est trouvée entre la valeur de <span class="fp-code">expression</span>
+				et celle des <span class="fp-code">case</span>, les instructions
+				associées au <span class="fp-code">case</span> sont exécutées. Si
+				aucune égalité n'est trouvée, les instructions contenues dans le <span
+					class="fp-code">default</span> sont exécutées.<br> L'emploi de
+				l'instruction <span class="fp-code">break</span> arrête l'exécution
+				des instructions contenues dans le <span class="fp-code">case</span>.
+				Si <span class="fp-code">break</span> n'est pas employé, les
+				instructions contenues dans les <span class="fp-code">cases</span>
+				suivants sont exécutées.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : Instruction conditionnelle switch
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;instruction switch&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+$seconde = date('s');
+echo 'Seconde = ', $seconde;
+//------------------------------------------------------
+switch ($seconde) {
+case 1 :
+  echo '&lt;br&gt;un';
+  break;
+case 2 :
+  echo '&lt;br&gt;deux';
+  break;
+case 3 :
+  echo '&lt;br&gt;trois';
+  break;
+default :
+  echo '&lt;br&gt;plus grande que trois';
+}
+//------------------------------------------------------
+$seconde /= 10;
+$seconde = (int) $seconde;
+//------------------------------------------------------
+// Dans le switch suivant, il n'y a pas de break.
+switch ($seconde) {
+  case 0 :  echo '&lt;br&gt;inférieur à 10';
+  case 1 :  echo '&lt;br&gt;inférieur à 20';
+  case 2 :  echo '&lt;br&gt;inférieur à 30';
+  case 3 :  echo '&lt;br&gt;inférieur à 40';
+  case 4 :  echo '&lt;br&gt;inférieur à 50';
+  default :  echo '&lt;br&gt;inférieur à 60';
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+			<p>Vous devez être vigilant au transtypage automatique qui est
+				fait par PHP pour comparer des valeurs qui ne sont pas du même type.
+			</p>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

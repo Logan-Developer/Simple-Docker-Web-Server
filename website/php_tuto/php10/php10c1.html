@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Objets : les exceptions</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Les exceptions sont une autre façon de traiter le déclenchement des erreurs et leur
+			traitement.</p>
+
+		<p>
+			Pour signaler qu'une erreur s'est produite, une méthode <strong>lance une exception</strong> (ou
+			lève une exception). Le code appelant la méthode doit <strong>capturer l'exception</strong> et
+			traiter le problème s'il en est capable.
+		</p>
+
+		<h3>Principe</h3>
+		<section>
+			<div class="fp-cadre">
+				<p>
+					Quand une exception est lancée (mot-clé <code>throw</code>), l'interpréteur PHP arrête
+					l'exécution normale du script et transmet l'exception de bloc de code appelant en bloc de code
+					appelant.
+				</p>
+				<p class="fp-puce">
+					Si PHP trouve un bloc capturant l'exception (mot-clé <code>catch</code>), l'exception est
+					traitée dans le code de ce bloc puis le script continue son exécution juste après le bloc
+					catch.
+				</p>
+				<p class="fp-puce fp-bottom0">Si aucun bloc catch n'est rencontré, l'interpréteur PHP
+					affiche le message d'erreur de l'exception et arrête le script.</p>
+			</div>
+
+			<p class="fp-puce" style="margin-top: 1em">
+				Une exception est une instance de la classe <code>Exception</code>. Cette classe est native dans
+				PHP et se compose des membres suivants :
+			</p>
+
+			<pre data-code="PHP">
+class Exception {
+	/* Propriétés */
+	protected string $message ;
+	protected int $code ;
+	protected string $file ;
+	protected int $line ;
+	
+	/* Méthodes */
+	public __construct([$msg = "" [,$num = 0 [, $prev = NULL ]]])
+	final public string getMessage()
+	final public Exception getPrevious()
+	final public mixed getCode()
+	final public string getFile()
+	final public int getLine()
+	final public array getTrace()
+	final public string getTraceAsString()
+	public string __toString()
+	final private void __clone()
+}
+</pre>
+
+			<h4>Lancer une exception</h4>
+			<section>
+				<p class="fp-puce">
+					Pour lancer une exception on utilise le mot-clé <code>throw</code> suivi de l'instanciation
+					d'une nouvelle <code>Exception</code>.
+					<br>
+				<pre data-code="PHP">
+thow new Exception("Le message d'erreur à afficher");</pre>
+
+				<p class="fp-remarque">PHP ne permet pas de lancer d'exception dans un destructeur. Si c'est
+					le cas, le script s'arrête avec une erreur fatale "Exception thrown without a stack frame in
+					Unknown on line 0"</p>
+
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+
+					<div class="TEST-titre">
+						<strong>Exemple</strong> : lancer une exception
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise = 0;
+
+	public function __construct($p1, $p2, $p3){
+		$p1 = trim($p1);
+		if ($p1 == '') {
+			throw new Exception('Modèle invalide');
+		}
+		$this-&gt;modele = $p1;
+						
+		$ok = array(4, 6, 12);
+		if (!estEntier($p3) || !in_array($p3, $ok)) {
+			throw new Exception('Nombre de cordes invalide');
+		}
+		$this-&gt;cordes = $p3;
+		
+		$this-&gt;setPrix($p2);
+	}
+	
+	public function setPrix($val) {
+		if (!is_numeric($val) || $val &lt; 0) {
+			throw new Exception('Valeur de prix invalide');
+		}		
+		$this-&gt;prix = $val;
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Lancer une exception');
+
+$guitare = new Guitare('', 758, 12);
+// Essayer les instanciations suivantes :
+// $guitare = new Guitare('Gretsch Falcon', 'prix', 12);
+// $guitare = new Guitare('Gretsch Falcon', 758, 24);
+htmlFin();
+?&gt;</textarea>
+				</form>
+
+				<p>Comme vous le voyez en testant le code, nous avons une erreur qui nous dit que nous avons
+					lancé une exception sans la capturer. Voyons donc comment traiter cette exception.</p>
+			</section>
+
+			<h4>Capturer une exception</h4>
+			<section>
+				<p class="fp-puce">
+					Pour capturer une exception on utilise une structure de contrôle <code>try</code>, <code>catch</code>
+					(et éventuellement <code>finally</code>).
+				</p>
+
+				<figure>
+					<img src="../phpimg/poo_26.png" width="520" height="228">
+					<figcaption>capturer une exception</figcaption>
+				</figure>
+
+				<p class="fp-puce">
+					A noter la syntaxe particulière du bloc <code>catch</code> où <code>catch</code> est
+					pratiquement considéré comme une fonction à laquelle on passe en paramètre une référence sur
+					l'instance de l'<code>Exception</code> à traiter.
+					<br>
+					A l'intérieur de ce bloc, on va pouvoir invoquer diverses méthodes de la classe <code>Exception</code>
+					si on veut réaliser des affichages sur les causes de l'erreur.
+				</p>
+
+				<p class="fp-puce">
+					L'exemple suivant utilise les méthodes <a
+						href="https://www.php.net/manual/fr/exception.getmessage.php" target="_blank">getMessage()</a>,
+					<a href="https://www.php.net/manual/fr/exception.getline.php" target="_blank">getLine()</a>,
+					<a href="https://www.php.net/manual/fr/exception.getfile.php" target="_blank">getFile()</a>,
+					<a href="https://www.php.net/manual/fr/exception.gettrace.php" target="_blank">getTrace()</a>
+					et <a href="https://www.php.net/manual/fr/exception.tostring.php" target="_blank">__toString()</a>
+					de la classe prédéfinie <a
+						href="https://www.php.net/manual/fr/class.exception.php" target="_blank">Exception</a>.
+				</p>
+
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+
+					<div class="TEST-titre">
+						<strong>Exemple</strong> : capturer une exception
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise = 0;
+
+	public function __construct($p1, $p2, $p3){
+		$p1 = trim($p1);
+		if ($p1 == '') {
+			throw new Exception('Modèle invalide');
+		}
+		$this-&gt;modele = $p1;
+						
+		$ok = array(4, 6, 12);
+		if (!estEntier($p3) || !in_array($p3, $ok)) {
+			throw new Exception('Nombre de cordes invalide');
+		}
+		$this-&gt;cordes = $p3;
+		
+		$this-&gt;setPrix($p2);
+	}
+	
+	public function setPrix($val) {
+		if (!is_numeric($val) || $val &lt; 0) {
+			throw new Exception('Valeur de prix invalide');
+		}		
+		$this-&gt;prix = $val;
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Lancer une exception');
+
+echo '... Déroulement du script ...';
+
+try {
+	$guitare = new Guitare('', 758, 12);
+	// Essayer les instanciations suivantes :
+	// $guitare = new Guitare('Gretsch Falcon', 'prix', 12);
+	// $guitare = new Guitare('Gretsch Falcon', 758, 24);
+} catch (Exception $e) {
+	echo '&lt;hr&gt;&lt;h4&gt;Exception capturée !&lt;/h4&gt;',
+		'&lt;br&gt;&lt;b&gt;Message : &lt;/b&gt;',$e-&gt;getMessage(),
+		'&lt;br&gt;&lt;b&gt;Ligne : &lt;/b&gt;', $e-&gt;getLine(),
+		'&lt;br&gt;&lt;b&gt;Fichier : &lt;/b&gt;', $e-&gt;getFile(),
+		'&lt;br&gt;&lt;b&gt;Appels : &lt;/b&gt;', infoTableau($e-&gt;getTrace()),
+		'&lt;br&gt;&lt;b&gt;Texte : &lt;/b&gt;', $e-&gt;__toString(), '&lt;hr&gt;';	
+}
+
+echo '... Le script continue son exécution ...';
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+
+			</section>
+
+		</section>
+
+		<h3>Etendre la classe Exception de PHP</h3>
+		<section>
+			<p class="fp-cadre">
+				PHP permet d'étendre la classe <code>Exception</code> prédéfinie dans le langage. Nous pouvons
+				ainsi écrire nos propres exceptions, adaptées à nos développements particuliers, et ne gérer que
+				ces exceptions "prévisibles" (comme par exemple les mauvaises valeurs passées en paramètres).
+			</p>
+
+			<p class="fp-puce">
+				Toutes les méthodes de la classe <code>Exception</code> ne sont pas redéfinissable ou
+				surchargeables. Seules les méthodes non finales peuvent être réécrites, soit <a
+					href="https://www.php.net/manual/fr/exception.construct.php" target="_blank">__construct()</a>
+				et <a href="https://www.php.net/manual/fr/exception.tostring.php" target="_blank">__toString()</a>.
+			</p>
+
+			<p>
+				Dans l'exemple suivant, notre classe <code>MonException</code> surchage le <a
+					href="https://www.php.net/manual/fr/exception.construct.php" target="_blank">constructeur</a>
+				de la classe <code>Exception</code> pour accepter 2 paramètres :
+				<br>
+				- le 1er paramètre peut être soit un numéro, soit un texte. Le numéro donnera accès à un message
+				d'erreur (attribut de notre classe <code>MonException</code>). Procéder ainsi permet de stocker
+				les messages d'erreur dans un endroit bien repéré et facilite par exemple les traductions des
+				textes. En acceptant malgré tout un texte comme paramètre, on laisse une ouverture aux
+				utilisateurs de notre classe.
+				<br>
+				- le 2éme paramètre est un booléen qui indique si l'exception est bloquante ou non. Par défaut
+				il a la valeur <code>true</code> et arrête le script après affichage du message d'erreur.
+				<br>
+				La méthode <a href="https://www.php.net/manual/fr/exception.tostring.php" target="_blank">__toString()</a>
+				est redéfinie pour afficher les messages d'erreur de 2 façons :
+				<br>
+				- si nous sommes en phase de développement et de debuggage, l'affichage sera détaillé.
+				<br>
+				- si nous sommes en phase de production, l'affichage sera très réduit.
+			</p>
+
+			<p class="fp-remarque">
+				Il ne faut jamais lancer d'exception dans la classe qui étend <code>Exception</code> car on
+				provoquerait alors une boucle infinie. Si c'est le cas, le script s'arrête avec une erreur
+				fatale "Exception thrown without a stack frame in Unknown on line 0"
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : étendre la classe Exception
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise = 0;
+
+	public function __construct($p1, $p2, $p3){
+		$p1 = trim($p1);
+		if ($p1 == '') {
+			throw new MonException(1);
+		}
+		$this-&gt;modele = $p1;
+						
+		$ok = array(4, 6, 12);
+		if (!estEntier($p3) || !in_array($p3, $ok)) {
+			throw new MonException(2);
+		}
+		$this-&gt;cordes = $p3;
+		
+		$this-&gt;setPrix($p2);
+	}
+	
+	public function setPrix($val) {
+		if (!is_numeric($val) || $val &lt; 0) {
+			throw new MonException(3, false);
+		}		
+		$this-&gt;prix = $val;
+	}
+}			// Fin de la classe Guitare	
+
+class MonException extends Exception {
+	public static $is_dev = false;
+	protected $stop;
+	protected $textes = array(
+		'Erreur inconnue', 'Modèle invalide', 
+		'Nombre de cordes invalide', 'Prix invalide');
+	
+	public function __construct($p1, $p2 = true) {
+		// Pour simplifier, pas de vérif des paramètres
+		$msg = (is_numeric($p1)) ? $this-&gt;textes[$p1] : $p1;
+		parent::__construct($msg, 0);
+		$this-&gt;stop = $p2;
+	}
+	public function __toString() {
+		if (! self::$is_dev) {
+			if ($this-&gt;stop) {
+				ob_end_clean();
+				exit('Site inaccessible');
+			}
+			return;
+		}
+		
+		echo '&lt;hr&gt;&lt;b&gt;Exception capturée : &lt;/b&gt;',
+			$this-&gt;getMessage(), 
+		str_replace('#', '&lt;br&gt;#', $this-&gt;getTraceAsString());
+		
+		if ($this-&gt;stop) exit('&lt;hr&gt;');
+	}
+}			// fin de la classe MonException
+
+htmlDebut('Etendre la classe Exception');
+
+MonException::$is_dev = true;
+
+echo '... Déroulement du script ...';
+
+try {
+	$guitare = new Guitare('', 758, 12);
+	// Essayer les instanciations suivantes :
+	// $guitare = new Guitare('Gretsch Falcon', 'prix', 12);
+	// $guitare = new Guitare('Gretsch Falcon', 758, 24);
+	// Essayer aussi en commentant la ligne 64
+} catch (MonException $e) {
+	$e-&gt;__toString();	
+}
+
+echo '... Le script continue son exécution ...';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Le code de la classe <code>MonException</code>
+				sera placé dans le fichier <code>monexception.class.php</code> et inclus avec <a
+					href="https://www.php.net/manual/fr/function.require.php" target="_blank">require</a> dans le
+				script principal.
+			</p>
+		</section>
+
+		<a id="exoException"></a>
+		<h3>Exercice : exceptions</h3>
+		<section>
+			<p>
+				Reprenez le code de la classe <code>Livre</code> ci-dessous avec le mécanisme des
+				exceptions pour gérer les erreurs. Utilisez la classe du fichier <code>monexception.class.php</code> ou écrivez votre 
+				propre classe.
+			</p>
+
+			<pre data-code="PHP" class="fp-petit">
+// Définition de la classe Livre
+class Livre {
+	const CAT_METHODE = 'Méthode';
+	const CAT_PARTITION = 'Partition';
+	const CAT_BIO = 'Biographie';
+	const CAT_AUTRE = 'Autre';
+
+	private $titre, $auteur, $pages, $prix, $cat;
+
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		$this-&gt;titre = $this-&gt;verifChaine($p1, 'titre');
+		$this-&gt;auteur = $this-&gt;verifChaine($p2, 'auteur');
+		if (is_numeric($p3) &amp;&amp; estEntre($p3, 10, 1000)) {
+			$this-&gt;pages = $p3;
+		} else {
+			$this-&gt;afficheErreur($p3, 'pages');
+		}
+		if (is_numeric($p4) &amp;&amp; estEntre($val, 0, 1000)) {
+			$this-&gt;prix = $p4;
+		} else {
+			$this-&gt;afficheErreur($p4, 'prix');
+		}
+		$oks = array(self::CAT_METHODE, self::CAT_PARTITION, 
+					 self::CAT_BIO, self::CAT_AUTRE);
+		if (in_array($p5, $oks)) {
+			$this-&gt;cat = $p5;
+		} else {
+			$this-&gt;afficheErreur($p5, 'cat');
+		}
+	}
+	private function verifChaine($val, $attr) {
+		$val = trim($val);
+		($val == '') &amp;&amp; $this-&gt;afficheErreur($val, $attr);
+		return $val;
+	}
+	private function afficheErreur($val, $attr) {
+		exit("&lt;hr&gt;Valeur '&lt;b&gt;$val&lt;/b&gt;' invalide pour
+				l'attribut &lt;b&gt;$attr&lt;/b&gt;.&lt;hr&gt;");
+	}
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe Livre&lt;/h4&gt;',
+				$this-&gt;titre, ' - ', $this-&gt;auteur, ' - ', 
+				$this-&gt;pages, ' pages - ', 
+				$this-&gt;prix, ' &amp;euro; - ', $this-&gt;cat, '&lt;hr&gt;';
+	}
+}			// Fin de la classe Livre
+</pre>
+
+			<p>
+				Vous devez tester votre code en instanciant des <code>Livre</code> avec les informations
+				suivantes qui provoqueront toutes des erreurs :
+			</p>
+
+			<table>
+				<tr>
+					<td>Titre</td>
+					<td>Auteur</td>
+					<td>Nb Pages</td>
+					<td>Prix</td>
+					<td>Cat.</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Pas de titre</td>
+					<td>70</td>
+					<td>17</td>
+					<td>Méthode</td>
+				</tr>
+				<tr>
+					<td>Pas d'auteur</td>
+					<td></td>
+					<td>160</td>
+					<td>4.90</td>
+					<td>Méthode</td>
+				</tr>
+				<tr>
+					<td>Mauvais nombre de pages</td>
+					<td>Mauvais prix</td>
+					<td>0</td>
+					<td>-21.90</td>
+					<td>Partition</td>
+				</tr>
+				<tr>
+					<td>Seulement le titre OK</td>
+					<td></td>
+					<td>inconnu</td>
+					<td>30 euros</td>
+					<td>Magazine</td>
+				</tr>
+			</table>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exoException_solu', 1)">Une solution possible</a>
+			</p>
+
+			<div id="exoException_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a class="TEST-class"
+						onclick="top.FP.Voir.showPLUS('exemple/classes_01.html')"
+						title="Afficher les classes incluses"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : exceptions
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('monexception.class.php');
+require('bib_fonctions.php');
+
+// Définition de la classe Livre
+class Livre {
+	const CAT_METHODE = 'Méthode';
+	const CAT_PARTITION = 'Partition';
+	const CAT_BIO = 'Biographie';
+	const CAT_AUTRE = 'Autre';
+
+	private $titre, $auteur, $pages, $prix, $cat;
+
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		$this-&gt;titre = $this-&gt;verifChaine($p1, 'titre');
+		$this-&gt;auteur = $this-&gt;verifChaine($p2, 'auteur');
+		if (is_numeric($p3) &amp;&amp; estEntre($p3, 10, 1000)) {
+			$this-&gt;pages = $p3;
+		} else {
+			$this-&gt;afficheErreur($p3, 'pages');
+		}
+		if (is_numeric($p4) &amp;&amp; estEntre($val, 0, 1000)) {
+			$this-&gt;prix = $p4;
+		} else {
+			$this-&gt;afficheErreur($p4, 'prix');
+		}
+		$oks = array(self::CAT_METHODE, self::CAT_PARTITION, 
+					 self::CAT_BIO, self::CAT_AUTRE);
+		if (in_array($p5, $oks)) {
+			$this-&gt;cat = $p5;
+		} else {
+			$this-&gt;afficheErreur($p5, 'cat');
+		}
+	}
+    private function verifChaine($val, $attr) {
+        $val = trim($val);
+        ($val == '') &amp;&amp; $this-&gt;afficheErreur($val, $attr);
+        return $val;
+    }
+    private function afficheErreur($val, $attr) {
+        $msg = "&lt;hr&gt;Valeur '&lt;b&gt;$val&lt;/b&gt;' invalide pour
+                l'attribut &lt;b&gt;$attr&lt;/b&gt;.&lt;hr&gt;";
+		throw new MonException($msg);
+    }
+    public function decrire() {
+        echo '&lt;h4&gt;Instance de la classe Livre&lt;/h4&gt;',
+                $this-&gt;titre, ' - ', $this-&gt;auteur, ' - ', 
+                $this-&gt;pages, ' pages - ', 
+                $this-&gt;prix, ' &amp;euro; - ', $this-&gt;cat, '&lt;hr&gt;';
+    }
+}           // Fin de la classe Livre
+
+htmlDebut('Constructeur implicite');
+
+MonException::$is_dev = true;
+
+$l1 = new Livre('', 'Pas de titre', 70, 17, 'Méthode');
+//$l2 = new Livre('Pas d\'auteur', '', 160, 4.90, 'Méthode');
+//$l3 = new Livre('Mauvais nombre de pages', 'Mauvais prix', 0, -21.90, 'Partition');
+//$l4 = new Livre('Seulement le titre OK', '', 'inconnu', '30 euros', 'Magazine');
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+
+		<footer></footer>
+	</div>
+</body>
+</html>

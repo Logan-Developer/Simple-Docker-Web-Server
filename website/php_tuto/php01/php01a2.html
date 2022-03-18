@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Présentation de PHP</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<ul id="MENU-page"></ul>
+
+		<p>Le code PHP est stocké dans de simple fichier texte. La langage
+			a la même syntaxe et la même structure que le langage C. PHP a été
+			prévu pour être inclus et mélangé au code HTML qu'il est chargé de
+			dynamiser.</p>
+
+
+		<h3>Le code PHP</h3>
+		<section>
+
+			<ul class="fp-ul-1em">
+				<li>Le code PHP a la même syntaxe et la même structure que le
+					langage C.</li>
+				<li><b> Les instructions se terminent obligatoirement par
+						un point virgule.</b></li>
+				<li><b> Les noms d'instruction et les mots-clés, les noms de
+						fonctions (standards ou utilisateur) et les noms de classes
+						peuvent être écrits indifféremment en majuscules ou en minuscules</b>.<br>
+					Les 3 lignes suivantes sont équivalentes :<br> echo "bonjour";<br>
+					ECHO "bonjour";<br> EcHo "bonjour";</li>
+				<li><b> Les noms de variables sont sensibles aux majuscules
+						et aux minucules</b>. $var, $var et $vAR sont 3 variables différentes.
+				</li>
+				<li><b> Les espaces et les sauts de ligne n'ont
+						généralement pas d'importance.</b> Vous pouvez écrire une instruction
+					sur autant de lignes que vous voulez, en utilisant autant d'espaces
+					que vous voulez. Par exemple l'instruction :<br> <span
+					class="fp-code">maFonction ($argument1, $argument2,
+						$argument3);</span><br> pourrait être écrite :<br> <span
+					class="fp-code">maFonction (<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						&nbsp;$argument1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						&nbsp;$argument2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						&nbsp;$argument3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br> );
+				</span>
+					<p>Utilisez cette flexibilité pour donner à votre code un
+						maximum de lisibilité.</p></li>
+				<li><b> Des commentaires <strike>peuvent</strike> doivent être mis dans le code.</b>
+					Trois syntaxes sont disponibles :<br> - <span class="fp-code">#</span>
+					marque le début d'un commentaire qui s'arrête à la fin de la ligne<br>
+					- <span class="fp-code">//</span> marque le début d'un commentaire
+					qui s'arrête à la fin de la ligne<br> - <span class="fp-code">/*</span>
+					et <span class="fp-code">*/</span> marquent le début et la fin de
+					commentaires qui peuvent s'étendre sur plusieurs lignes.
+					<pre data-code="PHP">
+/* Des commentaires doivent expliquer
+ce que fait le code, et ils doivent
+apporter quelque chose */					
+
+// Le commentaire suivant n'apporte rien	
+$a = 10;	// $a est initialisé à 10
+
+# Le commentaire suivant est intéressant
+$b = 20;	// $b est utilisé comme limite maximum
+</pre></li>
+				<li><b> Les noms</b> (de variables, de fonctions, de classes,
+					de constantes) doivent <b>commencer par un caractère
+						alphabétique ou le caractère _</b> (underscore). <b>Les caractères
+						suivants peuvent être alphabétiques ou numériques</b>.</li>
+			</ul>
+			<table>
+				<tr>
+					<td>
+						<p>&nbsp;</p>
+					</td>
+					<td>
+						<p>Bon</p>
+					</td>
+					<td>
+						<p>Mauvais</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p>Variables</p>
+					</td>
+					<td><span class="fp-code">$variable</span><br> <span
+						class="fp-code">$_variable</span><br> <span class="fp-code">$variable</span>
+					</td>
+					<td><span class="fp-code">$une variable</span><br> <span
+						class="fp-code">$1variable</span><br> <span class="fp-code">$/Variable</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p>Fonctions</p>
+					</td>
+					<td><span class="fp-code">uneFonction</span><br> <span
+						class="fp-code">_uneFonction</span><br> <span class="fp-code">une_fonction</span>
+					</td>
+					<td><span class="fp-code">une Fonction</span><br> <span
+						class="fp-code">1Fonction</span><br> <span class="fp-code">une-fonction</span>
+					</td>
+				</tr>
+			</table>
+			<p class="fp-remarque">
+				Comme le code PHP doit être exécuté par le serveur, si vous ouvrez
+				directement une page PHP dans votre navigateur, le code ne sera pas
+				exécuté, mais affiché tel que. <b>Pour tester vos pages PHP,
+					vous devez donc obligatoirement passer par un serveur</b>, en donnant
+				l'adresse complète de la page comme URL (
+				http://www.site.fr/page.php si vous êtes connecté à Internet, ou
+				http://localhost/page.php si vous êtes connecté en local, avec
+				easyPhp, wamp, etc.)
+			</p>
+
+		</section>
+
+		<h3>Exemples</h3>
+		<section>
+
+			<p>
+				L'exemple suivant affiche la date et l'heure du serveur. Le code PHP
+				est inclus entre les balises <span class="fp-code">&lt;?php</span> et
+				<span class="fp-code">?&gt;</span>. Il utilise la fonction <a
+					href="https://www.php.net/manual/fr/function.date.php" target="_blank">date()</a>
+				pour cacluler la date et l'heure, et la fonction 
+				<a href="https://www.php.net/manual/fr/function.echo.php" target="_blank">echo</a>
+				pour afficher le résultat.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong>
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Page PHP&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+Bonjour
+&lt;br&gt;
+Nous sommes le 
+&lt;?php                      
+echo date('d/m/y');                         
+?&gt;
+&lt;br&gt;
+Heure du serveur : 
+&lt;?php
+echo date('H:i:s');
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+
+			<p>Le code pourrait être écrit de la façon suivante.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong>
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Page PHP&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+echo 'Bonjour&lt;br&gt;Nous sommes le ';
+echo date('d/m/y');                         
+echo '&lt;br&gt;Heure du serveur : ';
+echo date('H:i:s');
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+
+			<p>Ou encore ...</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong>
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Page PHP&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+echo 'Bonjour&lt;br&gt;Nous sommes le ',
+     date('d/m/y'),                       
+     '&lt;br&gt;Heure du serveur : ',
+     date('H:i:s');
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+			<p>Pour voir la différence entre le code HTML généré côté serveur
+				et le code généré côté client, nous allons afficher l'heure sur le
+				serveur (avec PHP) et l'heure sur le client (avec JavaScript).</p>
+
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong>
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Page PHP&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+echo 'Bonjour&lt;br&gt;Nous sommes le ',
+     date('d/m/y'),                       
+     '&lt;br&gt;Heure du serveur : ',
+     date('H:i:s');
+?&gt;
+
+&lt;script language="JavaScript"&gt;
+D = new Date();
+document.write('&lt;p&gt;Heure du client : ' + 
+               D.getHours() + ":" + 
+               D.getMinutes() + ":" + 
+               D.getSeconds());
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			
+			<p class="fp-remarque">
+				<a href="https://www.php.net/manual/fr/function.echo.php" target="_blank">echo</a> n'est pas vraiment 
+				une fonction (c'est techniquement une structure du langage), c'est pour cette raison que l'on ne doit  
+				pas placer les paramètres qu'on lui transmet entre parenthèses. 
+			</p>
+			<p class="fp-remarque">
+				Les chaînes affichées avec <a href="https://www.php.net/manual/fr/function.echo.php" target="_blank">echo</a>
+				sont <b>transmises au client</b> (ie au navigateur). 
+			</p>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

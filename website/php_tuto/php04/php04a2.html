@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Règles de base</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Nous allons aborder les différentes règles de bases qui
+			permettent de construire des expressions régulières.</p>
+		<p>Remarque : cette page est assez longue et contient beaucoup
+			d'informations que je n'ai pas pu regrouper en plus petites parties.</p>
+
+		<h3>Les caractères ordinaires</h3>
+		<section>
+			<p class="fp-puce fp-bottom0">
+				<b>Les caractères ordinaires</b> sont tous les caractères
+				imprimables et non imprimables qui ne sont pas explicitement
+				désignés comme des métacaractères :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>les caractères alphabétiques majuscules et minuscules,</li>
+				<li>les chiffres,</li>
+				<li>les signes de ponctuation,</li>
+				<li>certains symboles.</li>
+			</ul>
+
+			<p class="fp-remarque">La prise en compte des caractères
+				accentués dépend de l'implémentation réalisée par le système.
+				Généralement sous Windows les caractères accentués ne sont pas
+				considérés comme des caractères alphabétiques.</p>
+
+			<p class="fp-puce">
+				La forme la plus simple d'une expression régulière est un seul
+				caractère ordinaire qui correspond à lui-même dans une chaîne
+				examinée. <br> Par exemple, un modèle comportant un seul
+				caractère, comme <span class="fp-code FP-gras">e</span>, correspond
+				à la lettre <b>e</b>, où qu'elle apparaisse dans la chaîne, et
+				quelque soit le nombre de fois où elle apparait.
+			<p class="fp-remarque">N'hésitez pas à modifier les expressions
+				régulières des exemples pour voir le résultat de leur
+				interprétation.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : expression régulière simple
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Expression régulière simple');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('Recherche tous les "e"');
+testerExp('/e/', $txt);
+
+htmlInfo('Recherche tous les "6"');
+testerExp('/6/', $txt);
+
+htmlInfo('Recherche tous les guillemets simples');
+testerExp("/'/", $txt);
+
+htmlInfo('Recherche tous les points');
+testerExp('/\./', $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-bottom0">L'exemple précédent présente deux
+				particularités :</p>
+			<ul class="fp-ul-puce">
+				<li>dans la recherche du caractère guillemet simple (')
+					l'expression régulière est entourée avec des guillemets doubles
+					pour éviter toute collision (ligne 13)</li>
+				<li>pour rechercher le caractère . (point), il faut le protéger
+					par un backslash (\) car ce caractère à une signification
+					particulière dans le vocabulaire des expressions régulières (ligne
+					15).</li>
+			</ul>
+		</section>
+
+		<h3>Les caractères à protéger</h3>
+		<section>
+			<p>
+				Les caractères qui font partie de la syntaxe des expressions
+				régulières doivent être <b>protégés par un backslash</b>. Le tableau
+				ci-dessous en fait la liste (nous verrons la signification détaillée
+				de ces caractères dans les paragraphes suivants).
+			</p>
+
+			<table>
+				<tr>
+					<td width="20" class="fp-code fp-t-centre">.</td>
+					<td>point</td>
+					<td width="20" class="fp-code fp-t-centre">[</td>
+					<td>crochet ouvrant</td>
+				</tr>
+				<tr>
+					<td width="20" class="fp-code fp-t-centre">\</td>
+					<td>backslash</td>
+					<td width="20" class="fp-code fp-t-centre">|</td>
+					<td>barre verticale (pipe)</td>
+				</tr>
+				<tr>
+					<td width="20" class="fp-code fp-t-centre">^</td>
+					<td>chapeau</td>
+					<td width="20" class="fp-code fp-t-centre">(</td>
+					<td>parenthèse ouvrante</td>
+				</tr>
+				<tr>
+					<td width="20" class="fp-code fp-t-centre">$</td>
+					<td>dollar</td>
+					<td width="20" class="fp-code fp-t-centre">)</td>
+					<td>parenthèse fermante</td>
+				</tr>
+				<tr>
+					<td width="20" class="fp-code fp-t-centre">?</td>
+					<td>point d'interrogation</td>
+					<td width="20" class="fp-code fp-t-centre">*</td>
+					<td>étoile</td>
+				</tr>
+				<tr>
+					<td width="20" class="fp-code fp-t-centre">+</td>
+					<td>plus</td>
+					<td width="20" class="fp-code fp-t-centre">{</td>
+					<td>accolade ouvrante</td>
+				</tr>
+			</table>
+
+		</section>
+
+
+
+		<h3>L'opérateur ou : |</h3>
+		<section>
+
+			<p>
+				L'opérateur <span class="fp-code">ou</span> permet de rechercher un
+				caractère ou un autre. Il est défini par le signe <span
+					class="fp-code fp-rouge">|</span>. <br> Par exemple pour
+				rechercher les <span class="fp-code FP-gras">e</span> ou les <span
+					class="fp-code">n</span>, on aura l'expression <span
+					class="fp-code">/e<span class="fp-rouge">|</span>n/
+				</span>
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : l'opérateur ou
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Opérateur ou');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('Recherche les "e" ou les "n"');
+testerExp('/e|n/', $txt);
+
+// Le nombre d'opérateurs | n'est pas limité
+htmlInfo('Recherche les "g", les "t", les "a", les "3"');
+testerExp('/g|t|a|3/', $txt);
+
+// Avec la protection obligatoire de certains
+// caractères, l'expression régulière devient
+// plus difficile à lire qu'à écrire
+htmlInfo('Recherche les points, les guillemets et les parenthèses');
+testerExp("/\.|'|\(|\)/", $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Enumérations de caractères</h3>
+		<section>
+			<p>
+				L'opérateur <span class="fp-code">ou</span> est bien utile quand les
+				choix sont peu nombreux (2 ou 3 possibilités différentes), mais
+				quand le choix est étendu, il est plus simple d'utiliser une
+				énumération.
+			</p>
+
+			<p class="fp-puce">
+				Une <b>énumeration de caractères</b> est faite en utilisant les
+				crochets <span class="fp-code">[</span> et <span class="fp-code">]</span>
+				qui entourent les caractères énumérés. On défini ainsi une <b>classe</b>
+				de caractères.
+			</p>
+			<p>
+				Par exemple pour rechercher toutes les voyelles, on aura
+				l'expression régulière <span class="fp-code">/<span
+					class="fp-rouge">[</span>aeiou<span class="fp-rouge">]</span>/
+				</span>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : énumérations de caractères
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Enumérations de caractères');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('Toutes les voyelles en minuscule');
+testerExp('/[aeiou]/', $txt);
+
+htmlInfo('Toutes les voyelles ou les chiffres');
+testerExp('/[aeiouAEIOU]|[0123456789]/', $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>L'opérateur de négation : ^</h3>
+		<section>
+
+
+			<p class="fp-puce">
+				Les crochets permettent de définir des classes de caractères
+				recherchés, mais également des classes de<b> caractères exclus</b>.
+				Il suffit de faire précéder la liste des caractères par le signe <span
+					class="fp-code">^</span>.
+			<p>Si on prend l'expression qui permet d'obtenir toutes les
+				voyelles :
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : l'opérateur de négation
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Opérateur de négation');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('Tout ce qui n\'est pas une voyelle minuscule');
+testerExp('/[^aeiou]/', $txt);
+
+htmlInfo('Tous ce qui n\'est pas signe de ponctuation ou espace');
+testerExp("/[^\.,';!? \/\(\)]/", $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Listes de caractères</h3>
+		<section>
+			<p>
+				Pour rechercher toutes les lettres de l'alphabet, nous pouvons
+				utiliser l'expression régulière :<br> <span class="fp-code">/[abcdefghijklmnopqrstuvwxyz]/</span><br>
+				Plusieurs inconvénients : c'est long à écrire, sujet à erreur car on
+				peut facilement oublier une lettre ou la doubler, pas facile à lire,
+				carrément pénible si on veut ajouter les caractères en minuscules,
+				etc.
+			<p class="fp-puce">
+				La notation suivante permet de <b>définir des listes</b> : deux
+				caractères <b>séparés par le signe moins</b> (<span class="fp-code">-</span>),
+				le tout entouré par les crochets <span class="fp-code">[</span> et <span
+					class="fp-code">]</span>.
+			<p>
+				Par exemple :<br> <span class="fp-code">/<span
+					class="fp-rouge">[</span>a<span class="fp-rouge">-</span>z<span
+					class="fp-rouge">]</span>/
+				</span> recherche la présence d'au moins un caractère alphabétique en
+				minuscule.<br> <span class="fp-code">/<span
+					class="fp-rouge">[</span>A<span class="fp-rouge">-</span>Z<span
+					class="fp-rouge">]</span>/
+				</span> recherche la présence d'au moins un caractère alphabétique en
+				majuscule.<br> <span class="fp-code">/<span
+					class="fp-rouge">[</span>a<span class="fp-rouge">-</span>zA<span
+					class="fp-rouge">-</span>Z<span class="fp-rouge">]</span>/
+				</span> recherche la présence d'au moins un caractère alphabétique en
+				minuscule ou en majuscule.<br> <span class="fp-code">/<span
+					class="fp-rouge">[</span>0<span class="fp-rouge">-</span>9<span
+					class="fp-rouge">]</span>/
+				</span>recherche la présence d'au moins un caractère numérique.
+			<p>
+				Bien sûr l'opérateur de négation <span class="fp-code">^</span> est
+				utilisable.
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : listes de caractères
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Listes de caractères');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";;
+
+htmlInfo('Les lettres de l\'alphabet en minuscule');
+testerExp('/[a-z]/', $txt);
+
+htmlInfo('a, b, c, d, e, ou f en minsucule ou majuscule');
+testerExp('/[a-fA-F]/', $txt);
+
+htmlInfo('Un chiffre de 0 à 9');
+testerExp('/[0-9]/', $txt);
+
+htmlInfo('Tout ce qui n'est pas lettres de l\'alphabet en minuscule ou majuscule ou un chiffre');
+testerExp('/[^a-zA-Z0-9]/', $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+
+		</section>
+
+		<h3>Classes prédéfinies de caractères</h3>
+		<section>
+			<p>Pour faciliter encore plus notre travail, il existe des
+				classes prédéfinies de caractères, qui nous évitent de créer des
+				ensembles connus et souvent utilisés. Certaines classes sont issues
+				du standard POSIX, et sont reprises à l'identique dans les
+				expressions régulières PCRE qui ajoutent aussi d'autres classes.</p>
+
+			<p class="fp-remarque">La prise en compte des caractères
+				accentués dans les classes dépend de l'implémentation réalisée par
+				le système. Généralement sous Windows les caractères accentués ne
+				sont pas considérés comme des caractères alphabétiques.</p>
+
+			<table>
+				<tr>
+					<td class="fp-code fp-t-center">[[:alnum:]]</td>
+					<td>
+						<p>Tous les caractères alphanumériques, minuscules et
+							majuscules</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:alpha:]]</td>
+					<td>
+						<p>Tous les caractères alphabétiques, minuscules et majuscules</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:ascii:]]</td>
+					<td>
+						<p>Tous les caractères ascii de 0 à 127</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:blank:]]</td>
+					<td>
+						<p>Tous les caractères "blancs" : espaces ou tabulations</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:cntrl:]]</td>
+					<td>
+						<p>Tous les caractères de contrôle</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:digit]]</td>
+					<td>
+						<p>Tous les chiffres</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:lower:]]</td>
+					<td>
+						<p>Tous les caractères en minuscules</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:print:]]</td>
+					<td>
+						<p>Tous les caractères imprimables (les caractères de contrôle
+							exclus)</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:punct:]]</td>
+					<td>
+						<p>Tous les caractères de ponctuation</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:space:]]</td>
+					<td>
+						<p>Tous les caractères d'espacement (espaces, tabulations,
+							saut de ligne, retour chariot)</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:upper:]]</td>
+					<td>
+						<p>Tous les caractères en majuscules</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:word:]]</td>
+					<td>
+						<p>Une lettre (majuscule ou minuscule), un chiffre (0 à 9) ou
+							le caractère _ (underscore)</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">[[:xdigit:]]</td>
+					<td>
+						<p>Tous les caractères en hexadecimal</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">\d</td>
+					<td>
+						<p>Tous les chiffres</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">\D</td>
+					<td>
+						<p>Tous les caractères non numériques (inverse de \d)</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">\s</td>
+					<td><p>Tous les caractères d'espacement (espaces,
+							tabulations, saut de ligne, retour chariot)</p></td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">\S</td>
+					<td>
+						<p>Tout les caractères autre que d'espacement (inverse \s)</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">\w</td>
+					<td>
+						<p>Une lettre (majuscule ou minuscule), un chiffre (0 à 9) ou
+							le caractère _ (underscore)</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="fp-code fp-t-center">\W</td>
+					<td>
+						<p>Pas une lettre, ni un chiffre, ni _ (inverse de \w)</p>
+					</td>
+				</tr>
+
+			</table>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : classes de caractères
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Classes de caractères');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('La classe alpha');
+testerExp('/[[:alpha:]]/', $txt);
+
+htmlInfo('La classe \w');
+testerExp('/\w/', $txt);
+
+htmlInfo('La classe alpha et la classe punct');
+testerExp('/[[:alpha:][:punct:]]/', $txt);
+
+htmlInfo('La classe upper');
+testerExp('/[\d[:upper:]]/', $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Chaînes de caractères</h3>
+		<section>
+			<p>
+				Dans les exemples précédents nous avons utilisé la forme la plus
+				simple d'une expression : la recherche d'un seul caractère dans une
+				chaîne. Pour <b>rechercher une chaîne précise</b> dans une autre, il
+				suffit d'écrire cette chaîne telle quelle. Par exemple l'expression
+				régulière <span class="fp-code">/une/</span> permettra de rechercher
+				la chaîne de caractères <span class="fp-code">une</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : chaînes de caractères
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Chaînes de caractères');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('Recherche la chaîne "une"');
+testerExp('/une/', $txt);
+
+htmlinfo('Recherche "le" ou "la"');
+testerExp('/le|la/', $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+
+
+		<h3>Le métacaractère point</h3>
+		<section>
+
+			<p>
+				<b>Le métacaractère point (<span class="fp-code">.</span>)
+				</b> sert de joker pour remplacer n'importe quel caractère :
+				alphabétique, numérique, espace, ponctuation, etc.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : le métacaractère point
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Métacaractère point');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('Recherche "une" suivi de n\'importe quel caractère');
+testerExp('/une./', $txt);
+
+htmlInfo('"a" suivi de n\'importe quoi, suivi de "a"');
+testerExp('/a.a/', $txt);
+
+htmlInfo('"i" suivi de 2 caractères, suivis de "e"');
+testerExp('/i..e/', $txt);
+
+htmlInfo('Un chiffre suivi de n\'importe quoi, suivi d\'une lettre');
+testerExp('/\d.[a-z]/', $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+
+		<h3>Le métacaractère \</h3>
+		<section>
+			<p>Le caractères backslash (\) a plusieurs rôles.
+			<p>Il peut servir de caractère d'échappement pour les caractères
+				non alphanumériques qui ont une signification spéciale (*, [, (), {,
+				\, +, ?, |, ^, $).
+			<p>
+				Un second usage du backslash (\) permet d'atteindre des caractères
+				non imprimables :<br> <span class="fp-code">\a</span> :
+				émission d'un son (hexa 07)<br> <span class="fp-code">\cx</span>
+				: control-x, où x est n'importe quel caractère<br> <span
+					class="fp-code">\e</span> : echappement (escape) (hexa 1B)<br>
+				<span class="fp-code">\f</span> : saut de page (formfeed) (hexa 0C)<br>
+				<span class="fp-code">\n</span> : saut de ligne (newline) (hexa 0A)<br>
+				<span class="fp-code">\r</span> : entrée (carriage return) (hexa 0D)<br>
+				<span class="fp-code">\t</span> : tabulation (hexa 09)<br> <span
+					class="fp-code">\ddd</span> : octal ou ddd est le code<br> <span
+					class="fp-code">\xhh</span> : hexadécimal ou hh est la code
+			<p>
+				Le troisème usage du backslash (\) permet de spécifier des types de
+				caractères génériques :<br> <span class="fp-code">\d</span> :
+				un chiffre (0 à 9)<br> <span class="fp-code">\D</span> :
+				n'importe quel caractère qui n'est pas un chiffre<br> <span
+					class="fp-code">\s</span> : n'importe quel type d'espacement :
+				tabulation, saut de ligne, saut de page, entrée et espace <br>
+				<span class="fp-code">\S</span> : n'importe quel caractère qui n'est
+				pas un espacement<br> <span class="fp-code">\w</span> :
+				n'importe quel caractère de "mot" : une lettre (majuscule ou
+				minuscule, caractères accentués compris), un chiffre (0 à 9) ou le
+				caractère _ (underscore)<br> <span class="fp-code">\W</span> :
+				n'importe quel caractère qui n'est pas un caractère de "mot"
+			<p>
+				Le quatrième usage du backslash (\) sert pour les assertions simples
+				:<br> <span class="fp-code">\b</span> : correspond à un début
+				ou une fin de "mot"<br> <span class="fp-code">\B</span> :
+				inverse de \b<br> <span class="fp-code">\A</span> : correspond
+				au début de la chaîne examinée. C'est l'équivalent du métacaractère
+				^, sauf si l'option m est utilisée, auquel cas ^est le début de
+				chaque ligne trouvée dans la chaîne, et \A le début original de la
+				chaîne.<br> <span class="fp-code">\Z</span> : correspond à la
+				fin de la chaîne examinée. C'est l'équivalent du métacaractère $,
+				avec le même comportement que \A.
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

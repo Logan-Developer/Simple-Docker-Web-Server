@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Objets : constantes et opérateur de résolution de portée</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+
+		<h3>Définir des constantes</h3>
+		<section>
+			<figure>
+				<img src="../phpimg/poo_10.png" width="485" height="210">
+				<figcaption>définir des constantes</figcaption>
+			</figure>
+
+			<p class="fp-puce">Seuls les types de données scalaires (booléen, entier, double et chaîne de
+				caractères) peuvent être affectés comme valeur d'une constante.</p>
+
+			<p class="fp-puce">Une fois définie, la valeur d'une constante de classe n'est plus
+				modifiable.</p>
+
+			<p class="fp-puce">Tous les objets instances de la classe contenant les constantes partagent
+				la valeur de ces constantes. Il y ont tous accès en lecture, mais pas en écriture.</p>
+
+			<p class="fp-puce">
+				Il n'est pas possible de spécifier la visibilité d'une constante. Les constantes ont une
+				visibilité <code>public</code> par défaut.
+			</p>
+
+			<p>
+				Pour illustrer l'utilisation des constantes, nous allons ajouter un nouvel attribut à la classe
+				Guitare. L'attribut <code>son</code> définira l'acoustique de la guitare, à savoir : acoustique,
+				à résonateur, électro-acoustique, électrique. Ces valeurs seront stockées dans 4 constantes.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : définition de constantes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise, $son;
+
+	const SON_A = 'acoustique';
+	const SON_EA = 'électro-acoustique';
+	const SON_R = 'à résonnateur';
+	const SON_E = 'électrique';
+
+	public function __construct($p1, $p2, $p3){
+		$p1 = trim($p1);
+		if ($p1 == '') exit('Paramètre modèle invalide');
+		$this-&gt;modele = $p1;
+						
+		$ok = array(4, 6, 12);
+		if (!estEntier($p3) || !in_array($p3, $ok)) {
+			exit ('Paramètre nombre de cordes invalide');
+		}
+		$this-&gt;cordes = $p3;
+		
+		$this-&gt;setPrix($p2);
+		
+		$this-&gt;remise = 0;
+	}
+	
+	public function setPrix($val) {
+		if (!is_numeric($val) || $val &lt; 0) {
+			exit ('Valeur de prix invalide');
+		}		
+		$this-&gt;prix = $val;
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe ', __CLASS__, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;', 
+				$this-&gt;cordes, ' cordes&lt;br&gt;',
+				$this-&gt;prix, ' &amp;euro;';
+	}
+}			// Fin de la classe Guitare	
+				
+htmlDebut('Définition de constantes');
+
+htmlInfo('Voir la définition des constantes dans le code');
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Utiliser des constantes, résolution de portée</h3>
+		<section>
+			<p class="fp-puce">
+				On NE PEUT PAS pas utiliser l'opérateur <code>-&gt;</code> avec une constante.
+			</p>
+
+
+			<p class="fp-cadre">
+				Pour faire référence à une constante de classe dans notre code, nous devons utiliser l'opérateur
+				<code>::</code> (double deux-points). L'opérateur <code>::</code> est également appelé opérateur
+				de résolution de portée.
+			</p>
+
+			<p class="fp-puce">
+				Suivant l'endroit du code où on fait référence à la constante, l'opérateur de portée est précédé
+				:
+				<br>
+				- du mot-clé <code>self</code>,
+				<br>
+				- du nom de la classe,
+				</br>
+				- de la variable instance de la classe.
+			</p>
+
+			<figure>
+				<img src="../phpimg/poo_11.png" width="500" height="325">
+				<figcaption>utiliser une constante avec l'opérateur de portée</figcaption>
+			</figure>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : utilisation de constantes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise, $son;
+
+	const SON_A = 'acoustique';
+	const SON_EA = 'électro-acoustique';
+	const SON_R = 'à résonnateur';
+	const SON_E = 'électrique';
+
+	public function __construct($p1, $p2, $p3, $p4) {
+		$p1 = trim($p1);
+		if ($p1 == '') exit('Paramètre modèle invalide');
+		$this-&gt;modele = $p1;
+						
+		$ok = array(4, 6, 12);
+		if (!estEntier($p3) || !in_array($p3, $ok)) {
+			exit ('Paramètre nombre de cordes invalide');
+		}
+		$this-&gt;cordes = $p3;
+		
+		$this-&gt;setPrix($p2);
+		
+		if ($p4 == self::SON_A 
+		|| $p4 == self::SON_EA
+		|| $p4 == self::SON_R
+		|| $p4 == self::SON_E) {
+			$this-&gt;son = $p4;
+		} else {
+			exit ('Paramètre son invalide');
+		}
+		
+		$this-&gt;remise = 0;
+	}
+	
+	public function setPrix($val) {
+		if (!is_numeric($val) || $val &lt; 0) {
+			exit ('Valeur de prix invalide');
+		}		
+		$this-&gt;prix = $val;
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe ', __CLASS__, '&lt;/h4&gt;',
+				$this-&gt;modele, ' - ', $this-&gt;son, '&lt;br&gt;',
+				$this-&gt;cordes, ' cordes&lt;br&gt;',				
+				$this-&gt;prix, ' &amp;euro;';			
+	}
+}			// Fin de la classe Guitare	
+				
+htmlDebut('Utilisation de constantes');
+
+htmlInfo('Les constantes son de la classe Guitare');
+echo Guitare::SON_A, '&lt;br&gt;';
+echo Guitare::SON_EA, '&lt;br&gt;';
+echo Guitare::SON_R, '&lt;br&gt;';
+echo Guitare::SON_E;
+
+$g1 = new Guitare('Guild D120', 639, 6, Guitare::SON_A);
+$g1-&gt;decrire();
+
+$g2 = new Guitare('Dobro Hound Dog', 453, 6, Guitare::SON_R);
+$g2-&gt;decrire();
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<a id="exoConstantesClasse"></a>
+		<h3>Exercice : constantes de classe</h3>
+		<section>
+			<p>
+				Reprenez le code de la classe <code>Livre</code> ci-dessous et utilisez des constantes de classe
+				pour gérer les 4 catégories de livre possibles ("Méthode", "Partition", "Biographie" ou
+				"Autre").
+			</p>
+
+			<pre data-code="PHP" class="fp-petit">
+// Définition de la classe Livre
+class Livre {
+	private $titre, $auteur, $pages, $prix, $cat;
+
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		$this-&gt;titre = $this-&gt;verifChaine($p1, 'titre');
+		$this-&gt;auteur = $this-&gt;verifChaine($p2, 'auteur');
+		if (is_numeric($p3) &amp;&amp; estEntre($p3, 10, 1000)) {
+			$this-&gt;pages = $p3;
+		} else {
+			$this-&gt;afficheErreur($p3, 'pages');
+		}
+		if (is_numeric($p4) &amp;&amp; estEntre($val, 0, 1000)) {
+			$this-&gt;prix = $p4;
+		} else {
+			$this-&gt;afficheErreur($p4, 'prix');
+		}
+		$oks = array('Méthode', 'Partition', 
+					 'Biographie', 'Autre');
+		if (in_array($p5, $oks)) {
+			$this-&gt;cat = $p5;
+		} else {
+			$this-&gt;afficheErreur($p5, 'cat');
+		}
+	}
+	private function verifChaine($val, $attr) {
+		$val = trim($val);
+		($val == '') &amp;&amp; $this-&gt;afficheErreur($val, $attr);
+		return $val;
+	}
+	private function afficheErreur($val, $attr) {
+		exit("&lt;hr&gt;Valeur '&lt;b&gt;$val&lt;/b&gt;' invalide pour
+				l'attribut &lt;b&gt;$attr&lt;/b&gt;.&lt;hr&gt;");
+	}
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe Livre&lt;/h4&gt;',
+				$this-&gt;titre, ' - ', $this-&gt;auteur, ' - ', 
+				$this-&gt;pages, ' pages - ', 
+				$this-&gt;prix, ' &amp;euro; - ', $this-&gt;cat, '&lt;hr&gt;';
+	}
+}			// Fin de la classe Livre</pre>
+
+			<p>Vous devez instancier 4 livres avec les informations suivantes :</p>
+
+			<table>
+				<tr>
+					<td>Titre</td>
+					<td>Auteur</td>
+					<td>Nb Pages</td>
+					<td>Prix</td>
+					<td>Cat.</td>
+				</tr>
+				<tr>
+					<td>Débutant Guitare Acoustique</td>
+					<td>Rébillard</td>
+					<td>70</td>
+					<td>17</td>
+					<td>Méthode</td>
+				</tr>
+				<tr>
+					<td>Les accords de guitare</td>
+					<td>Carpentier</td>
+					<td>160</td>
+					<td>4.90</td>
+					<td>Autre</td>
+				</tr>
+				<tr>
+					<td>Guitar Play Along Neil Young</td>
+					<td>Leonard</td>
+					<td>50</td>
+					<td>21.90</td>
+					<td>Partition</td>
+				</tr>
+				<tr>
+					<td>50 rock songs</td>
+					<td>Piat</td>
+					<td>120</td>
+					<td>19.99</td>
+					<td>Rock</td>
+				</tr>
+			</table>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exoConstantesClasse_solu', 1)">Une solution possible</a>
+			</p>
+
+			<div id="exoConstantesClasse_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : constantes de classe
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+// Définition de la classe Livre
+class Livre {
+	const CAT_METHODE = 'Méthode';
+	const CAT_PARTITION = 'Partition';
+	const CAT_BIO = 'Biographie';
+	const CAT_AUTRE = 'Autre';
+
+	private $titre, $auteur, $pages, $prix, $cat;
+
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		$this-&gt;titre = $this-&gt;verifChaine($p1, 'titre');
+		$this-&gt;auteur = $this-&gt;verifChaine($p2, 'auteur');
+		if (is_numeric($p3) &amp;&amp; estEntre($p3, 10, 1000)) {
+			$this-&gt;pages = $p3;
+		} else {
+			$this-&gt;afficheErreur($p3, 'pages');
+		}
+		if (is_numeric($p4) &amp;&amp; estEntre($val, 0, 1000)) {
+			$this-&gt;prix = $p4;
+		} else {
+			$this-&gt;afficheErreur($p4, 'prix');
+		}
+		$oks = array(self::CAT_METHODE, self::CAT_PARTITION, 
+					 self::CAT_BIO, self::CAT_AUTRE);
+		if (in_array($p5, $oks)) {
+			$this-&gt;cat = $p5;
+		} else {
+			$this-&gt;afficheErreur($p5, 'cat');
+		}
+	}
+	private function verifChaine($val, $attr) {
+		$val = trim($val);
+		($val == '') &amp;&amp; $this-&gt;afficheErreur($val, $attr);
+		return $val;
+	}
+	private function afficheErreur($val, $attr) {
+		exit("&lt;hr&gt;Valeur '&lt;b&gt;$val&lt;/b&gt;' invalide pour
+				l'attribut &lt;b&gt;$attr&lt;/b&gt;.&lt;hr&gt;");
+	}
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe Livre&lt;/h4&gt;',
+				$this-&gt;titre, ' - ', $this-&gt;auteur, ' - ', 
+				$this-&gt;pages, ' pages - ', 
+				$this-&gt;prix, ' &amp;euro; - ', $this-&gt;cat, '&lt;hr&gt;';
+	}
+}			// Fin de la classe Livre
+
+htmlDebut('Constantes de classe');
+
+$livre1 = new Livre('Débutant Guitare Acoustique', 'Rébillard', 70, 17, Livre::CAT_METHODE);
+$livre1-&gt;decrire();
+
+$livre2 = new Livre('Les accords de guitare', 'Carpentier', 160, 4.90, Livre::CAT_AUTRE);
+$livre2-&gt;decrire();
+
+$livre3 = new Livre('Guitar Play Along Neil Young', 'Leonard', 50, 21.90, Livre::CAT_PARTITION);
+$livre3-&gt;decrire();
+
+$livre4 = new Livre('50 rock songs', 'Piat', 120, 19.99, 'Rock');
+// Pour test
+//$livre4 = new Livre('50 rock songs', 'Piat', 120, 19.99, Livre::CAT_ROCK);
+$livre4-&gt;decrire();
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+
+		<footer></footer>
+	</div>
+</body>
+</html>

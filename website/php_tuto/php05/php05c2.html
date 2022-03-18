@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les tableaux</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p class="fp-puce">
+			Pour extraire une partie de tableau on utilise la fonction <a
+				href="https://www.php.net/manual/fr/function.array-slice.php" target="_blank">array_slice()</a>.
+			Elle retourne un nouveau tableau à partir des paramètres passés :
+			indice de départ et longueur. Si l'indice est négatif, on part de la
+			fin du tableau. Si aucune longueur n'est donnée, on récupère tous les
+			éléments depuis l'indice jusqu'à la fin du tableau. Le tableau
+			d'origine n'est pas modifié.
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : extraire une partie de tableau
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Parties de tableau');
+
+$t = array('Pierre', 'Paul', 'Jacques', 'Jean', 'Louis');
+
+infoTableau($t);
+
+htmlInfo('Les deux premiers éléments');
+$tt = array_slice($t , 0, 2);
+
+infoTableau($tt);
+
+htmlInfo('Eléments de 2 à fin');
+$tt = array_slice($t , 2);
+
+infoTableau($tt);
+
+htmlInfo('Les deux derniers éléments');
+$tt = array_slice($t , -2, 2);
+
+infoTableau($tt);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<h3>Supprimer une partie de tableau</h3>
+		<section>
+			<p class="fp-bottom0 fp-puce">
+				Pour supprimer une partie de tableau, on utilise la fonction <a
+					href="https://www.php.net/manual/fr/function.array-splice.php" target="_blank">array_splice()</a>
+				avec 2 ou 3 paramètres :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>le tableau sans lequel on veut supprimer des éléments,</li>
+				<li>l'indice de départ où on commence la suppression,</li>
+				<li>éventuellement le nombre d'élément à supprimer. Si non
+					indiqué, la fonction supprime jusqu'à la fin du tableau.</li>
+			</ul>
+
+			<p>Si l'indice de départ est négatif, il est compté à partir de
+				la fin du tableau.</p>
+
+			<p>La fonction renvoie les éléments supprimés sous la forme d'un
+				tableau.</p>
+
+			<p>Les indices du tableau sont renumérotés après suppression des
+				éléments.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : suppression d'éléments
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Supprimer des éléments');
+
+$t = range(0,9);
+
+infoTableau($t);
+
+htmlInfo('Supprimer les éléments 2 à 4');
+array_splice($t, 2, 3);
+
+infoTableau($t);
+
+htmlInfo('Supprimer de l\'élément 4 à la fin');
+array_splice($t , 4);
+
+infoTableau($t);
+
+htmlInfo('Supprimer les 2 derniers éléments');
+array_splice($t , -2);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Insérer des éléments</h3>
+		<section>
+			<p class="fp-bottom0 fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.array-splice.php" target="_blank">array_splice()</a>
+				permet aussi d'insérer des éléments. On appellera la fonction avec 4
+				paramètres :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>le tableau sans lequel on veut insérer des éléments,</li>
+				<li>l'indice auquel on veut faire l'insertion,</li>
+				<li>la valeur 0</li>
+				<li>un tableau avec les éléments à insérer.</li>
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : insertion d'éléments
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Inserer des éléments');
+
+$t = range(0,4);
+
+infoTableau($t);
+
+htmlInfo('Inserer 3 éléments à l\'indice 1');
+array_splice($t, 1, 0, array('a','b','c'));
+
+infoTableau($t);
+
+htmlInfo('Inserer 2 éléments avant le dernier');
+array_splice($t, -1, 0, array('g', 'h'));
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Remplacer des éléments</h3>
+		<section>
+			<p class="fp-bottom0 fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.array-splice.php" target="_blank">array_splice()</a>
+				permet aussi de remplacer des des éléments. C'est en réalité une
+				suppression suivie d'un ajout. Le nombre d'éléments supprimés n'a
+				pas besoin d'être le même que celui des éléments insérés. On
+				appellera la fonction avec 4 paramètres :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>le tableau sans lequel on veut remplacer des éléments,</li>
+				<li>l'indice à partir duquel on veut faire le remplacement,</li>
+				<li>le nombre d'éléments à remplacer,</li>
+				<li>un tableau avec les éléments de remplacement.</li>
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement d'éléments
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacer des éléments');
+
+$t = range(0,4);
+
+infoTableau($t);
+
+htmlInfo('Remplacer les éléments de 0 à 2 par 3 éléments');
+array_splice($t, 0, 3, array('a','b','c'));
+
+infoTableau($t);
+
+htmlInfo('Remplacer les 2 derniers éléments par 1 autre');
+array_splice($t, -2, 2, array('d'));
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

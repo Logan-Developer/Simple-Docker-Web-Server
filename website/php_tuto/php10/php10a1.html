@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Objets : syntaxe de base</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Depuis PHP 5, le modèle objet présenté par PHP est complet : définition de classes,
+			extension de classes, héritage, visibilité des méthodes et attributs, classes et méthodes
+			abstraites, interfaces, etc.</p>
+
+		<p class="fp-puce">
+			<strong>Une classe est une structure de données</strong> créée par le développeur pour
+			représenter une <strong>abstraction</strong> du "monde" qu'il doit gérer dans son développement.
+			Par exemple pour une gestion de production, le "monde" sera composé d'abstractions comme des
+			types de machine outil, des matières premières, des produits finis, etc. Pour un jeu, le "monde"
+			sera composé d'abstractions comme des types de personnages, des armes, des lieux, des véhicules,
+			etc.
+		</p>
+		<p class="fp-puce">
+			Une abstraction aura des caractéristiques particuliéres et pourra effectuer des actions (ou y
+			être soumises). Dans la structure de données classe, <strong>une caractéristique est
+				appelée un attribut</strong> (ou une propriété) et <strong>la réalisation d'une action est
+				appelée une méthode</strong>. Ce ne sont ni plus ni moins que des variables et des fonctions, avec la
+			particularité qu'elles sont définies dans une classe et non dans un programme (ou un script).
+		</p>
+		<p class="fp-puce">
+			Pour passer de l'abstraction à la "réalité" on va à partir d'une classe créer des objets. On
+			appelle celà <strong>instancier une classe</strong>. A la fin de cette opération on a donc un
+			objet avec les éléments caractériques de sa classe et qui va pouvoir effectuer (ou subir) les
+			actions définies par sa classe. La valeur des attributs de l'objet sera personnalisée en fonction
+			des caractéristiques propres de l'objet. Les méthodes quant à elle ne sont pas personnalisables
+			et leur valeur (une fonction) est immutable.
+		</p>
+		<p>
+			Par exemple une classe <span class="fp-code">Voiture</span> aura un attribut <span
+				class="fp-code">couleur</span>. La valeur de l'attribut <span class="fp-code">couleur</span>
+			pour l'objet <span class="fp-code">Cadillac Eldorado</span> sera "rose bonbon" alors que celle
+			pour l'objet <span class="fp-code">2CV</span> sera "bleu".
+			<br>
+			<img src="../phpimg/cadillac.png" width="300" height="94"> <img src="../phpimg/2CV.png"
+				width="200" height="96">
+			<br>
+			Malgré leurs différences d'aspect et de caractéristiques, les 2 objets issus de la classe <span
+				class="fp-code">Voiture</span> auront des méthodes identiques, comme par exemple démarrer,
+			accélerer, freiner.
+		</p>
+
+		<p class="fp-remarque">
+			Les classes de cette forme de programmation orientée objet ne sont rien d'autre que l'application
+			des idées de <a href="https://fr.wikipedia.org/wiki/Platon" target="_blank">Platon</a> et de sa <a
+				href="https://fr.wikipedia.org/wiki/Th%C3%A9orie_des_Formes" target="_blank">théorie des
+				formes</a>.
+		</p>
+		<p class="fp-remarque">
+			Il existe d'autres formes de programmation orientée objet, notamment celle basée sur
+			l'utilisation de <a href="https://fr.wikipedia.org/wiki/Programmation_orient%C3%A9e_prototype"
+				target="_blank">prototypes</a> pour représenter les abstractions. On trouve ce paradigme dans
+			des langages comme JavaScript.
+		</p>
+
+		<h3>Exemple</h3>
+		<section>
+
+			<p>Ce chapitre sera illustré par l'utilisation de classes liées à une activité marchande de
+				vente sur Internet. Les <strong>produits</strong> vendus seront des d'abord des <strong>guitares</strong> puis 
+				nous étendrons notre catalogue à d'autres produits concernant les guitares (méthodes, partitions, cordes, etc).</p>
+
+			<p>L'exemple ci-dessous est un exemple simplifié d'une classe représentant un <strong>modèle de guitare</strong> proposé à la vente sur notre site.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : syntaxe de base
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele;
+	private $prix;
+	private $cordes;
+	private $remise = 0;
+
+	public function __construct($p1, $p2, $p3) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+	}
+
+	public function setRemise($taux) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+	}
+
+	public function getPrix() {
+		$rem = ceil($this-&gt;prix * $this-&gt;remise / 100);
+		return $this-&gt;prix - $rem;
+	}
+
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe ', __CLASS__, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;', 
+				$this-&gt;cordes, ' cordes&lt;br&gt;',
+				$this-&gt;getPrix(), ' &amp;euro;';
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('La classe Guitare');
+
+$guitare = new Guitare('Guild D120', 639, 6);
+$guitare-&gt;decrire();
+$guitare-&gt;setRemise(30);
+htmlInfo('Nouveau prix : '.$guitare-&gt;getPrix());
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-remarque">
+				L'usage veut que le code correspondant à une classe soit mis dans un fichier qui ne contient que
+				ce code (exemple : <code>guitare.class.php</code>), puis que ces fichiers soit inclus dans le
+				script principal (comme le fichier <code>bib_fonctions.php</code>). Dans le cadre de ce
+				tutoriel, par souci de simplification, le code des classes sera directement inclus dans le
+				script principal.
+			</p>
+		</section>
+
+		<h3>L'opérateur -&gt;</h3>
+		<section>
+			<p class="fp-puce">
+				Contrairement aux autres langages orientés objet, PHP <strong>n'utilise pas la syntaxe
+					à point</strong> pour travailler avec les objets, leurs attributs et leur méthodes.
+				<br>
+				Rappel : dans PHP l'opérateur point (<code>.</code>) est <a
+					onclick="top.FP.Voir.showPageTuto('php01c1','concat')">l'opérateur de concaténation.</a>
+			</p>
+
+			<p class="fp-cadre">
+				Pour accéder aux attributs et aux méthodes d'un objet, on utilise en PHP l'opérateur <strong><code>-&gt;</code></strong>.
+			</p>
+
+			<figure>
+				<img src="../phpimg/poo_06.png" width="285" height="253">
+				<figcaption>l'opérateur -&gt;</figcaption>
+			</figure>
+
+
+		</section>
+
+		<h3>Définir une classe</h3>
+		<section>
+			<figure>
+				<img src="../phpimg/poo_01.png" width="465" height="239">
+				<figcaption>définir une classe</figcaption>
+			</figure>
+
+			<p class="fp-puce">Le nom d'une classe doit commencer par une lettre ou le caractère _
+				(underscore). Les caractères suivants peuvent être des lettres, des nombres, le caractère _.</p>
+
+			<p class="fp-puce">Une règle d'usage veut que le nom d'une classe commence par une lettre
+				majuscule.</p>
+
+		</section>
+
+		<h3>Définir des attributs</h3>
+		<section>
+			<figure>
+				<img src="../phpimg/poo_02.png" width="500" height="141">
+				<figcaption>définir des attributs</figcaption>
+			</figure>
+
+			<p class="fp-puce">
+				La définition d'un attribut commence avec un des mots-cléss <code>private</code>, <code>public</code>
+				ou <code>protected</code>. Ce mot-clé définit <strong>la visibilité</strong> de l'attribut,
+				c'est à dire depuis où l'attribut peut être vu/accédé (plus d'infos plus loin dans <a
+					onclick="top.FP.Voir.showPageTuto('php10b2','')">l'encapsulation</a>).
+			</p>
+
+			<p class="fp-puce">
+				Dans sa définition, le nom de l'attribut doit être précédé du signe <code>$</code>, comme les
+				variables dans PHP.
+			</p>
+
+
+			<p class="fp-puce">Le nom d'un attribut doit commencer par une lettre ou le caractère _
+				(underscore). Les caractères suivants peuvent être des lettres, des nombres, le caractère _.</p>
+
+			<p class="fp-puce">
+				Les noms d'attributs sont sensibles aux majuscules et aux minuscules. Par exemple <code>mon_attribut</code>
+				est différentde <code>Mon_Attribut</code> ou de <code>MON_attribut</code>.
+			</p>
+
+			<p class="fp-puce">On peut affecter une valeur à un attribut au moment de sa définition. La
+				valeur peut être de n'importe quel type supporté par PHP. Il faut que cette valeur soit une
+				valeur constante, c'est à dire qu'elle ne peut pas une référence à une variable, à une autre
+				propriété, à un objet, ou au résultat de l'évaluation d'une fonction.</p>
+			<figure>
+				<img src="../phpimg/poo_03.png" width="491" height="91">
+				<figcaption>définir un attribut avec une valeur par défaut</figcaption>
+			</figure>
+
+			<p class="fp-puce">Il est possible de regrouper les attributs avec une même visibilité lors
+				de leur définition.</p>
+			<figure>
+				<img src="../phpimg/poo_04.png" width="500" height="145">
+				<figcaption>regrouper la définition des attributs</figcaption>
+			</figure>
+
+			<p>
+				Dans notre exemple, la classe Guitare aura 4 attributs, tous privés :
+				<br>
+				- <code>modele</code> : le modèle de la guitare (exemple Guild D120, Fender Villager),
+				<br>
+				- <code>prix</code> : le prix de la guitare en euros,
+				<br>
+				- <code>cordes</code> : le nombre de cordes, soit 4, 6 ou 12,
+				<br>
+				- <code>remise</code> : le taux de remise éventuel sur le prix.
+			</p>
+
+		</section>
+
+
+		<h3>Définir des méthode</h3>
+		<section>
+			<figure>
+				<img src="../phpimg/poo_05.png" width="500" height="326">
+				<figcaption>définir des méthodes</figcaption>
+			</figure>
+
+			<p class="fp-puce">
+				La définition d'une méthode commence avec un des mots-cléss <code>private</code>, <code>public</code>
+				ou <code>protected</code>. Ce mot-clé définit <strong>la visibilité</strong> de la méthode,
+				c'est à dire depuis où la méthode va pouvoir être invoquée (plus d'infos plus loin dans <a
+					onclick="top.FP.Voir.showPageTuto('php10b2','')">l'encapsulation</a>).
+			</p>
+
+			<p class="fp-puce">
+				Les méthodes ne sont rien d'autres que des fonctions et comme telles elles sont soumises aux
+				mêmes règles que les autres fonctions du langage pour le nommage, les paramètres, les renvois de
+				valeur (voir page <a onclick="top.FP.Voir.showPageTuto('php01e1')">Notions de base - Les
+					fonctions</a> et suivantes).
+			</p>
+
+			<p>
+				Dans notre exemple, la classe Guitare aura 4 méthodes, toutes publiques :
+				<br>
+				- <code>__construct</code> : la méthode constructeur de la classe,
+				<br>
+				- <code>setRemise</code> : pour mettre à jour le taux de remise,
+				<br>
+				- <code>getPrix</code> : pour obtenir le prix de vente (prix - remise éventuelle),
+				<br>
+				- <code>decrire</code> : pour afficher une description de la guitare.
+			</p>
+
+			<figure>
+				<img src="../phpimg/poo_18.png" width="478" height="157">
+				<figcaption>classe Guitare décrite avec le formalisme UML</figcaption>
+			</figure>
+
+			<p class="fp-remarque">
+				Par souci de simplification les méthodes ne seront pas décrites dans les exemples. Dans un
+				développement réel, <strong>la description et les commentaires de méthodes sont
+					obligatoires</strong>, par exemple avec le formalisme <a href="http://www.phpdoc.org/" target="_blank">PHPDoc</a>.
+			</p>
+		</section>
+
+
+		<h3>
+			Le mot-clé <code>$this</code>
+		</h3>
+		<section>
+			<figure>
+				<img src="../phpimg/poo_07.png" width="500" height="337">
+				<figcaption>
+					le mot-clé <code>$this</code>
+				</figcaption>
+			</figure>
+
+			<p class="fp-puce">
+				Le mot-clé <code>$this</code> s'utilise uniquement dans le code à l'intérieur des méthodes d'une
+				classe.
+			</p>
+
+			<p class="fp-puce">
+				Dans la classe, <code>$this</code> représente l'objet instancié avec cette classe. <code>$this</code>
+				permet de manipuler des attributs et d'invoquer les méthodes offertes.
+			</p>
+
+
+			<p class="fp-puce">
+				Quand <code>$this</code> est utilisé pour travailler avec un attribut, le nom de l'attribut ne
+				doit pas être précédé du caractère <code>$</code> comme c'est le cas lors de sa définition.
+				<br>
+				On écrit donc <code>$this-&gt;attribut</code> et pas <code>$this->$attribut</code>
+			</p>
+
+			<p class="fp-puce">
+				En PHP, <code>$this</code> doit être utilisé explicitement (ie <code>$this-&gt;attribut =
+					10</code> ou <code>$this-&gt;methode()</code>). Il n'y a pas de mécanisme qui permettrait une
+				référence implicite (ie <code>attribut = 10</code> ou <code>methode()</code>).
+			</p>
+
+
+
+		</section>
+
+
+		<h3>Instancier des objet</h3>
+		<section>
+			<figure>
+				<img src="../phpimg/poo_08.png" width="488" height="252">
+				<figcaption>instancier un objet</figcaption>
+			</figure>
+
+			<p class="fp-puce">
+				La création d'un objet à partir d'une classe s'appelle <strong>l'instanciation</strong>. Un
+				objet est l'instance d'une classe.
+			</p>
+
+			<p class="fp-puce">
+				L'instanciation se fait avec l'opérateur <code>new</code>, suivi du nom de la classe à
+				instancier.
+			</p>
+			<p class="fp-puce">
+				Si des paramètres doivent être passés au constructeur de la classe (voir plus loin <a
+					onclick="top.FP.Voir.showPageTuto('php10a3','')">Constructeur et destructeur</a>), le nom de la
+				classe doit être suivi d'une paire de parenthèses entourant ces paramètres (exemple : <code>$objet
+					= new Classe($p1, $p2);</code>).
+				<br>
+				Si la classe n'a pas de constructeur ou si son constructeur n'attend pas de paramètre, les
+				parenthèses sont facultatives (exemple : <code>$objet = new Classe;</code>).
+			</p>
+
+			<p class="fp-puce">
+				La fonction <a href="https://www.php.net/manual/fr/function.get-class.php" target="_blank">get_class()</a>
+				permet de connaître la classe dont l'objet est l'instance.
+				<br>
+				A l'intérieur d'une classe, la "constante magique" PHP <code>__CLASS__</code> peut être utilisée
+				pour connaître le nom de la classe.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : syntaxe de base
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+// Définition de la classe Guitare
+class Guitare {
+	// Définition des attributs
+	private $modele;
+	private $prix;
+	private $cordes;
+	private $remise = 0;
+
+	// Constructeur
+	public function __construct($p1, $p2, $p3) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+		echo '&lt;hr&gt;Une nouvelle '.__CLASS__.' a été créée&lt;hr&gt;';
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('La classe Guitare');
+
+// création d'un nouvel objet instance de la classe Guitare
+$g = new Guitare('Guild D120', 639, 6);
+
+htmlInfo('$g est une instance de la classe '.get_class($g));
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+
+		<h3>Invoquer des méthodes</h3>
+		<section>
+			<p class="fp-puce">
+				Lors de l'instanciation d'un classe, l'opérateur <code>new</code> renvoie la
+				<b>référence</b> (ie l'adresse) mémoire de l'objet qu'il vient de créer (exemple <code>$variable = new Classe;</code>).
+				En général, la référence renvoyée par l'opérateur <code>new</code> est affectée dans une variable qui
+				constitue une variable référence "pointant" sur l'objet créé.
+			</p>
+
+
+			<p class="fp-puce">
+				On peut ensuite utiliser cette variable pour invoquer les méthodes de l'objet avec l'opérateur <code>-&gt;</code>
+				(exemple <code>$variable->methode();</code>).
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : syntaxe de base
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+// Définition de la classe Guitare
+class Guitare {
+	// Définition des attributs
+	private $modele;
+	private $prix;
+	private $cordes;
+	private $remise = 0;
+
+	// Constructeur
+	public function __construct($p1, $p2, $p3) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+	}
+	// Méthode
+	public function setRemise($taux) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+	}
+	// Méthode
+	public function getPrix() {
+		$rem = ceil($this-&gt;prix * $this-&gt;remise / 100);
+		return $this-&gt;prix - $rem;
+	}
+	// Méthode
+	public function decrire() {
+		// Normalement il faudrait protéger les valeurs avec 
+		// htmlentities. Pas fait pour simplifier l'exemple.
+		echo '&lt;h4&gt;Instance de la classe ', __CLASS__, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;', 
+				$this-&gt;cordes, ' cordes&lt;br&gt;',
+				$this-&gt;getPrix(), ' &amp;euro;';
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('La classe Guitare');
+
+// création d'un nouvel objet instance de la classe Guitare
+$guitare = new Guitare('Guild D120', 639, 6);
+
+// Invocation de la méthode décrire
+$guitare-&gt;decrire();
+
+// Invocation de la méthode setRemise
+$guitare-&gt;setRemise(30);
+
+// Invocation de la méthode getPrix
+htmlInfo('Nouveau prix : '.$guitare-&gt;getPrix());
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+		
+		<h3>Objet et notion de référence</h3>
+		<section>
+			
+					<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : objet et notion de référence
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+// Définition de la classe Guitare
+class Guitare {
+	// Définition des attributs
+	public $prix;
+	
+	
+}// Fin de la classe Guitare	
+
+htmlDebut('La classe Guitare');
+
+$g1 = new Guitare;
+// $g1 est une référence sur l'objet instance 
+// de la classe Guitare
+$g1-&gt;prix = 500;
+
+$g2 = $g1;
+// $g2 reçoit une copie de la référence contenue dans $g1.
+// $g2 et $g1 sont 2 références pointant sur le même objet 
+// instance de la classe Guitare.
+
+$g2-&gt;prix = 1000;
+
+htmlInfo('Nouveau prix : '.$g1-&gt;prix);
+
+function fct($g){ 
+// Notez l'absence du &amp;.
+// Le paramètre $g est transmis par valeur.
+// La fonction reçoit une copie de la référence 
+// (ou de l'adresse) mémoire de l'objet.
+	$g-&gt;prix = 1500;
+}
+
+fct($g2);
+
+htmlInfo('Nouveau prix : '.$g1-&gt;prix);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+			
+			
+		</section>
+		<a id="exoClasseLivre"></a>
+		<h3 class="fp-exo">Exercice : Définir et utiliser une classe</h3>
+		<section>
+			<figure style="float: right; margin: 0 0 0 15px;">
+				<img src="../phpimg/poo_28.png" width="130" height="153">
+				<figcaption>la classe Livre</figcaption>
+			</figure>
+			<p>
+				Ecriver la classe <code>Livre</code> dont le modèle est ci-contre.
+			</p>
+
+			<p>
+				L'attribut <code>pages</code> est un nombre de pages.
+				<br>
+				L'attribut <code>cat</code> est une catégorie qui peut être "Méthode", "Partition", "Biographie" ou "Autre".
+			</p>
+			<p>
+				La méthode <code>decrire()</code> doit afficher les détails d'un livre (ie la valeur de tous les
+				attributs).
+			</p>
+
+			<p>Vous devez instancier 3 livres avec les informations suivantes :</p>
+
+			<table>
+				<tr>
+					<td>Titre</td>
+					<td>Auteur</td>
+					<td>Nb Pages</td>
+					<td>Prix</td>
+					<td>Cat.</td>
+				</tr>
+				<tr>
+					<td>Débutant Guitare Acoustique</td>
+					<td>Rébillard</td>
+					<td>70</td>
+					<td>17</td>
+					<td>Méthode</td>
+				</tr>
+				<tr>
+					<td>Les accords de guitare</td>
+					<td>Carpentier</td>
+					<td>160</td>
+					<td>4.90</td>
+					<td>Méthode</td>
+				</tr>
+				<tr>
+					<td>Guitar Play Along Neil Young</td>
+					<td>Leonard</td>
+					<td>50</td>
+					<td>21.90</td>
+					<td>Partition</td>
+				</tr>
+			</table>
+
+
+
+			<figure>
+				<img src="../phpimg/poo_29.png" width="520" height="288">
+				<figcaption>affichage du détail de 3 livres</figcaption>
+			</figure>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exoClasseLivre_solu', 1)">Une solution possible</a>
+			</p>
+
+			<div id="exoClasseLivre_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : la classe Livre
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+// Définition de la classe Livre
+class Livre {
+	// Définition des attributs
+	private $titre;
+	private $auteur;
+	private $pages;
+	private $prix;
+	private $cat;
+
+	// Constructeur
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		$this-&gt;titre = $p1;
+		$this-&gt;auteur = $p2;
+		$this-&gt;pages = $p3;
+		$this-&gt;prix = $p4;
+		$this-&gt;cat = $p5;
+	}
+	// Méthode
+	public function decrire() {
+		// Normalement il faudrait protéger les valeurs avec 
+		// htmlentities. Pas fait pour simplifier l'exemple.
+		echo '&lt;h4&gt;Instance de la classe Livre&lt;/h4&gt;',
+				$this-&gt;titre, ' - ', $this-&gt;auteur, ' - ', 
+				$this-&gt;pages, ' pages - ', 
+				$this-&gt;prix, ' &amp;euro; - ', $this-&gt;cat, '&lt;hr&gt;';
+	}
+}			// Fin de la classe Livre
+
+htmlDebut('La classe Livre');
+
+// création d'un nouvel objet instance de la classe Livre
+$livre1 = new Livre('Débutant Guitare Acoustique', 'Rébillard', 70, 17, 'Méthode');
+
+// Invocation de la méthode decrire
+$livre1-&gt;decrire();
+
+$livre2 = new Livre('Les accords de guitare', 'Carpentier', 160, 4.90, 'Méthode');
+$livre2-&gt;decrire();
+
+$livre3 = new Livre('Guitar Play Along Neil Young', 'Leonard', 50, 21.90, 'Partition');
+$livre3-&gt;decrire();
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+
+		<footer></footer>
+	</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+.fp-label {
+	display: block;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.fp-input {
+	display: block;
+	margin-bottom: 10px;
+	width: 150px;
+}
+
+.fp-submit {
+	display: block;
+	margin: 20px 0 10px 0;
+}

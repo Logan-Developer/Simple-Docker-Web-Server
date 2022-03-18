@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les dates</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+
+		<p class="fp-puce">
+			Pour les informaticiens, le temps n'est pas compté en secondes,
+			minutes, heures, jours, mois et années, mais en nombre de secondes
+			écoulées depuis le 1er janvier 1970 0h 0mn 0s (cette date arbitraire
+			est parfois appelée ére UNIX). Le nombre de secondes écoulées depuis
+			cette date est appelé <b>timestamp</b> ou parfois instant UNIX. Pour
+			les dates antérieures aux 01/01/1970 00:00:00, le timestamp est
+			négatif.
+		</p>
+		<p class="fp-remarque">Sous Windows les fonctions de dates de PHP
+			n'acceptent pas de paramètres négatifs. On ne peut donc pas y
+			travailler avec des dates antérieures au 1/1/1970.</p>
+
+		<p class="fp-puce">Le timestamp est stocké dans un entier signé de
+			32 bits, la date minimum qu'il est possible d'y stocker est le
+			vendredi 13 décembre 1901 20:45:54, et la date maximum est le mardi
+			19 janvier 2038 03:14:07 (la fin du monde pour l'ère UNIX).</p>
+		<p class="fp-puce">
+			Toutes les fonctions de calcul de dates dans PHP sont basées sur ce
+			timestamp. La fonction <a
+				href="https://www.php.net/manual/fr/function.time.php" target="_blank">time()</a>
+			renvoie le timestamp de l'instant présent.
+		</p>
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : le timestamp de l'instant
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Le timestamp de l\'instant');
+
+htmlInfo('A cet instant nous sommes le');
+echo time(),' secondes de l\'ére UNIX';
+
+htmlInfo('Nombre d\'heure depuis le 1/1/1970');
+echo round(time() / 3600);
+
+htmlInfo('Nombre de jours depuis le 1/1/1970');
+echo round(time() / 3600 / 24);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-remarque">
+			La fonction <span class="fp-code">htmlInfo()</span> est une fonction
+			qui se trouve dans la bibliothèque <span class="fp-code">bib_fonctions.php</span>
+			et qui est un facilitateur (helper) pour afficher ce que vous
+			faisions avant avec <span class="fp-code">echo '&lt;h4&gt;bla
+				bla bla&lt;/h4&gt;';</span>
+		</p>
+
+		<p>
+			Comme la valeur du timestamp n'a aucune signification directement
+			utilisable par un être humain, PHP offre plusieurs fonctions qui
+			permettent d'extraire les éléments constitutifs d'une date (année,
+			mois, jour, heure, minutes, semaine, etc.)<br> Nous étudierons
+			ici les deux fonctions les plus utilisées : <a
+				href="https://www.php.net/manual/fr/function.getdate.php" target="_blank">getdate()</a>
+			et <a
+				href="https://www.php.net/manual/fr/function.date.php" target="_blank">date()</a>.
+			Ces deux fonctions travaillent à partir du timestamp de la date à
+			traiter, et renvoient les éléments constitutifs de cette date selon
+			les paramètres d'extraction qui leurs sont passés.
+		</p>
+
+		<h3>Obtenir une date avec getdate()</h3>
+		<section>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.getdate.php" target="_blank">getdate()</a>
+				retourne un tableau associatif contenant divers éléments
+				constitutifs de la date passée en paramètre. La date passée doit
+				être un timestamp valide. En l'absence de ce paramètre, c'est le
+				timestamp "actuel" qui est utilisé par la fonction.
+			</p>
+			<p class="fp-bottom0">Le tableau associatif retourné est composé
+				des clés :</p>
+			<dl class="fp-dl-code fp-w5">
+				<dt>seconds</dt>
+				<dd>: les secondes de 0 à 59</dd>
+				<dt>minutes</dt>
+				<dd>: les minutes de 0 à 59</dd>
+				<dt>hours</dt>
+				<dd>: les heures de 0 à 23</dd>
+				<dt>mday</dt>
+				<dd>: le numéro du jour dans le mois de 1 à 31</dd>
+				<dt>wday</dt>
+				<dd>: le nom du jour de la semaine de 0 (dimanche) à 6 (samedi)</dd>
+				<dt>mon</dt>
+				<dd>: le numéro mois de 1 à 12</dd>
+				<dt>year</dt>
+				<dd>: l'année sur 4 chiffres</dd>
+				<dt>yday</dt>
+				<dd>: le jour de l'année de 1 à 366</dd>
+				<dt>weekday</dt>
+				<dd>: le nom du jour de la semaine en anglais</dd>
+				<dt>month</dt>
+				<dd>: le nom du mois en anglais</dd>
+				<dt>0</dt>
+				<dd>: le timestamp de la date</dd>
+			</dl>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : la fonction getdate()
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('La fonction getdate()');
+
+htmlInfo('getdate avec la date du jour');
+$t = getdate();
+echo '&lt;pre&gt;', print_r($t, true), '&lt;/pre&gt;';
+
+
+htmlInfo('Mise en forme des éléments');
+echo 'Nous sommes le ', $t['mday'], '-', 
+  		$t['mon'], '-', $t['year'];
+     
+echo ' et c\'est le ', $t['yday'], 'eme jour de l\'année';
+
+htmlFin();
+?&gt;</textarea>
+
+			</form>
+
+		</section>
+
+		<h3>Obtenir une date avec date()</h3>
+		<section>
+			<p class='fp-bottom0 fp-puce'>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.date.php" target="_blank">date()</a>
+				est sans doute la fonction la plus utilisée pour traiter la
+				récupération et l'affichage d'éléments de dates. Cette fonction
+				accepte deux arguments :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>une chaîne de caractères indiquant les parties de la date à
+					prendre en compte,</li>
+				<li>le timestamp de la date à traiter. En l'absence de ce paramètre, c'est le
+				timestamp "actuel" qui est utilisé par la fonction.</li>
+			</ul>
+
+			<p class="fp-puce">
+				Les nombreux élements que peut retourner la fonction <a
+					href="https://www.php.net/manual/fr/function.date.php" target="_blank">date()</a>
+				sont définis chacun par un caractère alphabétique, en minuscule ou
+				en majuscule. Nous les étudierons en 2 fois : d'abord ceux
+				premettant la mise en forme des heures, puis ceux permettant la mise
+				en forme des dates proprement dites.
+			</p>
+			<p class="fp-bottom0 fp-puce">Les caractères suivants sont
+				utilisés pour extraire les éléments concernant les heures (attention
+				à bien respecter les majucules et les minuscules) :</p>
+
+			<dl class="fp-dl-code">
+				<dt>g</dt>
+				<dd>: heure au format 2h ("1" à "12")</dd>
+				<dt>h</dt>
+				<dd>: heure au format 12h ("01" à "12")</dd>
+				<dt>G</dt>
+				<dd>: heure au format 24h ("0" à "23")</dd>
+				<dt>H</dt>
+				<dd>: heure au format 24h ("00" à "23")</dd>
+				<dt>T</dt>
+				<dd>: fuseau horaire de la machine ("MET")</dd>
+				<dt>B</dt>
+				<dd>: heure Internet Swatch</dd>
+				<dt>O</dt>
+				<dd>: différence d'heures avec Greenwich (i.e. "+0200")</dd>
+				<dt>i</dt>
+				<dd>: minutes ("00" à "59")</dd>
+				<dt>s</dt>
+				<dd>: secondes ("00" à "59")</dd>
+				<dt>a</dt>
+				<dd>: indiquera "am" (matin) ou "pm" (après-midi)</dd>
+				<dt>A</dt>
+				<dd>: indiquera "AM" (matin) ou "PM" (après-midi)</dd>
+				<dt>I</dt>
+				<dd>: "1" si l'heure d'été est activée, "0" sinon</dd>
+				<dt>U</dt>
+				<dd>: Nombre de secondes depuis le 1er Janvier 1970, 0h00 00s GMT</dd>
+				<dt>Z</dt>
+				<dd>: décalage horaire en secondes (de "-43200" à "43200")</dd>
+				<dt>r</dt>
+				<dd>: date au format RFC 822 ("Thu, 21 Dec 2000 16:01:07
+					+0200")</dd>
+			</dl>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : la fonction date() et les heures
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('La fonction date() et les heures');
+
+htmlInfo('Heure actuelle au format 00:00:00');
+echo date('H:i:s', time());
+
+htmlInfo('Heure d\'été ou heure d\'hiver');
+if (date('I', time()) == 1) {
+  echo 'Heure d\'été';
+} else {
+  echo 'Heure d\'hiver';
+}
+
+htmlInfo('Heure actuelle au format 0h 00m 00s AM');
+echo date('g\h i\m s\s A');
+
+htmlFin();
+?&gt;</textarea>
+
+			</form>
+			<p class="fp-puce fp-inter2">
+				Vous noterez que la chaîne de caractères utilisée pour extraire les
+				éléments peut contenir des caractères spéciaux et des autres
+				caractères. Les autres caractères doivent être protégés avec un \
+				pour que la fonction ne les interprète pas comme un caractère
+				d'extraction. Dans l'exemple nous avons :<br> <span
+					class="fp-code">date('g\h i\m s\s A', time());</span><br> qui
+				renvoie quelque chose comme 8h 25m 32s PM<br> <span
+					class="fp-code">date('g \h\e\u\r\e\s i \m\i\n s \s\e\c. A',
+					time());</span><br> renverrait 8 heures 25 min 32 sec PM.
+			</p>
+
+
+			<p class="fp-inter2 fp-bottom0">Les caractères suivants sont
+				utilisés pour extraire les éléments concernant les dates proprement
+				dites (attention à bien respecter les majucules et les minuscules).</p>
+			<p class="fp-bottom0 fp-puce">Pour les jours nous avons :</p>
+			<dl class="fp-dl-code">
+				<dt>d</dt>
+				<dd>: numéro du jour dans le mois sous la forme "01" à "31"</dd>
+				<dt>j</dt>
+				<dd>: numéro du jour dans le mois sous la forme "1" à "31"</dd>
+				<dt>D</dt>
+				<dd>: nom abrégé du jour de la semaine en anglais (i.e. "Fri"
+					pour Vendredi)</dd>
+				<dt>l</dt>
+				<dd>: nom complet du jour de la semaine anglais (i.e. "Friday"
+					pour Vendredi)</dd>
+				<dt>S</dt>
+				<dd>: suffixe ordinal d'un nombre, 2 lettres en anglais ("th",
+					"nd")</dd>
+				<dt>t</dt>
+				<dd>: nombre de jours dans le mois (i.e. "28" à "31")</dd>
+				<dt>w</dt>
+				<dd>: numéro du jour dans la semaine, de "0" (Dimanche) à "6"
+					(Samedi)</dd>
+				<dt>z</dt>
+				<dd>: numéro du jour dans l'année, de "0" &quot;365"</dd>
+			</dl>
+
+			<p class="fp-puce fp-bottom0">Pour les mois nous avons :</p>
+			<dl class="fp-dl-code">
+				<dt>m</dt>
+				<dd>: numéro du mois sous la forme "01" à "12"</dd>
+				<dt>n</dt>
+				<dd>: numéro du mois sous la forme "1" à "12"</dd>
+				<dt>M</dt>
+				<dd>: nom abrégé du mois en anglais (i.e. "Apr" pour Avril)</dd>
+				<dt>F</dt>
+				<dd>: nom complet du mois en anglais (i.e. "January" pour
+					Janvier)</dd>
+			</dl>
+
+			<p class="fp-puce fp-bottom0">Pour les années nous avons :</p>
+			<dl class="fp-dl-code">
+				<dt>L</dt>
+				<dd>: booléen année bissextile ("1") ou pas ("0")</dd>
+				<dt>Y</dt>
+				<dd>: année sur 4 chiffres (i.e. "1999")</dd>
+				<dt>y</dt>
+				<dd>: année sur 2 chiffres (i.e. "99")</dd>
+			</dl>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : la fonction date()
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('La fonction date()');
+
+htmlInfo('La date actuelle au format jj/mm/aaaa');
+echo date('d/m/Y', time());
+
+htmlInfo('Année bissextile ?');
+echo date('L', time()) ? 'Oui' : 'Non';
+
+htmlInfo('Nombre de jour dans le mois');
+echo date('t', time());
+
+htmlInfo('Numéro du jour dans l\'année');
+echo date('z', time()), 'éme jour de l\'année';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-puce fp-inter2">Pour afficher une date entièrement
+				en français, le plus simple est d'utiliser un tableau avec le nom
+				des jours et un tableau avec le nom des mois.</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : date en français
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('La fonction date()');
+
+// Tableau des jours
+$jours = array('dimanche', 'lundi', 'mardi', 'mercredi', 
+				'jeudi', 'vendredi', 'samedi');
+
+// tableau des mois
+$mois = array('', 'janvier', 'février', 'mars', 
+              'avril', 'mai', 'juin', 
+              'juillet', 'août', 'septembre', 
+              'octobre', 'novembre', 'décembre');
+
+// Timestamp du jour
+$t = time();
+
+echo 'Nous sommes le ',
+     $jours[date('w', $t)], ' ',
+     date('j', $t), ' ',
+     $mois[date('n', $t)], ' ',
+     date('Y', $t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Vérifier qu'une date est correcte</h3>
+		<section>
+			<p class="fp-puce">
+				PHP fournit la fonction <a
+					href="https://www.php.net/manual/fr/function.checkdate.php" target="_blank">checkdate()</a>
+				pour vérifier qu'une date est une date valide et correcte. La
+				fonction accepte comme paramètre le mois, le jour et l'année de la
+				date à vérifier, et renvoie TRUE si la date représentée est valide.
+				Les années bissextiles sont prises en compte.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : vérifier une date
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Vérifier une date');
+
+htmlInfo('Le 1/1/2000 est une date');
+if (checkdate(1, 1, 2000)) {
+	echo 'valide';
+} else {
+	echo 'invalide';
+}
+
+htmlInfo('Le 1/13/2000 est une date');
+echo checkdate(13, 1, 2000) ? 'valide' : 'invalide';
+
+htmlInfo('Le 29/2/2004 est une date');
+echo checkdate(2, "29", 2004) ? 'valide' : 'invalide';
+
+htmlInfo('Le 29/2/2100 est une date');
+echo checkdate(2, 29, 2100) ? 'valide' : 'invalide';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

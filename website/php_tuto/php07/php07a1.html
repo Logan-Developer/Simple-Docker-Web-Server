@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Présentation de MySQL</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			MySQL est un <b>serveur</b> de base de données SQL (Structured Query
+			Language). Il s'agit d'une application <b>client-serveur</b>.<br>Le
+			serveur héberge plusieurs bases de données, gére les accès et les
+			requêtes des clients.<br>Les clients envoient des demandes sous
+			forme de requêtes SQL et reçoivent en retour les données stockées sur
+			le serveur.
+		</p>
+
+		<p>Dans notre cas, les clients sont les scripts PHP qui avec des
+			fonctions dédiées vont établir un dialogue et communiquer avec le
+			serveur MySQL.</p>
+
+		<p class="fp-puce fp-bottom0">On travaille dans un environnement 3
+			tiers, avec en pivot le serveur Web qui a en quelque sorte un double
+			rôle de serveur ET de client :</p>
+		<ul class="fp-ul-puce">
+			<li>le serveur Web est le serveur du client navigateur
+				(l'utilisateur humain)</li>
+			<li>le serveur Web est le client du serveur de bases de données.</li>
+		</ul>
+
+		<figure>
+			<img src="../phpimg/architroistiers.png" width="584" height="356">
+			<figcaption>architecture client-serveur 3 tiers</figcaption>
+		</figure>
+
+		<p class="fp-remarque">Le fait qu'il y ait 2 serveurs (1 serveur
+			Web et 1 serveur de bases de données) n'implique pas que l'on doive
+			utiliser 2 ordinateurs. Les 2 logiciels serveur (Apache ou IIS et
+			MySQL) peuvent très bien cohabiter sur le même ordinateur car ils n'utilisent
+			pas les mêmes numéros de port  : le serveur Web utilise les ports 80 (HTTP) et/ou 443 (HTTPS),
+			et le serveur MySQL utilise par défaut le port 3306.</p>
+
+		<p class="fp-puce">
+			Vous trouverez la description des principales caractéristiques
+			techniques de MySQL sur <a
+				href="https://dev.mysql.com/doc/refman/5.7/en/introduction.html"
+				target="_blank">https://dev.mysql.com/doc/refman/5.7/en/introduction.html</a>
+			et dans cet <a href="http://fr.wikipedia.org/wiki/MySQL"
+				target="_blank">article de wikipedia</a>.
+		</p>
+
+		<h3>Les utilisateurs du serveur MySQL</h3>
+		<section>
+			<p class="fp-puce fp-bottom0">On considère que le langage SQL
+				permet de faire 2 sortes de requêtes sur une base de données :</p>
+			<ul class="fp-ul-puce">
+				<li>des requêtes de définition de données (<span
+					class="fp-code">CREATE DATABASE</span>, <span class="fp-code">CREATE
+						TABLE</span>, <span class="fp-code">CREATE INDEX</span>, <span
+					class="fp-code">GRANT</span>, <span class="fp-code">ALTER
+						TABLE</span>, <span class="fp-code">DROP TABLE</span>, etc)
+				</li>
+				<li>des requêtes de manipulation de données (<span
+					class="fp-code">SELECT</span>, <span class="fp-code">INSERT</span>,
+					<span class="fp-code">UPDATE</span>, <span class="fp-code">DELETE</span>).
+				</li>
+			</ul>
+
+			<p class="fp-puce">Pour des raisons évidentes de sécurité il est
+				totalement exclu qu'un script PHP déclenchable depuis Internet par
+				une personne lambda puisse effectuer des requêtes de définition de
+				données sur la base de données de l'application, et encore moins sur
+				les autres bases de données hébergées par le serveur MySQL.</p>
+
+
+			<table>
+				<tr>
+					<td><img src="../phpimg/user_mysql_1.png" width="296"
+						height="360">
+						<p class="fp-rond fp-f-left" style="margin-right: 10px;">1</p>
+						<p>Un serveur MySQL est administré par un utilisateur
+							privilégié ("root") qui a tous les droits sur toutes les bases et
+							tous les autres utilisateurs du serveur.</p></td>
+					<td><img src="../phpimg/user_mysql_2.png" width="296"
+						height="360">
+						<p class="fp-rond fp-f-left" style="margin-right: 10px;">2</p>
+						<p>L'utilisateur privilégié ("root") va créer la base de
+							données de l'application et un utilisateur gestionnaire de cette
+							base de données. Cet utilisateur gestionnaire aura tous les
+							droits sur la base de l'application.</p></td>
+				</tr>
+				<tr>
+					<td colspan="2"><img src="../phpimg/user_mysql_3.png"
+						width="590" height="380">
+						<p class="fp-rond fp-f-left" style="margin-right: 10px;">3</p>
+						<p>L'utilisateur gestionnaire de la base de l'application va
+							créer la structure interne de la base (tables, index). Il va
+							créer aussi un utilisateur "Web" qui aura des droits réduits
+							(SELECT, INSERT, UPDATE, DELETE) sur la base (voir sur certaines
+							tables uniquement). C'est cet utilisateur qui sera employé pour
+							faire toutes les requêtes de l'application depuis PHP.</p></td>
+				</tr>
+			</table>
+		</section>
+
+		<h3>Principales requêtes utilisées</h3>
+		<section>
+			<p>
+				La manipulation des données à l'intérieur des tables (sélection,
+				suppression, mise à jour...) sont effectuées avec les requêtes
+				suivantes : <span class="fp-code">SELECT</span>, <span
+					class="fp-code">INSERT</span>, <span class="fp-code">UPDATE</span>
+				et <span class="fp-code">DELETE</span>
+			</p>
+
+			<p class="fp-remarque">
+				Pour une liste exhaustive des différentes clauses possibles, voir la
+				<a
+					href="https://dev.mysql.com/doc/refman/5.7/en/sql-syntax-data-manipulation.html" target="_blank">documentation
+					officielle</a>.
+			</p>
+
+			<p id="3_1" class="fp-puce">
+				<b>SELECT</b> : sélectionne et extrait des enregistrements contenus
+				dans les tables suivant certaines conditions. C'est la requête la
+				plus souvent employée. <br>
+				Vous devez utiliser au maximum les possibilités 
+				du langage SQL, et notamment les jointures, pour <b>limiter le nombre de 
+				requêtes envoyées au  serveur MySQL</b> : une seule requête (même un peu longue) sera toujours traitée plus rapidement 
+				que plusieurs petites requêtes. En particulier, il faut essayer d'éviter d'envoyer des requêtes 
+				à l'intérieur d'une boucle.
+			</p>
+			<pre>
+SELECT liste_colonnes
+[FROM liste_tables]
+[WHERE expression_where]
+[GROUP BY liste_colonnes]
+[HAVING expression_where]
+[ORDER BY {num_colonne | liste_colonnes | formule} 
+			[ASC | DESC] , ...]
+[LIMIT [offset, ] nombre]</pre>
+
+			<ul class="fp-ul-puce">
+				<li><span class="fp-code">liste_colonnes</span> définit les
+					colonnes à extraire, séparés par des virgules. <span
+					class="fp-code">*</span> désigne toutes les colonnes des tables
+					spécifiées dans la clause <span class="fp-code">FROM</span>.</li>
+				<li><span class="fp-code">FROM</span> : définit la ou les
+					tables (<span class="fp-code">liste_tables</span>) dans lequelles
+					seront sélectionnées les données.</li>
+				<li><span class="fp-code">WHERE</span> : définit une
+					restriction dans les données sélectionnées et / ou une jointure sur
+					les tables.</li>
+				<li><span class="fp-code">GROUP BY</span> : regroupe les
+					résultats dans l'ordre des colonnes spécifiées par <span
+					class="fp-code">liste_colonnes</span>.</li>
+				<li><span class="fp-code">HAVING</span> : définit une
+					restriction secondaire sur les lignes satisfaisant aux conditions
+					de la clause <span class="fp-code">WHERE</span>.</li>
+				<li><span class="fp-code">ORDER BY</span> : définit la méthode
+					de tri du résultat. <span class="fp-code">ASC</span> (défaut)
+					définit un ordre croissant, <span class="fp-code">DESC</span> un
+					ordre décroissant.</li>
+				<li><span class="fp-code">LIMIT</span> : sert à sélectionner un
+					intervalle de lignes dans le résultat. <span class="fp-code">LIMIT</span>
+					<span class="fp-code">n</span> renverra les <span class="fp-code">n</span>
+					premières lignes correspondantes. <span class="fp-code">LIMIT</span>
+					<span class="fp-code">m</span>, <span class="fp-code">n</span>
+					retourne <span class="fp-code">n</span> lignes en commençant par
+					l'enregistrement numéro <span class="fp-code">m</span>. Les lignes
+					sont numérotées à partir de 0.</li>
+			</ul>
+
+			<p id="3_2" class="fp-puce">
+				<b>INSERT</b> : insère des lignes dans la table <span
+					class="fp-code">nom_table</span>
+			</p>
+			<pre>
+INSERT [INTO] nom_table 
+[(liste_colonnes)] VALUES (expression [, expression] ...)
+</pre>
+			<pre>
+INSERT [INTO] nom_table 
+SET nom_colonne=expression [, nom_colonne=expression]</pre>
+			<pre>
+INSERT [INTO] nom_table [(liste_colonnes)] SELECT...</pre>
+
+
+			<p id="3_4" class="fp-puce">
+				<b>UPDATE</b> modifie le contenu des champs des enregistrements de
+				la table <span class="fp-code">nom_table</span>. Les enregistrements
+				modifiés sont définis par la clause <span class="fp-code">WHERE</span>.
+			</p>
+			<pre>
+UPDATE nom_table 
+SET nom_colonne=expression [, nom_colonne=expression ] ... 
+[WHERE expression_where] 
+[LIMIT n]</pre>
+			<ul class="fp-ul-puce">
+				<li>Les colonnes désignées dans la clause <span class="fp-code">SET</span>
+					sont mise à jour avec la valeur indiquée. Si aucune clause <span
+					class="fp-code">WHERE</span> n'est spécifiée, tous les
+					enregistrements sont mis à jour.
+				</li>
+				<li>Si <span class="fp-code">LIMIT</span> est spécifié, seuls
+					les <span class="fp-code">n</span> premiers enregistrements seront
+					modifiés.
+				</li>
+			</ul>
+
+			<p id="3_5" class="fp-puce">
+				<b>DELETE</b> supprime les enregistrements de la table <span
+					class="fp-code">nom_table</span> définis par la clause <span
+					class="fp-code">WHERE</span>..
+			</p>
+			<pre>
+DELETE FROM nom_table 
+[WHERE condition] 
+[LIMIT n]</pre>
+
+			<ul class="fp-ul-puce">
+				<li>Sans clause <span class="fp-code">WHERE</span> spécifique,
+					toutes les données de la table sont supprimées.
+				</li>
+				<li>Si <span class="fp-code">LIMIT</span> est spécifié, seuls
+					les <span class="fp-code">n</span> premiers enregistrements seront
+					supprimés.
+				</li>
+			</ul>
+		</section>
+
+		<h3>MySQL et PHP</h3>
+
+		<p class="fp-puce">Le code PHP est constitué d'un noyau qui peut
+			être étendu avec des extensions optionnelles. Pour travailler avec
+			des systèmes de bases données (MySql, Oracle, MS SQL, DB2,
+			PostgreSQL, etc) PHP va donc utiliser des extensions, écrites
+			spécifiquement pour dialoguer avec tel ou tel SGBD.</p>
+
+		<p class="fp-puce">
+			Pour MySQL il existe 2 extensions : <b>mysql</b> et <b>mysqli</b>.
+			L'extension mysql est la plus ancienne et a été dépréciée dans les
+			versions récentes de PHP. On lui préfère maintenant l'extension <a
+				href="https://www.php.net/manual/fr/mysqli.summary.php" target="_blank">mysqli</a>
+			(i pour improve - améliorée).
+		</p>
+
+		<p class="fp-puce fp-bottom0">L'extension <a
+				href="https://www.php.net/manual/fr/mysqli.summary.php" target="_blank">mysqli</a> a la
+			particularité d'être déclinée en 2 versions (ie 2 interfaces):</p>
+		<ul class="fp-ul-puce">
+			<li>une version orientée objet qui va utiliser principalement 3
+				objets (1 objet pour la connexion et l'envoi de requête, 1 objet
+				pour travailler avec des requêtes préparées et 1 objet pour le
+				traitement des résultats d'un SELECT),</li>
+			<li>une version orientée procédural avec laquelle tous les
+				traitements sont fait par l'appel de fonctions.</li>
+		</ul>
+		<!-- 
+book.mysqli.html
+mysqli.quickstart.html
+mysqli.quickstart.dual-interface.html
+mysqli.summary.html
+-->
+		<p>Dans notre cas, nous travaillerons avec la version procédurale
+			car l'étude de la programmation objet avec PHP sera vue plus loin dans ce tutoriel.</p>
+
+		<a id="BD_test"></a>
+		<h3>Base de données de test</h3>
+		<section>
+			<p>
+				Dans les pages suivantes nous allons utiliser une base de données
+				sur laquelle porteront nos exemples. Cette base de données s'appelle
+				<span class="fp-code">php_tuto</span> et elle est composée de 4
+				tables stockant des informations sur des livres, leurs auteurs et
+				leurs éditeurs.
+			</p>
+			<p class="fp-remarque">Ces livres ne constituent en aucune sorte
+				des références que je vous conseille. Ils sont simplement là pour
+				que nous ayons des données à traiter.</p>
+
+			<p>Cette base de données est ultra simpliste pour ne pas
+				compliquer les requêtes que l'on va y faire, le but de ce tutoriel
+				n'étant pas l'étude de SQL. Le schéma relationnel est le suivant :
+			<p>
+			<p class="fp-t-center"></p>
+
+			<figure>
+				<img src="../phpimg/php_tuto_bd.png" width="359" height="356">
+				<figcaption>schéma de la base de données
+					php_tuto</figcaption>
+			</figure>
+
+
+
+			<p>Les noms des tables et des champs sont suffisamment parlant
+				pour qu'ils se passent de commentaires.</p>
+			<p>
+				Si vous travaillez sur votre ordinateur personnel il faut <a
+					onclick="top.FP.Voir.showPLUS('exemple/initbase.php')">créer
+					cette base de données</a> pour que les tests et exemples soient
+				réalisables.
+			</p>
+
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

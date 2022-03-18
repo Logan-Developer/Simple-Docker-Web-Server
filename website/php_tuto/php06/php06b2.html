@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Redirection</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+
+		<p class="fp-puce">La redirection de page est souvent utilisée
+			dans le développement pour résoudre des cas spécifiques de
+			traitement. Rédiriger une page consiste à ne pas renvoyer au client
+			la page qu'il a demandé initialement.</p>
+		<p class="fp-puce">
+			Un exemple typique est un traitement de login. Le formulaire est
+			gèré/affiché par le script/page <span class="fp-code">login.php</span>
+			et envoyé au script/page <span class="fp-code">accueil.php</span>. Si
+			le login n'est pas correct on ne doit pas envoyer <span
+				class="fp-code">accueil.php</span>, mais renvoyer à nouveau <span
+				class="fp-code">login.php</span>. On va donc faire une redirection
+			vers <span class="fp-code">login.php</span>.
+		</p>
+		<figure>
+			<img src="../phpimg/redirection.png" width="580" height="206">
+			<figcaption>redirection</figcaption>
+		</figure>
+
+
+		<p class="fp-bottom0 fp-puce">
+			Les instructions de redirection se trouvent <b>dans l'en-tête
+				HTTP</b> envoyée au navigateur. Le principe est le suivant :
+		</p>
+		<ul class="fp-ul-puce">
+			<li>le navigateur demande une page,</li>
+			<li>le serveur (PHP) envoie un en-tête HTTP de redirection,</li>
+			<li>le navigateur demande la nouvelle page,</li>
+			<li>le serveur envoie cette page.</li>
+		</ul>
+
+		<p class="fp-puce">
+			PHP fournit la fonction <a
+				href="https://www.php.net/manual/fr/function.header.php" target="_blank">header()</a>
+			pour générer des en-têtes HTTP et les envoyer au client. L'en-tête
+			qui gére les redirections s'appelle <span class="fp-code">Location</span>
+			et a comme valeur l'URL de la page sur laquelle on redirige le
+			navigateur, par exemple :<br> <span class="fp-code">Location:
+				test_divers/accueil.html</span><br> va rediriger le navigateur sur la page
+			accueil.html du répertoire test_divers.
+		</p>
+
+		<p>Dans l'exemple suivant, si le mot de passe est "piat",
+			l'utilisateur a bien accès à la page d'accueil. Sinon il est redirigé
+			vers la page de login.</p>
+
+		<p>
+			<b>Code de la page <span class="fp-code">login.php</span></b>
+		</p>
+		<pre data-code="PHP_HTML">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Login');
+
+if (isset($_GET['err'])) {
+	echo '&lt;h4&gt;Login incorrect&lt;/h4&gt;';
+}
+
+echo '&lt;form method="post" action="accueil.php"&gt;',
+	'&lt;label&gt;Login&lt;/label&gt;',
+	'&lt;input type="text" name="txtLogin"&gt;',
+	'&lt;label&gt;Mot de passe&lt;/label&gt;',
+	'&lt;input type="password" name="txtPasse"&gt;',
+	'&lt;input type="submit" name="btnSub" value="Ok"&gt;',
+	'&lt;/form&gt;';
+
+htmlFin();
+?&gt;</pre>
+
+		<p class="fp-inter2">
+			<b>Code de la page <span class="fp-code">accueil.php</span></b>
+		</p>
+		<pre data-code="PHP_HTML">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Accueil');
+
+if ($_POST['txtPasse'] != 'piat') {
+	header('Location: login.php?err=1');
+	exit();
+}
+
+htmlInfo('Page d\'accueil');
+
+htmlFin();
+?&gt;</pre>
+
+		<p class="fp-inter2">
+			<a onclick="top.FP.Voir.testCode(-1, 'login.php')">Tester
+				l'exemple</a>
+		</p>
+
+		<p>
+			Le code de la page <span class="fp-code">accueil.php</span> est bien
+			sûr limité pour ne pas complexifier l'exemple. Ce qui est important
+			c'est la redirection :
+		</p>
+		<pre data-code="PHP_HTML">
+if ($_POST['txtPasse'] != 'piat') {
+	header('Location: login.php?err=1');
+	exit();
+}
+?&gt;</pre>
+		<p class=fp-puce>
+			Notez que l'appel de la fonction <a
+				href="https://www.php.net/manual/fr/function.header.php" target="_blank">header()</a>
+			dans le cas spécifique d'une redirection <b>DOIT</b> être suivi
+			immédiatement de la sortie du script avec <a
+				href="https://www.php.net/manual/fr/function.exit.php" target="_blank">exit</a>.
+			Si ce n'est pas le cas, le reste du script s'exécutera normalement,
+			avec par exemple toutes les mises à jour éventuelles de base de
+			données.
+		</p>
+
+		<p>
+			Il est particulièrement important de comprendre que <span
+				class="fp-code">header('Location: login.php?err=1');</span> n'arrête
+			pas le script, mais envoie "simplement" un en-tête HTTP.
+		</p>
+
+		<p class="fp-inter2 fp-puce">
+			Suivant la façon dont est configuré PHP, le script précédent peut ne
+			pas s'exécuter correctement et provoquer l'erreur <span
+				class="fp-code">Cannot modify header information - headers
+				already sent</span>.
+		<p>L'affichage de ce message d'erreur vient de la façon dont sont
+			construits les messages HTTP : les en-têtes doivent se trouver au
+			début du message et pas dans le corps du message, constitué des
+			sorties d'affichage (ie echo ou print) que fait le script.</p>
+		<p class="fp-bottom0">Pour éviter ce problème, il y a 3 solutions
+			:</p>
+		<ul class="fp-ul-puce">
+			<li>configurer PHP avec l'option <span class="fp-code">output_buffering</span>
+				à <span class="fp-code">ON</span>. Souvent impossible car on n'a pas
+				accès à la configuration du serveur.
+			</li>
+			<li>avoir une grande rigueur et toujours envoyer les en-têtes
+				avant quelque autre sortie que ce soit. Trop hasardeux : le
+				développeur n'est pas toujours strict, le développement ne peut pas
+				toujours être adapté.</li>
+			<li>utiliser les fonctions de buffering comme nous allons le
+				voir dans les pages suiavantes.</li>
+		</ul>
+
+		<a id="rediriger"></a>
+		<h3 class="fp-exo">Exercice : rediriger une page</h3>
+		<section>
+			<p>A partir du formulaire suivant :
+			<form>
+				<p>
+					Login <input type="text"> <input type="button" value="OK">
+				</p>
+			</form>
+			<p>écrivez le script qui permet de rediriger l'utilisateur vers
+				la page accesA.html si le login saisi commence par a ou vers la page
+				accesB.html si le login saisi commence par b. Dans tous les autres
+				cas, affichez un message d'erreur et représenter le formulaire.</p>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('rediriger_solu', 1)">Une
+					solution possible</a>
+			</p>
+
+			<div id="rediriger_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_06.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : rediriger une page
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+$erreur = '';
+
+//--- Si soumission test redirection ----------------
+if (isset($_POST['btnOk'])) {
+	$debut = substr($_POST['txtLogin'], 0, 1);
+	if ($debut == 'a') {
+		header('Location: accesA.html');
+		exit();
+	} elseif ($debut == 'b') {
+		header('Location: accesB.html');
+		exit();
+	} else { 
+		$erreur = 'Mauvais login';
+	}
+}
+
+//--- Affichage page HTML ---------------------------
+htmlDebut('Redirection');
+
+if ($erreur != '') {
+	htmlInfo($erreur);
+}
+
+echo '&lt;form method="post" action="', $_SERVER['PHP_SELF'], '"&gt;',
+	'Login &lt;input type="text" name="txtLogin"&gt;',
+	'&lt;input type="submit" name="btnOk" value="OK"&gt;',
+	'&lt;/form&gt;';
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

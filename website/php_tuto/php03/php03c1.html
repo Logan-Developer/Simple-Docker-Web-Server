@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Protection des chaînes</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p class="fp-bottom0 fp-puce">Nous travaillons dans plusieurs
+			"univers" différents :</p>
+		<ul class="fp-ul-puce">
+			<li>client : un navigateur qui ne parle que HTML</li>
+			<li>serveur : PHP qui effectue des traitements</li>
+			<li>base de données : des informations accessibles avec SQL.</li>
+			<li>url : des adresses sur le réseau
+		</ul>
+		<p class="fp-puce">
+			Les chaînes de caractères doivent souvent être codées ou décodées
+			pour satisfaire aux exigences des différents langages en ce qui
+			concerne la syntaxe et les caractères réservés.<br> Par exemple,
+			les signes &gt; et &lt; doivent être <span class="fp-code">&amp;gt;</span>
+			et <span class="fp-code">&amp;lt;</span> dans HTML pour être
+			interprété correctement. Un espace dans une adresse URL soit être
+			codé <span class="fp-code">%20</span>. Les guillemets simples, les
+			guillemets double et les backslashes doivent être protégés dans une
+			requêtes SQL.<br> PHP propose donc des fonctions pour nous
+			permettre de travailler facilement avec les chaînes de caractères
+			dans des environnement spécifiques.
+		</p>
+
+		<h3>Caractères spéciaux dans HTML</h3>
+		<section>
+			<p class="fp-puce">Quand vous envoyez une chaîne au navigateur
+				pour qu'il en fasse l'affichage (nous parlons ici d'une chaîne
+				simple qui ne contient pas intentionnellement des tags HTML), il
+				faut encoder les caractères spéciaux du langage HTML (&lt;, &gt;,
+				&amp;, ...) pour qu'ils ne soient pas interprétés comme éléments du
+				langage, mais traités comme des éléments de texte.</p>
+			<p class="fp-puce fp-bottom0">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.htmlspecialchars.php" target="_blank">htmlspecialchars()</a>
+				remplace le minimum de caractères spéciaux d'une chaîne par leur
+				entité HTML :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>&amp; devient <span class="fp-code">&amp;amp;</span></li>
+				<li>&lt; devient <span class="fp-code">$lt;</span></li>
+				<li>&gt; devient <span class="fp-code">&amp;gt;</span></li>
+				<li>&quot; devient <span class="fp-code">&amp;quot;</span></li>
+			</ul>
+
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.htmlentities.php" target="_blank">htmlentities()</a>
+				remplace aussi ces caractères, mais également tous les caractères
+				accentués.
+			</p>
+
+			<p class="fp-puce">Le premier paramètre à passer à ces 2
+				fonctions est la chaîne de caractères à modifier.</p>
+			<p class="fp-puce fp-bottom0">
+				Viennent ensuite 2 paramètres à positionner surtout si la chaîne
+				n'est pas composée de caractères en ISO-8859-1 (les caractères des
+				alphabets occidentaux - cf français).<br>Par exemple, si les
+				chaînes que vous voulez afficher sont encodées en UTF-8, il faut
+				utiliser :
+			</p>
+			<pre data-code="PHP">htmlspecialchars($chaine, ENT_QUOTES, 'UTF-8');
+htmlentities($chaine, ENT_QUOTES, 'UTF-8');</pre>
+
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_02.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : codage HTML
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Codage HTML');
+
+echo 'Affichez le code source de la page pour voir les 
+		tranformations effectuées par PHP.';
+
+$x = '&lt; &gt; &amp; &quot; é è à ç &ugrave;';
+
+echo &quot;\n&lt;p&gt;Avec htmlspecialchars \n&quot;, 
+		htmlspecialchars($x, ENT_QUOTES, 'iso-8859-1');
+
+echo &quot;\n&lt;p&gt;Avec htmlentities \n&quot;, 
+		htmlentities($x, ENT_QUOTES, 'iso-8859-1');
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+
+		<h3>Enlever les tags HTML</h3>
+		<section>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.strip-tags.php" target="_blank">strip_tags()</a>
+				permet d'<b>enlever les tags HTML contenus dans une chaîne</b>.
+				Cette fonction peut être utilisée pour protéger vos sites si vous
+				permettez par exemple que les utilisateurs saisissent des
+				commentaires. Un utilisateur pourrait saisir des tags HTML dans ses
+				commentaires (en particulier un tag <span class="fp-code">&lt;script&gt;</span>
+				et du code JavaScript) qui seraient ensuite interprétés quand
+				d'autres utilisateurs liraient les commentaires.
+			</p>
+
+			<p>L'exemple suivant montre un texte contenant un tel type de
+				code, et ensuite affiché dans la page</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_02.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : supprimer les tags HTML
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Supprimer les tags HTML');
+
+$x = 'Texte saisi par un internaute avec une redirection 
+		automatique sur un site prirate &lt;script&gt;
+  		location="http://univ-fcomte.fr"&lt;/script&gt;';
+
+echo $x;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				L'utilisation de <a
+					href="https://www.php.net/manual/fr/function.strip-tags.php" target="_blank">strip_tags()</a>
+				permet d'éviter cette redirection (qui est un amusement par rapport
+				à ce qui peut être fait).
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_02.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : supprimer les tags HTML
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Supprimer les tags HTML');
+
+$x = 'Texte saisi par un internaute avec une redirection 
+		automatique sur un site prirate &lt;script&gt;
+  		location="http://univ-fcomte.fr"&lt;/script&gt;';
+
+echo strip_tags($x);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Meta tags</h3>
+		<section>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.get-meta-tags.php" target="_blank">get_meta_tags()</a>
+				renvoie <b>un tableau contenant les tags meta d'une page HTML</b>.
+				Cette fonction peut être utilisée par exemple pour indexer un site,
+				ou donner des informations sur des pages HTML.
+			</p>
+			<p>
+				Soit la page HTML suivante (<span class="fp-code">test_meta.html</span>
+				dans le <a
+					onclick="top.FP.Voir.showPLUS('exemple/gestionrepert.php')">dossier
+					"test"</a>) :
+			</p>
+			<pre data-code="PHP_HTML">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+	&lt;head&gt;
+		&lt;title&gt;Page de test&lt;/title&gt;
+		&lt;meta name="keywords" content="test, php, fonction"&gt;
+		&lt;meta name="description"
+			content="Page de test de la fonction get_meta_tags"&gt;
+		&lt;meta name="author" content="François Piat"&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		Page de test pour la récupération des meta-tags
+	&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+			<p>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.get-meta-tags.php" target="_blank">get_meta_tags()</a>
+				renverra le tableau suivant :
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_02.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : meta-tags
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('meta-tags');
+
+$t = get_meta_tags('test_meta.html');
+
+echo '&lt;pre&gt;';
+
+print_r($t);
+
+echo '&lt;/pre&gt;';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Les caractères dans SQL</h3>
+		<section>
+			<p class="fp-puce">La plupart des bases de données demandent que
+				dans les données qui leurs sont envoyées, les guillemets doubles ou
+				simples, et les backslashes soient protégés par un backslash.
+			<p class="fp-bottom0">Par exemple, pour mettre le texte "C'est un
+				texte &quot;à problème&quot;" dans un INSERT, nous emploierons la
+				syntaxe suivante :</p>
+			<pre class="fp-top0">
+INSERT INTO latable (leChamp)
+       VALUES ('C<span class="fp-code fp-rouge">\'</span>est un texte <span
+					class="fp-code fp-rouge">\&quot;</span>à problème<span
+					class="fp-code fp-rouge">\&quot;</span>')</pre>
+			<p class="fp-puce">
+				PHP fournit la fonction <a
+					href="https://www.php.net/manual/fr/function.addslashes.php" target="_blank">addslashes()</a>
+				pour effectuer le travail à notre place.<br> Pour enlever les
+				backslashes de protection, nous pouvons utiliser la fonction <a
+					href="https://www.php.net/manual/fr/function.stripslashes.php" target="_blank">stripslashes()</a>
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_02.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : protéger les guillemets
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Protéger les guillemets');
+
+$nom = "Scarlett O'Hara";
+$texte = 'est un nom "à problème"';
+
+echo "&lt;h4&gt;Textes de test&lt;/h4&gt; $nom $texte";
+
+echo '&lt;h4&gt;Ajout de backslashes&lt;/h4&gt;';
+$nom = addslashes($nom);
+$texte = addslashes($texte);
+echo "$nom $texte";
+
+echo '&lt;h4&gt;Suppression de backslashes&lt;/h4&gt;';
+$nom = stripslashes($nom);
+$texte = stripslashes($texte);
+echo "$nom $texte";
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Nous verrons plus en détail dans le chapitre consacré à MySQL
+				comment rendre ses protections plus efficaces, en particulier avec
+				l'utilisation de la fonction dédiée <a
+					href="https://www.php.net/manual/fr/mysqli.real-escape-string.php" target="_blank">mysqli_real_escape_string</a>.
+			</p>
+		</section>
+
+
+	</div>
+	<footer></footer>
+</body>
+</html>

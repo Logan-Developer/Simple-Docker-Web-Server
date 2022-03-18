@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les expressions régulières</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<p class="fp-puce">
+			Il arrive souvent que l'on travaille sur des chaînes de caractères
+			complexes, et que les fonctions fournies par PHP pour découper,
+			extraire, comparer les chaînes ne soient pas suffisantes.<br>
+			Une opération de recherche et de remplacement classique demande que
+			l'on connaisse le texte exact correspondant à la recherche ou à la
+			vérification à effectuer. Cela peut être suffisant pour des
+			opérations de recherche et de remplacement simples dans du texte
+			statique, mais très difficile, voire impossible, avec un texte
+			compliqué ou un texte dynamique. On peut alors utiliser les <b>mécanismes
+				des expressions régulières</b> (aussi appelées expressions
+			rationnelles).
+		</p>
+		<p class="fp-puce fp-bottom0">
+			Une expression régulière permet de <b>définir un modèle général</b>
+			(ou motif) et de comparer une chaîne de caractères à ce modèle. On
+			pourra ainsi par exemple :
+		</p>
+		<ul class="fp-ul-puce">
+			<li><b>déterminer</b> si une chaîne est <b>conforme à un
+					modèle</b> (par exemple une adresse email, un nombre avec 4 décimales,
+				un numéro de carte de crédit, etc),</li>
+			<li><b>extraire des parties</b> de la chaîne conformes au
+				modèle,</li>
+			<li><b>découper une chaîne</b> suivant un modèle complexe (par
+				exemple les differentes parties d'un texte selon des caractères de
+				ponctuation variés),</li>
+			<li><b>remplacer les instances du modèle</b> par d'autres
+				caractères (par exemple mettre le premier caractère de tous les mots
+				d'une chaîne en minsucule).</li>
+		</ul>
+
+		<p class="fp-puce">
+			La <b>complexité des modèles</b> varie de la <b>simplicité</b>
+			évidente aux <b>combinaisons</b> les plus raffinées. Un modèle
+			pourrait être par exemple de rechercher si une chaîne commence par A
+			ou par B, suivi de 5 à 7 chiffres et se terminant par x ou w. Un
+			autre modèle pourrait permettre la recherche de l'adjectif 'bon', à
+			l'exclusion des mots contenant ces 3 lettres ('bonjour', 'bondir',
+			'bonbon' ...) mais en prenant les déclinaisons de l'adjectif ('bons',
+			'bonne', 'bonnes', ..). Bien sûr, sans les expressions régulières,
+			ces traitements seraient quand même possibles, mais au prix de
+			l'écriture d'un algorithme de traitement plus ou moins compliqué et
+			plus ou moins sûr.
+		</p>
+
+		<p class="fp-puce">
+			PHP permet de travailler avec <b>2 mécanismes</b> d'expressions
+			régulières : les expressions régulières <b>POSIX</b> et les
+			expressions régulières <b>PCRE</b> (Perl Compatible Regular
+			Expression).<br> Les expressions régulières POSIX sont obsolètes
+			et on utilise maintenant les expressions régulières PCRE. Ce chapitre
+			parle donc uniquement des <b>expressions régulières de type PCRE</b>
+			(les spécifications techniques sont consultables sur <a
+				href="http://www.pcre.org/pcre.txt" target="_blank">http://www.pcre.org/pcre.txt</a>).
+		</p>
+		<p class="fp-remarque">Les explications contenues dans les
+			premières pages de ce chapitre sont valables pour toutes les
+			implémentations des expressions régulières, que ce soit dans des
+			langages comme PHP, Java, C++, Perl, JavaScript, ou que ce soit dans
+			des systèmes comme Unix ou Linux avec des outils comme grep, sed, awk
+			ou vi.</p>
+
+		<h3>Syntaxe générale d'une expression régulière</h3>
+		<section>
+
+			<figure>
+				<img src="../phpimg/regexp.png" width="331" height="154">
+				<figcaption>syntaxe d'une expression régulière</figcaption>
+			</figure>
+
+			<p class="fp-puce">
+				Une expression régulière est un <b>modèle de texte</b> (ou motif)
+				constitué de <b>caractères ordinaires</b> (par exemple les lettres
+				de a à z, ou les nombres de 1 à 9) et de <b>caractères spéciaux</b>,
+				appelés métacaractères.
+			</p>
+			<p class="fp-puce">
+				La construction d'expressions régulières est similaire à celles des
+				expressions arithmétiques : divers métacaractères et opérateurs
+				peuvent <b>combiner</b> des petites expressions pour en créer des
+				plus grandes.
+			</p>
+			<p class="fp-puce">
+				Le modèle défini par l'expression régulière doit être entouré de <b>délimiteurs</b>.
+				N'importe quel caractère peut être utilisé comme délimiteurs, mais
+				les délimiteurs les plus couramment employés sont /, # ou ~.
+			</p>
+			<p class="fp-puce">
+				Le délimiteur de fin peut être suivi d'<b>options</b>.
+			</p>
+
+
+
+			<p class="fp-remarque">
+				Pour tester les exemples nous utiliserons la fonction <span
+					class="fp-code">testerExp()</span> qui se trouve dans notre
+				bibliothéque <span class="fp-code">bib_fonctions.php</span>. Cette
+				fonction est faite pour que nous ayons un retour visuel sur les
+				expressions régulières testées.
+			</p>
+
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : expression régulière simple
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Expression régulière');
+
+$txt = "Il y a bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+htmlInfo('Recherche "il"');
+testerExp('/il/', $txt);
+
+htmlInfo('Recherche "Il"');
+testerExp('/Il/', $txt);
+
+htmlInfo('Recherche "il", "Il", "iL" et "IL"');
+testerExp('/il/i', $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2">
+				Le code de la fonction <span class="fp-code">testerExp()</span>.
+			</p>
+			<pre data-code="PHP">
+/**
+ * Test et affichage du résultat d'une expression régulière
+ *
+ * @param string	$exp	Expression régulière
+ * @param string	$txt	Texte sur lequel appliquer l'expression
+ */
+function testerExp($exp, $txt) {
+	// on découpe le texte suivant l'expression régulière
+	$t = preg_split($exp, $txt);
+
+	// on affiche le résultat
+	echo '&lt;h5&gt;Le modèle &lt;span class="exp"&gt;', $exp, '&lt;/span&gt; ',
+			'a été trouvé ', (count($t) - 1), ' fois&lt;/h5&gt;',
+			preg_replace($exp, 
+						'&lt;span class="exp"&gt;$0&lt;/span&gt;',
+						$txt);
+}</pre>
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

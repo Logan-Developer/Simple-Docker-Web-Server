@@ -1,0 +1,1 @@
+<script>location = "../exemple/login.html";</script>

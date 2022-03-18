@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les expressions régulières</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+
+		<p class="fp-bottom0">Une fois n'est pas coutume, il y a peu de
+			fonctions concernant les expressions régulières dans PHP. Ces
+			fonctions, au nombre de sept, peuvent être classées en trois groupes
+			:</p>
+		<ul class="fp-ul-puce">
+			<li>des fonctions de <b>recherche</b> de correspondance,
+			</li>
+			<li>des fonctions de <b>remplacement</b> de modèles,
+			</li>
+			<li>des fonctions de <b>découpage</b> de chaînes.
+			</li>
+		</ul>
+
+		<p>
+			Les fonctions pour la recherche de correspondance <b>vérifient si
+				une chaîne est conforme ou non à une expression régulière</b>. Il y a
+			deux fonctions dans cette catégorie, qui permettent non seulement de
+			<b>vérifier</b> la correspondance d'une chaîne à un motif, mais
+			également de <b>récupèrer</b> les parties correspondantes aux motifs.
+		</p>
+
+		<h3>Recherche simple</h3>
+		<section>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match.php" target="_blank">preg_match()</a>
+				est sans doute la plus utilisée de toutes les fonctions d'expression
+				régulière. Elle permet d'abord de vérifier qu'un modèle est trouvé
+				dans une chaîne. Le modèle est le premier paramètre de la fonction,
+				et la chaîne le deuxième. La fonction renvoie TRUE si le modèle est
+				trouvé, FALSE sinon.
+			</p>
+			<p>
+				L'exemple suivant utilise la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match.php" target="_blank">preg_match()</a>
+				pour définir si une chaîne correspond au modèle d'une adresse
+				e-mail.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : recherche simple
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Recherche simple');
+
+$exp = '/^[a-z][\w\-\.]*@[a-z][\w\-\.]*\.[a-z]{2,6}$/i';
+
+$txt = 'darkounet@lesMechants.com';
+
+if (preg_match($exp, $txt)) {
+	htmlInfo("L'adresse $txt est correcte");
+} else {
+	htmlInfo("L'adresse $txt n'est pas bonne");
+}
+
+$txt = 'yoyo76_lesGentils.com';
+
+if (preg_match($exp, $txt)) {
+	htmlInfo("L'adresse $txt est correcte");
+} else {
+	htmlInfo("L'adresse $txt n'est pas bonne");
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>L'exemple suivant teste différents formats de nombres.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : recherche simple
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Recherche simple');
+
+$exp = '/^-?\d{1,4}$|^-?\d{1,4}\.\d{0,2}$/';
+
+verifier($exp, 123.45);
+verifier($exp, '1234.5');
+verifier($exp, ' -12');
+verifier($exp, -0.12);
+verifier($exp, 12.345);
+verifier($exp, '0a');
+
+//======================================================
+function verifier($exp, $txt) {
+	if (preg_match($exp, $txt)) {
+    	htmlInfo("$txt est un nombre acceptable");
+  	} else {
+    	htmlInfo("$txt n'est pas un nombre acceptable");
+	}
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Récupérer des sous-chaînes</h3>
+		<section>
+			<p>
+				Si notre expression régulière contient des <b>sous-chaînes</b>
+				(définies par des parenthèses ouvrantes et fermantes), la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match.php" target="_blank">preg_match()</a>
+				peut être utilisée avec un troisième paramètre : le nom d'un
+				variable qui contiendra après exécution de la fonction les <b>captures
+					effectuées</b>. Les sous-chaînes répondant au modèle seront capturées,
+				et renvoyées sous la forme d'un tableau.
+			</p>
+			<p>
+				Reprenons l'expression qui sert à valider une adresse e-mail :<br>
+				<span class="fp-code">/^[a-z][\w\-\.]*@[a-z][\w\-\.]*\.[a-z]{2,6}$/i
+				</span>
+			</p>
+			<p>Cette expression peut être séparée en plusieurs parties :</p>
+
+			<figure>
+				<img src="../phpimg/expression01.gif" width="400" height="159">
+				<figcaption>parties de l'expression régulière</figcaption>
+			</figure>
+
+			<p>Si nous entourons la partie locale, la partie nom de domaine
+				et la partie grand domaine par des parenthèses, nous pouvons
+				récupèrer ces zones sous la forme d'éléments de tableau.</p>
+			<p>
+				Essayons donc cette expression régulière :<br> <span
+					class="fp-code">/^<span class="fp-rouge">(</span>[a-z][\w\-\.]*<span
+					class="fp-rouge">)</span>@<span class="fp-rouge">(</span>[a-z][\w\-\.]*<span
+					class="fp-rouge">)</span>\.<span class="fp-rouge">(</span>[a-z]{2,6}<span
+					class="fp-rouge">)</span>$/i
+				</span>
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : récupérer des sous-chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Récupérer des sous-chaînes');
+
+$exp = '/^([a-z][\w\-\.]*)@([a-z][\w\-\.]*)\.([a-z]{2,6})$/i';
+
+$txt = 'darkounet@lesMechants.com';
+
+preg_match($exp, $txt, $t);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;
+</textarea>
+			</form>
+			<p>
+				Le résultat du test montre le tableau créé par la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match.php" target="_blank">preg_match()</a>
+				dans la variable <span class="fp-code">$t</span>. Le premier élément
+				du tableau est le texte capturé entier. Les éléments suivants sont
+				les différentes sous-chaînes.
+			</p>
+			<p>
+				Nous pouvons enlever les assertions de début et fin de chaîne pour
+				travailler sur un texte plus complet comme :<br> "Vous pouvez
+				écrire à francois.piat@univ-fcomte.fr pour féliciter l'auteur de ce
+				cours."
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : récupérer des sous-chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Récupérer des sous-chaînes');
+
+$exp = '/([a-z][\w\-\.]*)@([a-z][\w\-\.]*)\.([a-z]{2,6})/i';
+
+$txt = "Vous pouvez écrire à francois.piat@univ-fcomte.fr pour féliciter l'auteur de ce cours.";
+
+preg_match($exp, $txt, $t);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			<p>
+				Que se passe-t-il quand le texte à examiner est le suivant :<br>
+				"Vous pouvez écrire à francois.piat@univ-fcomte.fr ou à
+				fpiat@femto-st.fr pour féliciter l'auteur de ce cours.". <br>
+				Nous avons ici deux adresses email, et on devrait avoir le tableau
+				suivant :<br>
+			</p>
+			<table>
+				<tr>
+					<td>
+						<p>Indice</p>
+					</td>
+					<td>
+						<p>Valeur</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">0</p>
+					</td>
+					<td>
+						<p>francois.piat@univ-fcomte.fr</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">1</p>
+					</td>
+					<td>
+						<p>francois.piat</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">2</p>
+					</td>
+					<td>
+						<p>univ-fcomte</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">3</p>
+					</td>
+					<td>
+						<p>fr</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">4</p>
+					</td>
+					<td>
+						<p>fpiat@femto-st.fr</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">5</p>
+					</td>
+					<td>
+						<p>fpiat</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">6</p>
+					</td>
+					<td>
+						<p>femto-st</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p align="center">7</p>
+					</td>
+					<td>
+						<p>fr</p>
+					</td>
+				</tr>
+			</table>
+
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : récupérer des sous-chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Récupérer des sous-chaînes');
+
+$exp = '/([a-z][\w\-\.]*)@([a-z][\w\-\.]*)\.([a-z]{2,6})/i';
+
+$txt = "Vous pouvez écrire à francois.piat@univ-fcomte.fr ou à fpiat@femto-st.fr pour féliciter l'auteur de ce cours.";
+
+preg_match($exp, $txt, $t);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Le résultat du test n'est pas celui que nous attendons. Le tableau
+				ne montre que la première adresse email trouvée. Le code n'est pas
+				en cause et fonctionne parfaitement. En effet, la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match.php" target="_blank">preg_match()</a>
+				<b>s'arrête à la première occurence trouvée</b> pour le modèle. Pour
+				récupèrer toutes les occurences su modèle, il faut utiliser une
+				autre fonction.
+			</p>
+
+
+		</section>
+
+		<h3>Récupérer toutes les occurences</h3>
+		<section>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match-all.php" target="_blank">preg_match_all()</a>
+				fonctionne comme <a
+					href="https://www.php.net/manual/fr/function.preg-match.php" target="_blank">preg_match()</a>
+				à la différence qu'elle <b>recherche le modèle autant de fois
+					que c'est possible</b>, et qu'elle ne s'arrête pas à la première
+				concordance trouvée.
+			</p>
+			<p>
+				Après l'exécution de la fonction, la variable utilisée pour stocker
+				le résultat contiendra un tableau à deux dimensions, classé par
+				correspondance ou par ordre des parenthèse selon la valeur du
+				quatrième paramètre de la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match-all.php" target="_blank">preg_match_all()</a>.
+				Vous n'avez rien compris ? Alors passez aux exemples.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : récupérer des sous-chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Récupérer des sous-chaînes');
+
+$exp = '/([a-z][\w\-\.]*)@([a-z][\w\-\.]*)\.([a-z]{2,6})/i';
+
+$txt = "Vous pouvez écrire à francois.piat@univ-fcomte.fr ou à piat@lifc.univ-fcomte.fr pour féliciter l'auteur de ce cours.";
+
+htmlInfo('Classées par occurence');
+
+preg_match_all($exp, $txt, $t, PREG_SET_ORDER);
+
+infoTableau($t);
+
+htmlInfo('Classées par ordre des parenthèses');
+
+preg_match_all($exp, $txt, $t, PREG_PATTERN_ORDER);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Comme le montre le test, l'utilisation de la constante prédéfinie
+				PREG_SET_ORDER offre ici le meilleur moyen pour traiter au mieux les
+				résultats de la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match-all.php" target="_blank">preg_match_all()</a>.
+			</p>
+		</section>
+
+		<a id="extraire_liens"></a>
+		<h3 class="fp-exo">Exercice : extraire les liens d'une page HTML</h3>
+		<section>
+			<p>
+				Affichez la liste des liens inclus dans la page à l'adresse
+				http://www.php.net (vous devez avoir une connexion Internet
+				ouverte). Afficher simplement la liste avec la fonction <span
+					class="fp-code">print_r()</span> ou avec la fonction <span
+					class="fp-code">infoTableau()</span> comme dans les exemples du
+				cours.
+			</p>
+			<p>
+				La fonction <span class="fp-code">file_get_contents</span> vous
+				permet de récupérer le contenu d'un fichier. Par exemple :
+			</p>
+			<p class="fp-code">$codeHTML =
+				file_get_contents('http://www.php.net');</p>
+			<p>
+				Rappel : un lien est la valeur de l'attribut <span class="fp-code">href</span>.
+			</p>
+
+			<p class="fp-solution">
+				<a onClick="top.FP.Voir.showSolution('extraire_liens_solu', 1)">Une
+					solution possible</a>
+			</p>
+
+			<div id="extraire_liens_solu" class="BLOC-solution">
+				<p>Une première solution toute simple.</p>
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-exp" title="Afficher un résumé des expressions"
+						onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : extraire les liens d'une page HTML
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Extraire les liens d\'une page HTML');
+
+$CodeHTML = file_get_contents('http://www.php.net');
+
+$exp = '/ href="(.*?)"/is';
+
+preg_match_all($exp, $CodeHTML, $t, PREG_PATTERN_ORDER);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+
+				<p>
+					Cette première solution capture absolument tous éléments liés, même
+					ceux qui ne sont pas des liens cliquables (feuilles de styles par
+					exemple). En plus, la valeur de l'attribut <span class="fp-code">href</span>
+					doit être entourée avec des guillemets doubles, ce qui n'est pas
+					toujours le cas.
+				</p>
+				<p>
+					Nous pouvons améliorer l'expression comme ça :<br> <span
+						class="fp-code">&lt;a[\s]+[^&gt;]*?href[\s]?=[\s\"\']+(.*?)[\"\']+.*?&gt;/is</span>
+				</p>
+
+				<table>
+					<tr>
+						<td class="fp-code">&lt;a</td>
+						<td>la chaîne littérale &lt;a</td>
+					</tr>
+					<tr>
+						<td class="fp-code">[\s]+</td>
+						<td>1 ou plusieurs caractères d'espacement</td>
+					</tr>
+					<tr>
+						<td class="fp-code">[^&gt;]*?</td>
+						<td>n'importe quel caractère sauf un &gt;, non gourmand</td>
+					</tr>
+					<tr>
+						<td class="fp-code">href</td>
+						<td>la chaîne littérale href</td>
+					</tr>
+					<tr>
+						<td class="fp-code">[\s]?</td>
+						<td>0 ou plusieurs caractères d'espacement</td>
+					</tr>
+					<tr>
+						<td class="fp-code">=</td>
+						<td>la chaîne littérale =</td>
+					</tr>
+					<tr>
+						<td class="fp-code">[\s\"\']+</td>
+						<td>1 ou plusieurs caractères d'espacement ou " ou '</td>
+					</tr>
+					<tr>
+						<td class="fp-code">(.*?)</td>
+						<td>n'importe quel caractère n'importe combien de fois,
+							capturé</td>
+					</tr>
+					<tr>
+						<td class="fp-code">[\s\"\']+</td>
+						<td>1 ou plusieurs caractères d'espacement ou " ou '</td>
+					</tr>
+					<tr>
+						<td class="fp-code">.*?</td>
+						<td>n'importe quel caractère n'importe combien de fois, non
+							gourmand</td>
+					</tr>
+					<tr>
+						<td class="fp-code">&gt;</td>
+						<td>la chaîne littérale &gt;</td>
+					</tr>
+					<tr>
+						<td class="fp-code">i</td>
+						<td>ignore la casse</td>
+					</tr>
+					<tr>
+						<td class="fp-code">s</td>
+						<td>le point reconnaît les sauts de ligne</td>
+					</tr>
+				</table>
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-exp" title="Afficher un résumé des expressions"
+						onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : extraire les liens d'une page HTML
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Extraire les liens d\'une page HTML');
+
+$CodeHTML = file_get_contents('http://www.php.net');
+
+$exp = '/<a[\s]+[^>]*?href[\s]?=[\s\"\']+(.*?)[\"\']+.*?>/is';
+
+preg_match_all($exp, $CodeHTML, $t, PREG_PATTERN_ORDER);
+
+htmlInfo('Liens complets');
+foreach ($t[0] as $lien) {
+	echo '&lt;br&gt;', htmlentities($lien);
+}
+
+htmlInfo('Cible des liens');
+infoTableau($t[1]);
+
+htmlFin();
+?&gt;
+					</textarea>
+				</form>
+			</div>
+
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les tableaux</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p class="fp-puce">
+			La fonction <a
+				href="https://www.php.net/manual/fr/function.array-keys.php" target="_blank">array_keys()</a>
+			renvoie un tableau des clés d'un tableau, et la fonction <a
+				href="https://www.php.net/manual/fr/function.array-values.php" target="_blank">array_values()</a>
+			renvoie un tableau des valeurs d'un tableau. Cette 2 fonctions renvoient un tableau à indices numériques
+			consécutifs commençant à 0.
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : clés tableau à indices numériques
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Clés tableau à indices numériques');
+
+htmlInfo('Clés d\'un tableau à indices numériques');
+$ti = array('François', 'Piat', 409);
+$t = array_keys($ti);
+
+infoTableau($t);
+
+htmlInfo('Clés d\'un tableau à indices numériques à trous');
+$ti[5] = 'francois.piat@univ-fcomte.fr';
+$ti[8] = '03 81 60 20 66';
+$t = array_keys($ti);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : clés et valeurs tableau associatif
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Clés, valeurs tableau associatif');
+
+$ta['B41d'] = 'Pierre';
+$ta['C24a'] = 'Paul';
+$ta['D12z'] = 'Jacques';
+
+htmlInfo('Clés d\'un tableau associatif');
+$t = array_keys($ta);
+
+infoTableau($t);
+
+htmlInfo('Valeurs d\'un tableau associatif');
+$t = array_values($ta);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<h3>Vérifier qu'une clé existe</h3>
+		<section>
+			<p class="fp-puce">
+				Comme nous l'avons déjà vu, la fonction <a
+					href="https://www.php.net/manual/fr/function.isset.php" target="_blank">isset()</a>
+				permet de savoir si une clé existe dans un tableau. Cette fonction
+				renvoie <span class="fp-code">TRUE</span> si la clé existe dans le
+				tableau, <span class="fp-code">FALSE</span> sinon.
+			</p>
+
+			<p class="fp-puce">
+				Nous pouvons aussi utiliser la fonction <a
+					href="https://www.php.net/manual/fr/function.array-key-exists.php" target="_blank">array_key_exists()</a>
+				qui renvoie elle aussi <span class="fp-code">TRUE</span> si la clé
+				existe dans le tableau, <span class="fp-code">FALSE</span> sinon.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : vérification de clés
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau à indices numériques:vérification de clés');
+
+$t[0] = 'François';
+$t[3] = 'Piat';
+$t[6] = 409;
+
+infoTableau($t);
+
+htmlInfo('Clé 2 avec isset');
+if (isset($t[2])) {
+	echo 'Oui';
+} else {
+	echo 'Non';
+}
+
+htmlInfo('Clé 2 avec array_key_exists');
+if (array_key_exists(2, $t)) {
+	echo 'Oui';
+} else {
+	echo 'Non';
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<div class="fp-remarque">
+				<pre class="fp-code">
+if (isset($t[2])) {
+    echo 'Oui';
+} else {
+    echo 'Non';
+}</pre>
+				peut être ré-écrit avantageusement avec l'opérateur de test :
+				<pre class="fp-code">
+echo isset($t[2]) ? 'Oui' : 'Non';</pre>
+				On peu évidemment faire la même chose avec le test de <span
+					class="fp-code">array_key_exists</span>
+			</div>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : vérification de clés
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau associatif : vérification de clés');
+
+$t['B41d'] = 'Pierre';
+$t['C24a'] = 'Paul';
+$t['D12z'] = 'Jacques';
+
+infoTableau($t);
+
+htmlInfo('Clé "piat" avec isset');
+if (isset($t['piat'])) {
+	echo 'Oui';
+} else {
+	echo 'Non';
+}
+
+htmlInfo('Clé "piat" avec array_key_exists');
+if (array_key_exists('piat', $t)) {
+	echo 'Oui';
+} else {
+	echo 'Non';
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Vérifier qu'une valeur existe</h3>
+		<section>
+
+			<p class="fp-puce">
+				Pour vérifier qu'une valeur existe dans un tableau, surtout nous ne
+				faisons pas notre propre boucle, mais nous utilisons la fonction <a
+					href="https://www.php.net/manual/fr/function.in-array.php" target="_blank">in_array()</a>
+				qui renvoie <span class="fp-code">TRUE</span> ou <span
+					class="fp-code">FALSE</span> selon que le premier paramètre existe
+				dans le tableau passé en second paramètre.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : vérification de valeur
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Vérification de valeurs');
+
+$t = array('Pierre', 'Paul', 'Jacques');
+
+infoTableau($t);
+
+if (in_array('Pierre', $t)) {
+	htmlInfo('Pierre OK');
+} else {
+	htmlInfo('Pierre pas OK');
+}
+
+in_array('Jean', $t) ? htmlInfo('Jean Ok') : htmlInfo('Jean Ko');
+
+htmlInfo(in_array('Paul', $t) ? 'Paul Ok' : 'Paul Ko');
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2 fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.array-search.php" target="_blank">array_search()</a>
+				vérifie qu'<b>une valeur existe dans un tableau, et retourne sa
+					clé</b>, ou <span class="fp-code">FALSE</span> si la valeur n'est pas
+				dans le tableau.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : vérification de valeur
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Vérification de valeurs');
+
+$ta['B41d'] = 'Pierre';
+$ta['C24a'] = 'Paul';
+$ta['D12z'] = 'Jacques';
+
+infoTableau($ta);
+
+htmlInfo('Bureau de Paul');
+echo array_search('Paul', $ta), '&lt;hr&gt;';
+
+$ti = range('a','g');
+
+infoTableau($ti);
+
+htmlInfo('Indice de e');
+echo array_search('e', $ti);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2 fp-puce">
+				Si on veut tester le résultat de la fonction, il faut absolument
+				tester ce résultat avec l'opérateur d'identité <span class="fp-code">===</span>
+				pour ne pas tomber dans le piège du transtypage où <span
+					class="fp-code">0 == FALSE</span>.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : vérification de valeur
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Vérification de valeurs');
+
+$t = range('a', 'd');
+
+infoTableau($t);
+
+htmlInfo('"a" est-il dans le tableau ?');
+if (array_search('a', $t) == FALSE) {
+	echo 'Non';
+} else {
+	echo 'Oui';
+}
+
+htmlInfo('"a" est-il vraiment dans le tableau ?');
+if (array_search('a', $t) === FALSE) {
+	echo 'Non';
+} else {
+	echo 'Oui';
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

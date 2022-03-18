@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les expressions régulières</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+
+		<h3>Captures non gourmandes</h3>
+		<section>
+			<p>Dans certains cas nous ne voulons pas capturer toutes les
+				chaînes entre parenthèses, mais les parenthèses sont néanmoins
+				nécessaires dans la syntaxe de l'expression.</p>
+			<p>
+				Soit le texte :<br> <i>"Il y a bien longtemps, dans une
+					galaxie lointaine, l'Empire Impérial de l'Empereur triomphe sur
+					tous les fronts, broyant tous ceux qui s'opposent à lui d'une main
+					de fer dans un gant d'acier. Seul un petit groupe de rebelles se
+					bat toujours pour la liberté face à la tyrannie, pour le chaos face
+					à l'ordre, et d'abord on fait c'qu'on veut merde !"</i>
+			</p>
+			<p>
+				Si nous voulons récupèrer tous les mots qui suivent le, la, les, un,
+				une et des, nous aurons l'expression :<br> <span
+					class="fp-code">\b(le|la|les|un|une|des)\s(\w+)\b</span>
+
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : capture gourmande
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Capture gourmande');
+
+$txt = "Il y a bien longtemps, dans une galaxie lointaine, l'Empire Impérial de l'Empereur triomphe sur tous les fronts, broyant tous ceux qui s'opposent à lui d'une main de fer dans un gant d'acier. Seul un petit groupe de rebelles se bat toujours pour la liberté face à la tyrannie, pour le chaos face à l'ordre, et d'abord on fait c'qu'on veut merde !";
+
+$exp = '/\b(le|la|les|un|une|des)\s(\w+)\b/';
+
+preg_match_all($exp, $txt, $t, PREG_PATTERN_ORDER);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+			<p class="fp-remarque">Ici, il vaut mieux utiliser la constante
+				prédéfinie PREG_PATTERN_ORDER que la constante PREG_SET_ORDER</p>
+			<p>
+				L'expression fonctionne, mais nous avons capturé aussi les pronoms
+				alors que nous voulons seulement le mot qui les suit. Ici encore,
+				comme avec les quantificateurs, nous pouvons rendre les parenthèses
+				non gourmandes, ou non capturantes, en ajoutant simplement <span
+					class="fp-code">?:</span> après la parenthèse ouvrante :<br> <span
+					class="fp-code">\b(<span class="fp-rouge">?:</span>le|la|les|un|une|des)\s(\w+)\b
+				</span>
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : capture non gourmande
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Capture non gourmande');
+
+$txt = "Il y a bien longtemps, dans une galaxie lointaine, l'Empire Impérial de l'Empereur triomphe sur tous les fronts, broyant tous ceux qui s'opposent à lui d'une main de fer dans un gant d'acier. Seul un petit groupe de rebelles se bat toujours pour la liberté face à la tyrannie, pour le chaos face à l'ordre, et d'abord on fait c'qu'on veut merde !";
+
+$exp = '/\b(?:le|la|les|un|une|des)\s(\w+)\b/';
+
+preg_match_all($exp, $txt, $t, PREG_PATTERN_ORDER);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			Le résultat du test montre bien que les pronoms n'ont pas été
+			capturés comme dans l'avant-dernier exemple.
+
+
+		</section>
+
+		<h3>Références arrières</h3>
+		<section>
+			<p>
+				La capture avec des parenthèses est une <b>capture mémorisante</b> :
+				l'expression capturée est gardée en mémoire par le moteur
+				d'expressions régulières et pourra <b>servir à nouveau</b> dans la
+				suite de l'expression.<br> On appelle cela <b>une référence
+					arrière</b>, notée par un backslash, suivi du numéro de la capture
+				correspondante (ie \1, \2, etc.) .
+			</p>
+			<p>
+				Un des exemples typiques du fonctionnement des références arrières
+				consiste à rechercher si une chaîne contient le même mot répété 2
+				fois de suite. Pour rechercher un mot nous aurons l'expression
+				régulière suivante :<br> <span class="fp-code">\b(w+)\s+</span><br>
+				Soit un début de mot (<span class="fp-code">\b</span>), suivi de 1
+				ou plusieurs caractères de mot (<span class="fp-code">w+</span>),
+				suivi de 1 ou plusieurs caractères d'espacement (<span
+					class="fp-code">\s+</span>). Les parenthèses autour de w+
+				permettent de capturer le mot trouvé. En ajoutant <span
+					class="fp-code">\1</span> après l'expression, vous pouvons
+				référencer cette capture :<br> <span class="fp-code">\b(w+)\s+\1</span>
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : référence arrière
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Référence arrière');
+
+$txt = "Il y a bien bien longtemps, dans une très très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar)...";
+
+$exp = '/\b(\w+)\s+\1\b/';
+
+preg_match_all($exp, $txt, $t);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-remarque">
+				Ne pas mettre de quatrième argument à la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-match-all.php" target="_blank"
+					class="fp-codePetit">preg_match_all()</a>équivaut à utiliser
+				PREG_PATTERN_ORDER
+			</p>
+			<p>
+				L'exemple suivant permet d'extraire d'une partie de code HTML tous
+				les textes entourés par les tags &lt;b&gt; ou &lt;i&gt; avec
+				l'expression :<br> <span class="fp-code">&lt;([bi])&gt;(.*?)&lt;/\1&gt;
+				</span>
+			</p>
+			<p>
+				<span class="fp-code">&lt;([bi])&gt;</span> recherche les chaînes
+				comme <span class="fp-code">&lt;b&gt;</span> et <span
+					class="fp-code">&lt;i&gt;</span>, et capture le b ou le i, que nous
+				réutilisons pour définir la balise fermante : <span class="fp-code">&lt;/\1&gt;</span>
+			</p>
+			<p class="fp-remarque">Comme cette expression contient un /, nous
+				utiliserons le caractère # comme délimiteur de l'expression
+				régulière.</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : référence arrière
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Référence arrière');
+
+$txt = "PHP permet de travailler avec &lt;b&gt;2 mécanismes&lt;/b&gt; d'expressions réguliéres : les expressions réguliéres &lt;i&gt;POSIX&lt;/i&gt; et les expressions réguliéres &lt;i&gt;PCRE&lt;/i&gt; (Perl Compatible Regular Expression).";
+
+$exp = '#&lt;([bi])&gt;(.*?)&lt;/\1&gt;#';
+
+preg_match_all($exp, $txt, $t);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+			<p>
+				Pendant que nous sommes dans les tags HTML, voilà l'expression
+				régulière qui permet de capturer tous les tags HTML, qu'ils aient ou
+				non des attributs :<br> <span class="fp-code">&lt;\s*?(\w+)\b.*?&gt;</span>
+			</p>
+			<p>
+				Pour extraire les textes entourés par n'importe quel tag HTML, nous
+				aurons l'expression :<br> <span class="fp-code">&lt;\s*?(\w+)\b.*?&gt;(.*?)&lt;/\1&gt;</span>
+			</p>
+			<p class="fp-remarque">Attention, dans le cas de tags imbriqués,
+				cette expression ne capturera que le tag le plus profond dans
+				l'imbrication.</p>
+
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

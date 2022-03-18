@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Quantificateur non gourmand</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<section>
+			<p>
+				Les quantificateurs +, *, {1,} et {0,} sont des quantificateurs <b>gourmands</b>
+				(ou gloutons, greedy en naingliche) car ils vont essayer de valider
+				(ou capturer) autant de caractères que possible.
+			</p>
+
+			<p>Prenons comme exemple le morceau de code HTML suivant que vous
+				avez récupèré sur un site :</p>
+
+			<p class="fp-code">
+				Ecrire à &lt;a href="mailto:vador@lesmechants.com"&gt;Dark
+				Vador&lt;/a&gt;&lt;br&gt;<br> Ecrire à &lt;a
+				href="mailto:yoda@lesgentils.com"&gt;Yoda&lt;/a&gt;
+			</p>
+
+			<p>et pour lequel vous voudriez extraire les adresses e-mail
+				(attention, ce n'est pas bien de faire des aspirateurs d'adresse
+				e-mail - gros yeux -, et ceci n'est pas un encouragement, mais
+				seulement un exemple).</p>
+
+			<p>
+				L'expression régulière qui vient à l'esprit est :<br> <span
+					class="fp-code">/"mailto:.*"/</span>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : quantificateur gourmand
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Quantificateur gourmand');
+
+$txt = 'Ecrire à &lt;a href="mailto:vador@lesmechants.com"&gt;Dark Vador&lt;/a&gt;&lt;br&gt;Ecrire à &lt;a href="mailto:yoda@lesgentils.com"&gt;Yoda&lt;/a&gt;';
+
+$expReg = '/"mailto:.*"/';
+
+testerExpHtml($expReg, $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>Quand on teste on voit que l'expression a capturé le plus de
+				caractères possibles entre deux guillemets : elle commence la
+				capture au premier guillemet du texte et la termine au tout dernier.
+				Voilà ce qu'est la gourmandise chez une expression régulière.</p>
+
+			<p>
+				Pour réduire la gloutonnerie d'une expression il faut ajouter un <b>point
+					d'interrogation</b> (?) après le quantificateur.Ainsi on ne capturera
+				que le minimum de caractère. L'expression de notre exemple devient
+				donc :<br> <span class="fp-code">/"mailto:.*<span
+					class="fp-rouge">?</span>"
+				</span><span class="fp-code">/</span>
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : quantificateur non gourmand
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Quantificateur non gourmand');
+
+$txt = 'Ecrire à &lt;a href="mailto:vador@lesmechants.com"&gt;Dark Vador&lt;/a&gt;&lt;br&gt;Ecrire à &lt;a href="mailto:yoda@lesgentils.com"&gt;Yoda&lt;/a&gt;';
+
+$expReg = '/"mailto:.*?"/';
+
+testerExpHtml($expReg, $txt);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

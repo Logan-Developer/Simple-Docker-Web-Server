@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Traitement d'une sélection simple</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<!--
+		<p class="fp-rappel">
+			Rappel : si vous travaillez sur votre ordinateur personnel, vous
+			devez avoir <a onclick="top.FP.Voir.showPLUS('exemple/initbase.php')">créer
+				la base de données de test</a> pour que les exemples puissent être
+			utilisés.
+		</p>
+		-->
+
+		<p class="fp-puce">
+			<b>Quatre fonctions </b>permettent de récupèrer le ou les
+			enregistrements (ou tuples) retournés par une requête <span
+				class="fp-code">SELECT</span>. Toutes ces fonctions travaillent de
+			la même façon : elles renvoient un par un les enregistrements
+			sélectionnés par la requête, puis <span class="fp-code">NULL</span>
+			quand il n'y a plus rien.
+		</p>
+
+		<p class="fp-puce fp-bottom0">Ce qui différencie ces fonctions
+			c'est la forme sous laquelle les enregistrements sont renvoyés :</p>
+		<ul class="fp-ul-puce">
+			<li><a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-assoc.php" target="_blank">mysqli_fetch_assoc()</a>
+				renvoie l'enregistrement sous la forme d'un tableau associatif : les
+				clés du tableau sont les noms des champs des tables. Nous pouvons
+				donc atteindre les valeurs par <span class="fp-code">$enr['auNom'],
+					$enr['auPrenom']</span>, etc.</li>
+			<li><a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-row.php" target="_blank">mysqli_fetch_row()</a>
+				renvoie l'enregistrement sous la forme d'un tableau à indices numériques. Les
+				champs sont indicés suivant l'ordre dans lequel ils apparaissent
+				dans le <span class="fp-code">SELECT</span>. Nous pouvons atteindre
+				les valeurs par <span class="fp-code">$enr[0], $enr[1]</span>, etc.
+			</li>
+			<li><a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-array.php" target="_blank">mysqli_fetch_array()</a>
+				renvoie, par défaut,l'enregistrement sous la forme d'un tableau associatif ET
+				à indices numériques. Nous pouvons donc atteindre les valeurs par <span
+				class="fp-code">$enr['auNom']</span> ou par <span class="fp-code">$enr[0]</span>.
+				<span class="fp-rouge">N'utilisez jamais cette fonction sans lui transmettre de paramètre
+				ou en lui transmettant la constante <span class="fp-code">MYSQLI_BOTH</span>, car dans ces cas-là elle
+					consomme le double de mémoire que les autres.</span></li>
+			<li><a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-object.php" target="_blank">mysqli_fetch_object()</a>
+				renvoie l'enregistrement sous la forme d'un objet. Les champs
+				deviennent des propriétés d'objet et on accède aux valeurs avec la
+				syntaxe <span class="fp-code">$objet-&gt;propriété</span>, par
+				exemple <span class="fp-code">$enr-&gt;auNom</span>.</li>
+		</ul>
+
+		<p class="fp-puce fp-bottom0">
+			<a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-assoc.php" target="_blank">mysqli_fetch_assoc()</a>
+			est la fonction à privilégier car :
+		</p>
+		<ul class="fp-ul-puce">
+			<li>les champs sont facilement identifiables comme clé d'un
+				tableau associatif,</li>
+			<li>l'ordre des champs dans le <span class="fp-code">SELECT</span>
+				n'a aucune influence sur les indices (contrairement à <a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-row.php" target="_blank">mysqli_fetch_row()</a>)
+				et les modifications en sont extrêmement simplifiées
+			</li>
+			<li>aucun gaspillage de ressources comme avec <a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-array.php" target="_blank">mysqli_fetch_array()</a>.
+			</li>
+		</ul>
+
+
+		<p>
+			<b>Exemples ...</b>
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_08.html')"
+				title="Afficher la bibliothéque de fonctions"></a> <a
+				class="TEST-lien-bd" title="Afficher le schéma de la base"
+				onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : sélection simple
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Sélection simple : 1 livre');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT * 
+		FROM livres
+		WHERE liID = 3';
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+$enr = mysqli_fetch_assoc($r);
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+
+infoTableau($enr);
+
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_08.html')"
+				title="Afficher la bibliothéque de fonctions"></a> <a
+				class="TEST-lien-bd" title="Afficher le schéma de la base"
+				onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : sélection simple
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Sélection simple : 1 auteur');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT * 
+		FROM auteurs
+		WHERE auID = 5';
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+	
+//-- Traitement -------------------------------------
+$enr = mysqli_fetch_row($r);
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+	
+infoTableau($enr);
+
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_08.html')"
+				title="Afficher la bibliothéque de fonctions"></a> <a
+				class="TEST-lien-bd" title="Afficher le schéma de la base"
+				onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : sélection simple
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Sélection simple : 1 éditeur');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT * 
+		FROM editeurs
+		WHERE edID = 2';
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+$enr = mysqli_fetch_object($r);
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+
+echo $enr-&gt;edID,
+	'&lt;br&gt;',  $enr-&gt;edNom,
+	'&lt;br&gt;',  $enr-&gt;edWeb;
+	
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-puce fp-inter2">
+			On ne teste pas les erreurs sur les fonctions <a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-assoc.php" target="_blank">mysqli_fetch_assoc()</a>,
+			<a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-row.php" target="_blank">mysqli_fetch_row()</a>,
+			<a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-array.php" target="_blank">mysqli_fetch_array()</a>
+			ou <a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-object.php" target="_blank">mysqli_fetch_object()</a>.
+			Les erreurs importantes pouvant survenir sont dans la requête SQL et
+			interviennent donc dans la fonction <a
+				href="https://www.php.net/manual/fr/mysqli.query.php" target="_blank">mysqli_query()</a>.
+		</p>
+
+		<p class="fp-puce">
+			Si une requête de sélection ne renvoie pas d'enregistrement (ie ne
+			sélectionne rien), les fonctions renverront la valeur <span class="fp-code">NULL</span>.
+		</p>
+
+		<p>Le test de "sélection vide" peut être fait comme dans l'exemple
+			suivant.</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_08.html')"
+				title="Afficher la bibliothéque de fonctions"></a> <a
+				class="TEST-lien-bd" title="Afficher le schéma de la base"
+				onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : sélection ne renvoyant pas
+				d'enregistrement
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Sélection ne renvoyant pas d\'enregistrement');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT * 
+		FROM livres
+		WHERE liID = 12345';
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+$enr = mysqli_fetch_assoc($r);
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+
+if ($enr === NULL) {
+	echo 'Aucun enregistrement sélectionné.';
+} else {	
+	infoTableau($enr);
+}
+
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-tiret">Le code</p>
+		<pre data-code="PHP">
+$enr = mysqli_fetch_assoc($r);
+
+if ($enr === NULL) {
+	echo 'Aucun enregistrement sélectionné.';
+} else {	
+	infoTableau($enr);
+}</pre>
+		<p>peut aussi être écrit :</p>
+		<pre data-code="PHP">
+if ($enr = mysqli_fetch_assoc($r)) {
+	infoTableau($enr);
+} else {
+	echo 'Aucun enregistrement sélectionné.';	
+}</pre>
+		<p class="fp-bottom0">
+			<span class="fp-code">if ($enr = mysqli_fetch_assoc($r)) {</span> est
+			un "raccourci" souvent utilisé avec PHP :
+		</p>
+		<ul class="fp-ul-puce">
+			<li>la fonction <a
+				href="https://www.php.net/manual/fr/mysqli-result.fetch-assoc.php" target="_blank">mysqli_fetch_assoc()</a>
+				est exécutée
+			</li>
+			<li>son résultat est affecté à la variable <span class="fp-code">$enr</span></li>
+			<li>si la valeur de <span class="fp-code">$enr</span> est
+				évaluée comme <span class="fp-code">TRUE</span> le bloc <span
+				class="fp-code">if</span> est exécuté,
+			</li>
+			<li>sinon le bloc <span class="fp-code">else</span> est exécuté.
+			</li>
+		</ul>
+		<p>
+			Nous profitons ici du transtypage automatique fait par PHP qui évalue
+			un tableau non vide comme <span class="fp-code">TRUE</span>, et qui évalue 
+			<span class="fp-code">NULL</span> comme <span class="fp-code">FALSE</span>.
+		<p>
+		<p class="fp-puce">
+			Pour connaitre le nombre d'enregistrements sélectionnés par une
+			requête de sélection nous pouvons utiliser la fonction <a
+				href="https://www.php.net/manual/fr/mysqli-result.num-rows.php" target="_blank">mysqli_num_rows()</a>,
+			comme illustré dans l'exemple suivant.
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_08.html')"
+				title="Afficher la bibliothéque de fonctions"></a> <a
+				class="TEST-lien-bd" title="Afficher le schéma de la base"
+				onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : sélection ne renvoyant pas
+				d'enregistrement
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Sélection ne renvoyant pas d\'enregistrement');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT * 
+		FROM livres
+		WHERE liID = 12345';
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+if (mysqli_num_rows($r) == 0) {
+	echo 'Aucun enregistrement sélectionné.';
+} else {
+	$enr = mysqli_fetch_assoc($r);
+	infoTableau($enr);
+}
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

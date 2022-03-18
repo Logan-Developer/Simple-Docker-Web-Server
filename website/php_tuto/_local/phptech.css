@@ -1,0 +1,264 @@
+html {
+	height: auto !important;
+	min-height: 100%;
+	}
+
+body {
+	background: #F5F0FF; /*FAF6FF*/
+	color: #000000;
+	font: 13px/1.5 verdana, arial, sans-serif;
+	height: auto !important;
+	margin: 36px 10px 13px;
+	min-height: 100%;
+	-webkit-text-size-adjust: 13px;
+	-ms-text-size-adjust: 13px;
+	}
+
+p {
+	margin: 13px 0;
+	padding: 0;
+	}
+
+blockquote > p { margin: 0; }
+
+b,
+strong { font-weight: bold; }
+
+a {
+	color: #0000EE;
+	cursor: pointer;
+	}
+
+
+a:visited { color: #0000EE; }
+
+a:hover {
+	color: #AA0026;
+	outline: 0;
+	}
+a:active,
+a:focus { outline: 0; }
+
+
+/* barre de nav haut et bas */
+.manualnavbar {
+	background: #8667BE;
+	box-shadow: 0 0 6px -2px #000000;
+	font-weight: bold;
+	height: 26px;
+	left: 0;
+	overflow: hidden;
+	padding: 5px 2px;
+	position: fixed;
+	/*text-align: center;*/
+	top: 0;
+	width: 100%;
+	}
+
+.manualnavbar a,
+.manualnavbar a:link,
+.manualnavbar a:visited,
+.manualnavbar a:hover,
+.manualnavbar a:active { color: #FFF; }
+
+.home {
+	background: url("../_core/images/__home24.png") no-repeat;
+	cursor: pointer;
+	height: 24px;
+	position: absolute;
+	/*right: 10px;*/
+	left: 6px;
+	top: 6px;
+	width: 24px;
+	}
+
+.home:hover { background-image: url(../_core/images/__home24_h.png); }
+
+.up {
+	padding-left: 42px;
+	}
+
+.MENU-page {
+	background: #8667BE;
+	font-size: 9px;
+	padding: 4px;
+	position: fixed;
+	right: 0;
+	text-align: left;
+	top: 49px;
+	}
+
+/* conteneur entre les barre de nac */
+.refentry { padding: 8px; }
+
+/* nom de la fonction - titre de la page*/
+h1 {
+	font-size: 17px;
+	font-weight: bold;
+	line-height: 2;
+	margin: 0;
+	padding: 0;
+	}
+
+h2 {
+	font-size: 17px;
+	line-height: 1.8;
+	margin: 0;
+	padding: 0;
+	}
+
+/* titre des parties (Description, Liste des paramètre ...) */
+h3 {
+	border-bottom: 2px solid #669;
+	font-size: 15px;
+	font-weight: bold;
+	line-height: 1.5;
+	margin: 13px 0;
+	padding: 0;
+	}
+	
+.refname { font-weight: bold; }
+
+/* Eléments cachés */
+/* .manualnavbar .up > a[href ^='book.'] */
+span.refname,
+.mdash,
+hr,
+.prev,
+.next,
+.manualnavbarbas,
+.soft-deprecation-notice,
+a[href ^='book.'],
+a[href $='refs.'],
+div[id='mysqli.synopsis'],
+div[id='mysqli-driver.synopsis'],
+div[id='mysqli-result.synopsis'],
+div[id='mysqli-stmt.synopsis'] { 
+	display: none; 
+	}
+
+/* version PHP d'entrée la fonction */
+.verinfo {
+	font-size: 11px;
+	margin: 0;
+	}
+
+/* bloc avec syntaxe de la fonction */
+/* bloc avec description d'une classe */
+.dc-description,
+.classsynopsis,
+.fieldsynopsis {
+	background: #fff;
+	padding: 8px;
+	}
+
+.term { font-weight: bold; }
+
+pre,
+code,
+tt,
+.phpcode {
+	background-color: #FFFEFD;
+	box-shadow: 0 0 3px 3px #FFFDF5;
+	font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
+		Monaco, 'Courier New', Courier, monospace;
+	word-wrap: break-word;
+}
+
+pre,
+.phpcode {
+	margin: 13px 0;
+	padding: 4px;
+}
+
+.phpcode code { box-shadow: none; }
+
+.parameter { font-style: italic; }
+
+table {
+	border-collapse: collapse;
+	border: 1px solid #669;
+	}
+
+table.doctable thead th,
+table.informaltable thead th { background-color: #8667BE; color: #FFF }
+
+table.doctable td,
+table.doctable th,
+table.doctable caption,
+table.informaltable td,
+table.informaltable th,
+table.informaltable caption {
+	border: 1px solid #669;
+	padding: 5px;
+	}
+
+dl,dt,dd,ul,ol {
+	margin: 0;
+	padding: 0;
+	}
+
+li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	}
+
+dd > p { margin-top: 4px; }
+
+dd { margin-left: 52px; }
+
+dl dt {
+	clear: left;
+	float: left;
+	overflow: hidden;
+	text-align: right;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 90px;
+	}
+
+dl dd { margin-left: 95px; }
+
+.fp-dl dt {width: auto; text-align: left;}
+.fp-dl dd {clear: both; margin-bottom: 5px;}
+
+/*================================================*/
+/* chunklist 
+chunklist_book 
+chunklist_children*/
+
+.chunklist_book { margin-bottom: 1em; }
+	
+.chunklist_children { margin-left: 30px; }
+
+.chunklist_reference > li {margin: 2px 0;}
+
+/*=================================*/
+#blocChercher {
+	position: fixed;
+	right: 2px;
+	top: 8px;
+	width: 179px;	
+	}
+#txtChercher {
+	border: 1px solid #999999;
+	margin: 0;
+	padding: 1px;
+	width: 170px;
+	}
+#btnChercher {
+	background: url("../_core/images/__search24.png") no-repeat;
+	border: none;
+	cursor: pointer;
+	height: 24px;
+	margin: 0;
+	position: absolute;
+	right: 0px;
+	top: -2px;
+	width: 24px;	
+	}
+#btnChercher:hover {
+	background-image: url("../_core/images/__search24_h.png");
+	}
+	

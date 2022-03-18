@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les tableaux</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Dans PHP, il existe beaucoup de façons différentes pour obtenir
+			des tableaux. Nous avons vu précédemment comment créer des tableaux
+			en affectant directement des valeurs à des indices. Il existe aussi
+			beaucoup de fonctions qui permettent soit de créer des tableaux
+			ex-nihilo, soit d'obtenir des tableaux à partir d'autres données
+			(chaînes, variables, autres tableaux).</p>
+
+		<h3>Créer un tableau avec array()</h3>
+		<section>
+			<div class="fp-remarque">
+				<p>
+					Dans les exemples qui suivent, la fonction <span class="fp-code">infoTableau()</span>
+					est utilisée pour afficher le nombre d'éléments du tableau et pour
+					en faire un dump. Cette fonction se trouve dans <span
+						class="fp-code">bib_fonctions.php</span>. Son code est le suivant
+					:
+				</p>
+				<pre data-code="PHP">
+/**
+ * Envoie à la sortie standard le nombre 
+ * d'éléments et le contenu d'un tableau
+ *
+ * @param array	$t	Tableau
+ */				
+function infoTableau($t) {
+	echo 'Tableau de ', count($t), ' éléments',
+			'&lt;pre&gt;', print_r($t, true), '&lt;/pre&gt;';
+}</pre>
+			</div>
+			<p class="fp-inter2 fp-puce">
+				La structure du langage <a
+					href="https://www.php.net/manual/fr/function.array.php" target="_blank">array()</a>
+				permet de créer un tableau à partir des arguments qui lui sont
+				passés. Elle est pratique pour créer des tableaux de
+				petite taille et dont connait la valeur et/ou la clé des éléments à l'avance.
+			</p>
+
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : créer des tableaux avec array()
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Créer des tableaux avec array()');
+
+htmlInfo('Tableau vide');
+$t = array();
+infoTableau($t);
+
+htmlInfo('Tableau à indices numériques');
+$t = array('François', 'Piat', 409, '03 81 66 20 66');
+infoTableau($t);
+
+htmlInfo('Tableau associatif');
+$t = array('B41d' =&gt; 'Pierre',
+           'C24a' =&gt; 'Paul',
+           'D12z' =&gt; 'Jacques');
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Tableaux d'entiers ou de lettres</h3>
+		<section>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.range.php" target="_blank">range()</a>
+				crée un tableau à indices numériques d'entiers ou de lettres dans une fourchette
+				dont les limites sont passées en arguments.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : suite d'entiers ou de lettres
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Suite d\'entiers ou de lettres');
+
+htmlInfo('Suite de nombres par ordre croissant');
+$t = range(1560, 1568);
+infoTableau($t);
+
+htmlInfo('Suite de lettres par ordre croissant');
+$t = range('g', 'k');
+infoTableau($t);
+
+htmlInfo('Suite de nombres par ordre décroissant');
+$t = range(702, 698);
+infoTableau($t);
+
+htmlInfo('Suite de lettres par ordre décroissant');
+$t = range('f', 'a');
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Tableaux initialisés avec une même valeur</h3>
+		<section>
+
+			<p class="fp-puce fp-bottom0">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.array-fill.php" target="_blank">array_fill()</a>
+				crée un tableau à indices numériques dont <b>tous les éléments ont la même
+					valeur</b>. La fonction accepte 3 paramètres :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>l'indice de début du tableau,</li>
+				<li>le nombre d'éléments,</li>
+				<li>la valeur des élements</li>
+			</ul>
+			<p>Très pratique pour créer un tableau initialisé.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : tableau avec une valeur unique
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau avec une valeur unique');
+
+htmlInfo('Tableau de 5 éléments initialisés à 0');
+$t = array_fill(0, 5, 0);
+infoTableau($t);
+
+htmlInfo('Tableau de 4 éléments initialisés à "piat"');
+$t = array_fill(10, 4, 'piat');
+infoTableau($t);
+
+htmlInfo('Tableau à 2 dimensions initialisé à 1');
+$t = array_fill(0, 3, array_fill(0, 4, 1));
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Tableaux à partir de listes de variables</h3>
+		<section>
+
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.compact.php" target="_blank">compact()</a>
+				crée un tableau associatif <b>à partir d'une liste de variables</b>
+				passées en argument. Les éléments ont pour clé le nom des variables
+				et pour valeur la valeur des variables. Les variables peuvent être
+				passées sous la forme d'une liste de noms séparés par des virgules,
+				ou sous la forme d'un tableau.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : tableau de variables
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau de variables');
+
+$nom = 'Piat';
+$prenom = 'François';
+$bureau = 407;
+$mail = 'francois.piat@univ-fcomte.fr';
+
+$t = compact('nom', 'prenom', 'bureau', 'mail');
+infoTableau($t);
+
+$t = compact(array('nom', 'prenom', 'bureau'));
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Tableaux à partir d'une chaîne de caractères</h3>
+		<section>
+
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.explode.php" target="_blank">explode()</a>
+				crée un tableau à indices numériques <b>à partir d'une chaîne de caractères</b> et
+				d'un délimiteur de zone. Le délimiteur peut être n'importe quel
+				caractère alphanumérique, ou ensemble de caractères.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : tableau à partir d'une chaîne
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau à partir d\'une chaîne');
+
+htmlInfo('Délemiteur virgule');
+
+$a = 'François,Piat,409,francois.piat@univ-fcomte.fr';
+$t = explode(',', $a);
+
+infoTableau($t);
+
+htmlInfo('Délimiteur /');
+$a = '25/08/2012';
+$t = explode('/', $a);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

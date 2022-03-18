@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Variables et types de données</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<ul id="MENU-page"></ul>
+		<p> PHP définit et intialise automatiquement certaines
+			variables en fonction du contexte d'utilisation. Ces valeurs sont
+			généralement stockées dans des tableaux associatifs (ie des tables de
+			hachage).</p>
+
+		<h3>Le tableau $GLOBALS</h3>
+		<section>
+
+			<p>
+				Une alternative à l'utilisation d'un mot-clé <span class="fp-code">global</span>
+				est l'utilisation du tableau <span class="fp-code">$GLOBALS</span>,
+				automatiquement créé et mis à jour par PHP. Ce tableau contient une
+				référence sur chacune des variable disponibles dans l'environnement
+				global d'exécution. Les clés de ce tableau sont les noms des
+				variables globales, et les valeurs associées sont les valeurs des
+				variables globales.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : le tableau $GLOBALS
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Le tableau $GLOBALS&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+$x = 'Piat';  // variable globale
+
+foreach($GLOBALS as $cle =&gt; $valeur) {
+  echo '&lt;p&gt;&lt;b&gt;Nom : ', $cle, '&lt;/b&gt;';
+  echo '&lt;br&gt;Valeur : ', $valeur;
+}
+?&gt;
+&lt;/body&gt;</textarea>
+			</form>
+
+			<p>Nous pouvons reprendre l'exemple sur la portée des variables
+				de la façon suivante :</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : variable globale
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;variable globale&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+$x = 'Piat';  // variable globale
+
+echo '&lt;p&gt;&lt;b&gt;Dans le script&lt;/b&gt;';
+echo '&lt;br&gt;valeur de x : ', $x;
+
+AfficheVariable();  // appel de la fonction
+
+//------------------------------------------------------
+function AfficheVariable() {
+	echo '&lt;p&gt;&lt;b&gt;Dans la fonction&lt;/b&gt;';
+	echo '&lt;br&gt;valeur de x : ', $GLOBALS['x'];
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Les superglobales</h3>
+		<section>
+			<p>
+				Vous remarquez que le tableau <span class="fp-code">$GLOBALS</span>
+				n'a pas besoin d'être déclaré avec le mot clé 
+				<span class="fp-code">global </span>pour être utilisé dans une fonction.
+				Il s'agit d'une variable <b>superglobale</b>. Les variables superglobales
+				sont accessibles dans tout le script y compris les fonctions (ie elles
+				existent dans tous les contextes).
+			</p>
+			<p>
+				<b>PHP fournit différentes variables prédéfinies superglobales</b> :
+			</p>
+			<ul class="fp-ul">
+				<li>des variables concernant le serveur web, ou liées à
+					l'environnement d'exécution du script</li>
+				<li>des variables transmises par le protocole HTTP : zones de formulaires,
+					cookies, paramètres d'URL, etc.</li>
+				<li>des variables concernant la session attachée à l'utilisateur.</li>
+			</ul>
+
+		</section>
+
+		<h3>Superglobale URL</h3>
+		<section>
+			<p>
+				Ce sont les variables incluses dans l'URL de la page PHP. Ces
+				variables peuvent provenir d'un formulaire utilisant la méthode GET,
+				ou peuvent être passées directement par le développeur dans l'URL
+				d'appel de la page. Les URL avec variables (ou paramètres) sont de
+				la forme : <span class="fp-code">lapage.php?<span
+					class="fp-rouge">Nom</span>=piat&amp;<span class="fp-rouge">Prenom</span>=françois
+				</span>
+			</p>
+			<p>
+				Toutes les fois qu'un paramètre est trouvé dans l'URL de la page,
+				PHP va le stocker dans un tableau associatif superglobal appelé <span
+					class="fp-code FP-gras">$_GET</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : variables GET
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;variable GET&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;Formulaire avec une méthode get : les zones 
+	sont passées au serveur dans l'URL.&lt;/p&gt;
+  &lt;form method="get" action="&lt;?php $_SERVER['PHP_SELF']?&gt;"&gt;
+	Nom : &lt;input type="text" name="Nom"&gt;
+	&lt;input type="submit" value="Envoyer" name="bouton"&gt;
+  &lt;/form&gt;
+
+&lt;?php
+// Affichage du nom saisi si présent
+// dans le tableau $_GET, indiquant que le formulaire
+// a été envoyé au serveur
+if (isset($_GET['bouton'])) {
+	echo '&lt;hr&gt;Dans la page tableau _GET = ', $_GET['Nom'];
+
+	maFonction();
+}
+
+//------------------------------------------------------
+function maFonction() {
+	echo '&lt;hr&gt;Dans la fonction sans déclaration globale ',
+		'tableau _GET = ', $_GET['Nom'];
+}
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+
+		</section>
+
+		<h3>Superglobales de formulaire</h3>
+		<section>
+
+			<p>
+				Quand un formulaire HTML utilise la méthode POST pour l'envoi des
+				valeurs saisies au serveur (ie à un script PHP), PHP génère
+				automatiquement un tableau associatif superglobal appelé <span
+					class="fp-code FP-gras">$_POST</span> et contenant les zones du
+				formulaire.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : variables POST
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;variable POST&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;Formulaire avec une méthode post : les zones 
+	sont passées au serveur dans le corps du message HTTP.&lt;/p&gt;
+  &lt;form method="post" action="&lt;?php $_SERVER['PHP_SELF']?&gt;"&gt;
+	Nom : &lt;input type="text" name="Nom"&gt;
+	&lt;input type="submit" value="Envoyer" name="bouton"&gt;
+  &lt;/form&gt;
+
+&lt;?php
+// Affichage du nom saisi si présent
+// dans le tableau $_POST, indiquant que le formulaire
+// a été envoyé au serveur
+if (isset($_POST['Nom'])) {
+	echo '&lt;hr&gt;Dans la page tableau _POST = ', $_POST['Nom'];
+	maFonction();
+}
+
+//------------------------------------------------------
+function maFonction() {
+	echo '&lt;hr&gt;Dans la fonction sans déclaration globale ',
+		'tableau _POST = ', $_POST['Nom'];
+}
+
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+
+		</section>
+
+		<h3 id="B5">Superglobale cookie</h3>
+		<section>
+
+			<p>
+				PHP génère automatiquement un tableau associatif superglobal appelé
+				<span class="fp-code FP-gras">$_COOKIE</span> et contenant les
+				cookies.
+			</p>
+			<p>
+				Le code suivant pose un cookie appelé Nom et ayant la valeur piat :<br>
+				<span class="fp-code">setcookie('<span class="fp-rouge">Nom</span>','piat')
+				</span>.<br> On retrouvera la valeur du cookie Nom dans <span
+					class="fp-code">$_COOKIE['Nom']</span>.
+			</p>
+
+
+		</section>
+
+		<h3 id="B6">Superglobales du serveur</h3>
+		<section>
+			<p>
+				On peut obtenir diverses informations sur l'environnement du serveur
+				dans le tableau superglobal <span class="fp-code FP-gras">$_ENV</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : variables d'environnement
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;variables d'environnement&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+foreach($_ENV as $cle =&gt; $valeur) {
+  echo '&lt;hr&gt;&lt;b&gt;Nom : &lt;/b&gt;', $cle, 
+		'&lt;br&gt;&lt;b&gt;Valeur : &lt;/b&gt;', $valeur;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+
+			<p>
+				Des informations sur le serveur lui-même sont disponibles dans le
+				tableau superglobal <span class="fp-code FP-gras">$_SERVER</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : variables serveur
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;variables serveur&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+foreach($_SERVER as $cle =&gt; $valeur) {
+  echo '&lt;hr&gt;&lt;b&gt;Nom : &lt;/b&gt;', $cle, 
+		'&lt;br&gt;&lt;b&gt;Valeur : &lt;/b&gt;', $valeur;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+			</form>
+			<p class="fp-remarque">
+				Remarque : Parmi les variables serveurs, la plus utilisée est sans
+				doute <span class="fp-code">PHP_SELF</span> qui représente le nom de
+				la page elle-même.
+			</p>
+
+
+
+		</section>
+	
+	</div>
+	<footer></footer>
+</body>
+</html>

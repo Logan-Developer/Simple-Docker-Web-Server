@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Les tableaux</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p class="fp-puce">Pour chaque tableau, PHP garde un pointeur sur
+			l'élément courant. Ce pointeur n'est pas un pointeur comme en C, mais
+			plutôt un curseur comme celui utilisé dans les résultat de requêtes
+			de sélection des bases de données.</p>
+		<p class="fp-puce">Plusieurs fonctions permettent de travailler
+			avec ce pointeur :</p>
+
+		<table class="TAB-def">
+			<tr>
+				<td><a
+					href="https://www.php.net/manual/fr/function.current.php" target="_blank">current()</a>
+				</td>
+				<td>retourne la valeur de l'élément courant</td>
+			</tr>
+			<tr>
+				<td><a
+					href="https://www.php.net/manual/fr/function.reset.php" target="_blank">reset()</a>
+				</td>
+				<td>place le pointeur sur le premier élément et renvoie sa
+					valeur</td>
+			</tr>
+			<tr>
+				<td><a
+					href="https://www.php.net/manual/fr/function.end.php" target="_blank">end()</a>
+				</td>
+				<td>place le pointeur sur le dernier élément et renvoie sa
+					valeur</td>
+			</tr>
+			<tr>
+				<td><a
+					href="https://www.php.net/manual/fr/function.next.php" target="_blank">next()</a>
+				</td>
+				<td>place le pointeur sur l'élément suivant et renvoie sa
+					valeur</td>
+			</tr>
+			<tr>
+				<td><a
+					href="https://www.php.net/manual/fr/function.prev.php" target="_blank">prev()</a>
+				</td>
+				<td>place le pointeur sur l'élément précédent et renvoie sa
+					valeur</td>
+			</tr>
+			<tr>
+				<td><a
+					href="https://www.php.net/manual/fr/function.each.php" target="_blank">each()</a>
+				</td>
+				<td>retourne la clé et la valeur de l'élément courant (sous la
+					forme d'un tableau) et place le pointeur sur l'élément suivant</td>
+			</tr>
+			<tr>
+				<td><a
+					href="https://www.php.net/manual/fr/function.key.php" target="_blank">key()</a>
+				</td>
+				<td>retourne la clé de l'élément courant</td>
+			</tr>
+		</table>
+
+		<p class="fp-puce">
+			Les fonctions d'itérations sont le plus souvent utilisées avec une
+			boucle <span class="fp-code">while</span> sur un tableau associatif.
+		</p>
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : fonctions d'itération
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Fonctions d\'itération');
+
+$t['B41d'] = 'Pierre';
+$t['C24a'] = 'Paul';
+$t['D12z'] = 'Jacques';
+
+echo 'Début du tableau : ', reset($t);
+echo '&lt;br&gt;Suivant : ', next($t);
+echo '&lt;br&gt;Suivant : ', next($t);
+echo '&lt;br&gt;Suivant : ', next($t); // n'existe pas
+
+htmlInfo('Lire un tableau associatif "en avançant"');
+reset($t);
+while ($x = current($t)) {
+	echo '&lt;br&gt;Bureau ', key($t), ' occupé par ', $x;
+	next($t);
+}
+
+htmlInfo('Lire un tableau associatif en arrière');
+end($t);
+while ($x = current($t)) {
+	echo '&lt;br&gt;Bureau ', key($t), ' occupé par ', $x;
+	prev($t);
+}
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+		
+
+		<p class="fp-inter2">
+			Notez que la fonction 
+			<a
+				href="https://www.php.net/manual/fr/function.each.php" target="_blank">each()</a>
+			est OBSOLÈTE à partir de PHP 7.2.0.
+		</p>
+	</div>
+	<footer></footer>
+</body>
+</html>

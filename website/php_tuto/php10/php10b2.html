@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Objets : héritage - redéfinition, surcharge</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			Il est possible de modifier le comportement de la classe mère en <strong>redéfinissant</strong>
+			ou en en <strong>surchargeant</strong> ses méthodes dans la classe fille.
+			<br>
+			S'il existe une différence théorique entre la redéfinition et la surcharge , les deux aboutissent
+			finalement au même résultat : <strong>une méthode de la classe mère est réécrite dans la
+				classe fille</strong>.
+		</p>
+
+		<p>
+			La méthode de la classe mére est masquée par sa nouvelle définition dans la classe fille. Il est
+			pourtant toujours possible <strong>d'invoquer la méthode originale</strong> de la classe mère, en
+			préfixant cet appel avec le mot-clé <code>parent</code> et l'opérateur de résolution de portée <code>::</code>.
+		</p>
+
+		<h3>Redéfinition de méthode</h3>
+		<section>
+			<p class="fp-cadre">On dit qu'une méthode est redéfinie quand elle a la même signature dans
+				la classe mère et dans la classe fille. Les 2 méthodes ont donc le même nombre d'arguments et
+				ces arguments sont du même type.</p>
+
+			<figure style="float: right; margin: 0 0 0 2.5em">
+				<img src="../phpimg/poo_21.png" width="136" height="286">
+			</figure>
+
+			<p>
+				Comme vous avez pu le remarquer dans notre exemple, la méthode <code>decrire()</code> est
+				incompléte pour les guitares électriques car elle ne donne pas d'information sur le nombre de
+				micros et la présence ou non d'un vibrato. Cette méthode va donc être redéfinie dans la classe
+				fille GuitareElectrique pour afficher ces éléments.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : redéfinition de méthode
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	protected $modele, $prix, $cordes, $remise, $son;
+
+	const SON_A = 'acoustique';
+	const SON_EA = 'électro-acoustique';
+	const SON_R = 'à résonnateur';
+	const SON_E = 'électrique';
+
+	public function __construct($p1, $p2, $p3, $p4) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+		$this-&gt;son = $p4;
+		$this-&gt;remise = 0;
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Guitare ', $this-&gt;son, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;',
+				$this-&gt;cordes, ' cordes&lt;br&gt;',				
+				$this-&gt;prix, ' &amp;euro;';		
+	}
+}			// Fin de la classe Guitare	
+
+class GuitareElectrique extends Guitare {
+	private $micros, $vibrato;
+	
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		parent::__construct($p1, $p2, $p3, parent::SON_E);
+		$this-&gt;micros = $p4;
+		$this-&gt;vibrato = $p5;	
+	}
+	
+	public function getMedias() {
+		$fichier = str_replace(' ', '_', $this-&gt;modele);
+		$fichier = strtolower($fichier);
+		return "&lt;div&gt;&lt;img src=visuels/$fichier.jpg&gt;
+				&lt;audio src=audio/$fichier.mp3 controls
+				style='width: 100px'&gt;&lt;/audio&gt;&lt;/div&gt;";
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Guitare ', $this-&gt;son, '&lt;/h4&gt;',
+			$this-&gt;modele, '&lt;br&gt;',
+			$this-&gt;cordes, ' cordes&lt;br&gt;',				
+			$this-&gt;micros, ' micros&lt;br&gt;',
+			(($this-&gt;vibrato) ? 'avec':'sans'),' vibrato&lt;br&gt;',
+			$this-&gt;prix, ' &amp;euro;';
+	}	
+}			// Fin de la classe GuitareElectrique
+				
+htmlDebut('Redéfinition de la méthode decrire()');
+
+$g1 = new Guitare('Guild D120', 639, 6, Guitare::SON_A);
+$g1-&gt;decrire();	// méthode de la classe Guitare
+
+$g2 = new GuitareElectrique('Gretsch G5420', 869, 6, 2, true);
+$g2-&gt;decrire();	// méthode de la classe GuitareElectrique
+
+$g3 = new GuitareElectrique('Fender Precision', 724, 4, 2, false);
+$g3-&gt;decrire();	// méthode de la classe GuitareElectrique
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>On pourrait aussi réécrire la méthode en faisant d'abord appel à celle de la classe
+				parent, puis en ajoutant l'affichage des informations propres aux guitares électriques.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : redéfinition de méthode
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	protected $modele, $prix, $cordes, $remise, $son;
+
+	const SON_A = 'acoustique';
+	const SON_EA = 'électro-acoustique';
+	const SON_R = 'à résonnateur';
+	const SON_E = 'électrique';
+
+	public function __construct($p1, $p2, $p3, $p4) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+		$this-&gt;son = $p4;
+		$this-&gt;remise = 0;
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Guitare ', $this-&gt;son, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;',
+				$this-&gt;cordes, ' cordes&lt;br&gt;',				
+				$this-&gt;prix, ' &amp;euro;';			
+	}
+}			// Fin de la classe Guitare	
+
+class GuitareElectrique extends Guitare {
+	private $micros, $vibrato;
+	
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		parent::__construct($p1, $p2, $p3, parent::SON_E);
+		$this-&gt;micros = $p4;
+		$this-&gt;vibrato = $p5;	
+	}
+	
+	public function getMedias() {
+		$fichier = str_replace(' ', '_', $this-&gt;modele);
+		$fichier = strtolower($fichier);
+		return "&lt;div&gt;&lt;img src=visuels/$fichier.jpg&gt;
+				&lt;audio src=audio/$fichier.mp3 controls
+				style='width: 100px'&gt;&lt;/audio&gt;&lt;/div&gt;";
+	}
+	
+	public function decrire() {
+		parent::decrire();
+		echo '&lt;br&gt;', $this->micros, ' micros&lt;br&gt;',
+			(($this->vibrato) ? 'avec' : 'sans'), ' vibrato';
+	}
+}			// Fin de la classe GuitareElectrique
+				
+htmlDebut('Redéfinition de la méthode decrire()');
+
+$g1 = new Guitare('Ibanez AEB8E-BK', 399, 4, Guitare::SON_EA);
+$g1-&gt;decrire();	// méthode de la classe Guitare
+
+$g2 = new GuitareElectrique('Danelectro 59 dano', 449, 12, 2, false);
+$g2-&gt;decrire();	// méthode de la classe GuitareElectrique
+
+$g3 = new GuitareElectrique('Fender Precision', 724, 4, 2, false);
+$g3-&gt;decrire();	// méthode de la classe GuitareElectrique
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Surcharge de méthode</h3>
+		<section>
+			<p class="fp-cadre">On dit qu'une méthode est surchargée quand elle n'a pas la même signature
+				dans la classe mère et dans la classe fille. Les 2 méthodes ont donc un nombre d'arguments
+				différents, ou des types d'arguments différents, ou à la fois un nombre et des types d'arguments
+				différents.</p>
+
+			<p>
+				A titre d'exemple, nous allons surcharger la méthode <code>setRemise()</code> qui permet de
+				définir un taux de remise pour le prix d'une guitare. Il a été décidé que pour les guitares
+				électriques, on pouvait avoir non seulement une remise, mais également une paire de cables (des
+				jacks) offerte. On va réécrire la méthode <code>setRemise()</code> dans la classe fille pour
+				qu'elle accepte et traite maintenant 2 paramètres : un taux de remise et la valeur en euros
+				d'une paire de jacks. On modifiera aussi la méthode <code>decrire()</code> pour afficher cette
+				offre éventuelle.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : surcharge de méthode
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	protected $modele, $prix, $cordes, $remise, $son;
+
+	const SON_A = 'acoustique';
+	const SON_EA = 'électro-acoustique';
+	const SON_R = 'à résonnateur';
+	const SON_E = 'électrique';
+
+	public function __construct($p1, $p2, $p3, $p4) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+		$this-&gt;son = $p4;
+		$this-&gt;remise = 0;
+	}
+	public function setRemise($taux) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+	}	
+	public function getPrix() {
+		$rem = ceil($this-&gt;prix * $this-&gt;remise / 100);
+		return $this-&gt;prix - $rem;
+	}
+	public function decrire() {
+		echo '&lt;h4&gt;Guitare ', $this-&gt;son, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;',
+				$this-&gt;cordes, ' cordes&lt;br&gt;',				
+				$this-&gt;getPrix(), ' &amp;euro;';			
+	}
+}			// Fin de la classe Guitare	
+
+class GuitareElectrique extends Guitare {
+	private $micros, $vibrato, $jack = 0;
+	
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		parent::__construct($p1, $p2, $p3, parent::SON_E);
+		$this-&gt;micros = $p4;
+		$this-&gt;vibrato = $p5;	
+	}
+	public function setRemise($taux, $val = 0) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+		if (preg_match('/^\d{0,3}(\.\d{0,2})?$/', $val)) {
+			$this-&gt;jack = $val;
+		}		
+	}	
+	public function decrire() {
+		parent::decrire();
+		echo '&lt;br&gt;', $this-&gt;micros, ' micros&lt;br&gt;',
+			(($this-&gt;vibrato) ? 'avec' : 'sans'), ' vibrato';
+		if ($this-&gt;jack &gt; 0) {
+			echo '&lt;br&gt;Jacks offerts (',$this-&gt;jack,' &amp;euro;)';
+		}
+	}
+}			// Fin de la classe GuitareElectrique
+				
+htmlDebut('Surcharge de la méthode setRemise()');
+
+$g1 = new GuitareElectrique('Gretsch G5622T', 995, 6, 3, true);
+$g1-&gt;setRemise(10, 80);	// 10% de remise et 80 euros de jacks
+$g1-&gt;decrire();
+
+$g2 = new GuitareElectrique('Gibson SG', 689, 6, 2, false);
+$g2-&gt;setRemise(20);		// 20% de remise, pas de jack
+$g2-&gt;decrire();
+
+$g3 = new GuitareElectrique('Fender Strat', 609, 6, 3, true);
+$g3-&gt;setRemise(0, 50);	// 0% de remise, 50 euros de jacks
+$g3-&gt;decrire();
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Reprise de l'exemple</h3>
+		<section>
+			<figure style="float: right; margin: 0 0 0 2.5em">
+				<img src="../phpimg/poo_22.png" width="134" height="308">
+			</figure>
+
+			<p>
+				L'affichage des médias étant un plus, il a été décidé qu'il devait être généralisé à toutes les
+				guitares. On va donc le déplacer de la classe fille dans la classe mère. On y est obligé car il
+				n'est pas possible à une classe mère d'atteindre les membres d'une fille (il n'y pas de mot-clé
+				<code>child</code> comme il y a un mot-clé <code>parent</code>).
+			</p>
+			<p>Cette modification du code des 2 classes n'a aucune influence sur le code "externe" qui
+				les utilise puisque grâce à l'héritage c'est le moteur PHP qui invoquera la méthode
+				correctement. A remarquer qu'il est important que le code des classes soit mis dans des fichiers
+				séparés de ceux contenant le code qui les utilise car les modifications en sont d'autant plus
+				simplifiées. Pour rappel, si ça n'est pas fait dans les exemples c'est uniquement par souci de
+				simplification.</p>
+			<p>
+				La méthode <code>decrire()</code> est légérement modifiée pour afficher également les médias associés
+				à l'objet.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : reprise de l'exemple
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	protected $modele, $prix, $cordes, $remise, $son;
+
+	const SON_A = 'acoustique';
+	const SON_EA = 'électro-acoustique';
+	const SON_R = 'à résonnateur';
+	const SON_E = 'électrique';
+
+	public function __construct($p1, $p2, $p3, $p4) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+		$this-&gt;son = $p4;
+		$this-&gt;remise = 0;
+	}
+	public function setRemise($taux) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+	}	
+	public function getPrix() {
+		$rem = ceil($this-&gt;prix * $this-&gt;remise / 100);
+		return $this-&gt;prix - $rem;
+	}
+	public function getMedias() {
+		$fichier = str_replace(' ', '_', $this-&gt;modele);
+		$fichier = strtolower($fichier);
+		return "&lt;div style=float:right;margin-bottom:1em&gt;
+				&lt;audio src=audio/$fichier.mp3 controls
+				style='width: 80px;'&gt;&lt;/audio&gt;
+				&lt;img src=visuels/$fichier.jpg&gt;&lt;/div&gt;";
+	}	
+	public function decrire() {
+		$prix = '&lt;span style=float:right&gt;';
+		$net = $this-&gt;getPrix();
+		if ($net!=$this-&gt;prix) $prix .="&lt;s&gt;$this-&gt;prix&lt;/s&gt;";
+		$prix .= " $net &euro;&lt;/span&gt;";
+		echo '&lt;h4&gt;Guitare ', $this-&gt;son, $prix,	'&lt;/h4&gt;',
+				$this-&gt;getMedias(), 
+				$this-&gt;modele, '&lt;br&gt;',
+				$this-&gt;cordes, ' cordes';			
+	}
+}			// Fin de la classe Guitare	
+
+class GuitareElectrique extends Guitare {
+	private $micros, $vibrato, $jack = 0;
+	
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		parent::__construct($p1, $p2, $p3, parent::SON_E);
+		$this-&gt;micros = $p4;
+		$this-&gt;vibrato = $p5;	
+	}
+	public function setRemise($taux, $val = 0) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+		if (preg_match('/^\d{0,3}(\.\d{0,2})?$/', $val)) {
+			$this-&gt;jack = $val;
+		}		
+	}	
+	public function decrire() {
+		parent::decrire();
+		echo '&lt;br&gt;', $this-&gt;micros, ' micros&lt;br&gt;',
+			(($this-&gt;vibrato) ? 'avec' : 'sans'), ' vibrato';
+		if ($this-&gt;jack &gt; 0) {
+			echo '&lt;br&gt;Jacks offerts (',$this-&gt;jack,' &amp;euro;)';
+		}
+	}
+}			// Fin de la classe GuitareElectrique
+				
+htmlDebut('Reprise de l\'exemple');
+
+$g1 = new Guitare('Dobro Hound Dog', 453, 6, Guitare::SON_R);
+$g1-&gt;setRemise(20);
+$g1-&gt;decrire();
+
+$g2 = new GuitareElectrique('Gretsch G5622T', 995, 6, 3, true);
+$g2-&gt;setRemise(10, 80);
+$g2-&gt;decrire();
+
+$g3 = new GuitareElectrique('Fender Strat', 609, 6, 3, true);
+$g3-&gt;setRemise(0, 50);
+$g3-&gt;decrire();
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<a id="exoGuitare2Manches"></a>
+		<h3 class="fp-exo">Exercice : Etendre une classe</h3>
+		<section>
+			<p>Nous avons décidé d'étendre la vente de guitares aux guitares électriques double manches.
+				Nous trouverons dans notre catalogue les modèles suivants :</p>
+
+			<table>
+				<tr>
+					<td>Modéle</td>
+					<td>Prix</td>
+					<td>Manche haut</td>
+					<td>Manche bas</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>BC Rich Double Neck</td>
+					<td>990 &euro;</td>
+					<td>12 cordes<br>2 micros<br>Sans vibrato
+					</td>
+					<td>6 cordes<br>2 micros<br>Sans vibrato
+					</td>
+					<td><img src="../test/visuels/bc_rich_double_neck.jpg"></td>
+				</tr>
+				<tr>
+					<td>Danelectro DB604</td>
+					<td>799 &euro;</td>
+					<td>4 cordes<br>2 micros<br>Sans vibrato
+					</td>
+					<td>6 cordes<br>2 micros<br>Sans vibrato
+					</td>
+					<td><img src="../test/visuels/danelectro_db604.jpg"></td>
+				</tr>
+				<tr>
+					<td>Gretsch G5566 Jet</td>
+					<td>1329 &euro;</td>
+					<td>6 cordes<br>2 micros<br>Avec vibrato
+					</td>
+					<td>6 cordes<br>2 micros<br>Avec vibrato
+					</td>
+					<td><img src="../test/visuels/gretsch_g5566_jet.jpg"></td>
+				</tr>
+				<tr>
+					<td>Harley Benton 612</td>
+					<td>498 &euro;</td>
+					<td>12 cordes<br>2 micros<br>Sans vibrato
+					</td>
+					<td>6 cordes<br>2 micros<br>Sans vibrato
+					</td>
+					<td><img src="../test/visuels/harley_benton_612.jpg"></td>
+				</tr>
+			</table>
+
+			<p>
+				Etendez la classe GuitareElectrique avec la classe Guitare2Manches pour gérer les guitares
+				doubles manches. Le constructeur de la classe reçoit un tableau contenant les valeurs pour
+				initialiser les attributs. Pour simplifier, on considére que les valeurs sont correctes et on ne
+				fait pas de validation dans le constructeur. La méthode <code>decrire()</code> doit afficher les
+				informations sur les 2 manches.
+			<p>
+			<div>
+				<figure style="float: left; margin: 0 0 0 35px">
+					<img src="../phpimg/poo_23.png" width="130" height="404">
+				</figure>
+				<figure style="float: right; margin: 0 35px 0 0">
+					<img src="../phpimg/poo_25.png" width="327" height="446">
+				</figure>
+			</div>
+
+			<p style="clear: both">
+				Créez une classe Stock responsable de l'instanciation de ces guitares. Les instances des
+				guitares seront gardées dans un tableau. Le constructeur de la classe Stock ira chercher les
+				informations sur les guitares dans le fichier texte dont le nom lui sera passé en paramètre.
+				Le fichier <code>stock/guitares2manches.txt</code> contient les informations pour les
+				instanciations des guitares :
+			</p>
+
+			<pre>
+BC Rich Double Neck|990|12|2|0|6|2|0
+Danelectro DB604|799|4|2|0|6|2|0
+Gretsch G5566 Jet|1329|6|2|1|6|2|1
+Harley Benton 612|498|12|2|0|6|2|0</pre>
+
+			<figure style="float: right; margin: 0 0 0 0">
+				<img src="../phpimg/poo_24.png" width="131" height="70">
+			</figure>
+
+			<p>
+				L'affichage de ce stock de guitares sera réalisé par la méthode <code>afficher()</code> de la
+				classe Stock.
+			</p>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exoGuitare2Manches_solu', 1)">Une solution possible</a>
+			</p>
+
+			<div id="exoGuitare2Manches_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : étendre une classe
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	protected $modele, $prix, $cordes, $remise, $son;
+
+	const SON_A = 'acoustique';
+	const SON_EA = 'électro-acoustique';
+	const SON_R = 'à résonnateur';
+	const SON_E = 'électrique';
+
+	public function __construct($p1, $p2, $p3, $p4) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+		$this-&gt;son = $p4;
+		$this-&gt;remise = 0;
+	}
+	public function setRemise($taux) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+	}	
+	public function getPrix() {
+		$rem = ceil($this-&gt;prix * $this-&gt;remise / 100);
+		return $this-&gt;prix - $rem;
+	}
+	// Méthode ajoutée car besoin dans la sous-sous-classe
+	public function getPrixHTML() {
+		$prix = '&lt;span style=float:right&gt;';
+		$net = $this-&gt;getPrix();
+		if ($net!=$this-&gt;prix) $prix .="&lt;s&gt;$this-&gt;prix&lt;/s&gt;";
+		return "$prix $net &amp;euro;&lt;/span&gt;";
+	}
+	public function getMedias() {
+		$fichier = str_replace(' ', '_', $this-&gt;modele);
+		$fichier = strtolower($fichier);
+		return "&lt;div style=float:right;margin-bottom:1em&gt;
+				&lt;audio src=audio/$fichier.mp3 controls
+				style='width: 80px;'&gt;&lt;/audio&gt;
+				&lt;img src=visuels/$fichier.jpg&gt;&lt;/div&gt;";
+	}	
+	public function decrire() {
+		echo '&lt;h4&gt;Guitare ', $this-&gt;son,
+				$this-&gt;getPrixHTML(), '&lt;/h4&gt;',
+			$this-&gt;getMedias(), 
+			$this-&gt;modele, '&lt;br&gt;',
+			$this-&gt;cordes, ' cordes';			
+	}
+}			// Fin de la classe Guitare	
+
+class GuitareElectrique extends Guitare {
+	// Modification de la visibilité des attributs pour
+	// qu'ils soient visibles de la sous-classe
+	protected $micros, $vibrato, $jack = 0;
+	
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		parent::__construct($p1, $p2, $p3, parent::SON_E);
+		$this-&gt;micros = $p4;
+		$this-&gt;vibrato = $p5;	
+	}
+	public function setRemise($taux, $val = 0) {
+		if (is_numeric($taux) &amp;&amp; estEntre($taux, 0, 100)) {
+			$this-&gt;remise = $taux;
+		}
+		if (preg_match('/^\d{0,3}(\.\d{0,2})?$/', $val)) {
+			$this-&gt;jack = $val;
+		}		
+	}	
+	public function decrire() {
+		parent::decrire();
+		echo '&lt;br&gt;', $this-&gt;micros, ' micros&lt;br&gt;',
+			(($this-&gt;vibrato) ? 'avec' : 'sans'), ' vibrato';
+		if ($this-&gt;jack &gt; 0) {
+			echo '&lt;br&gt;Jacks offerts (',$this-&gt;jack,' &amp;euro;)';
+		}
+	}
+}			// Fin de la classe GuitareElectrique
+
+class Guitare2Manches extends GuitareElectrique {
+	private $cordes2, $micros2, $vibrato2;
+	
+	public function __construct($t) {
+		$p = explode('|', $t); 
+		parent::__construct($p[0], $p[1], $p[2], $p[3], $p[4]);
+		$this-&gt;cordes2 = $p[5];
+		$this-&gt;micros2 = $p[6];
+		$this-&gt;vibratos2 = $p[7];
+	}
+	// Méthode entièrement redéfinie
+	public function decrire() {
+		echo '&lt;h4&gt;Guitare ', $this-&gt;son,
+				$this-&gt;getPrixHTML(), '&lt;/h4&gt;',
+			$this-&gt;getMedias(), 
+			$this-&gt;modele, '&lt;br&gt;';
+		echo '&lt;strong&gt;Manche haut&lt;/strong&gt;&lt;br&gt;',
+			$this-&gt;cordes, ' cordes&lt;br&gt;',
+			$this-&gt;micros, ' micros&lt;br&gt;',
+			(($this-&gt;vibrato) ? 'avec' : 'sans'), ' vibrato';
+		echo '&lt;br&gt;&lt;strong&gt;Manche bas&lt;/strong&gt;&lt;br&gt;',
+			$this-&gt;cordes2,' cordes&lt;br&gt;',
+			$this-&gt;micros2, ' micros&lt;br&gt;',
+			(($this-&gt;vibrato2) ? 'avec' : 'sans'),' vibrato';
+		if ($this-&gt;jack &gt; 0) {
+			echo '&lt;br&gt;Jacks offerts (',$this-&gt;jack,' &amp;euro;)';
+		}
+	}
+}			// Fin de la classe Guitare2manches
+	
+class Stock {
+	private $produits = array();
+
+	public function __construct($fichier) {
+		if (! is_file($fichier)) {
+			exit("$fichier n'est pas un fichier");
+		}
+
+		// Lecture du fichier et instanciation des produits
+		foreach (file($fichier) as $enreg) {
+			$this-&gt;produits[] = new Guitare2Manches($enreg);
+		}
+	}
+	public function afficher() {
+		htmlInfo('Modèles en stock');
+		foreach ($this-&gt;produits as $p) {
+			$p-&gt;decrire();
+		}
+	}
+}			// Fin de la classe Stock
+	
+htmlDebut('Etendre une classe');
+
+$stock = new Stock('stock/guitares2manches.txt');
+$stock-&gt;afficher();	
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+		<footer></footer>
+	</div>
+</body>
+</html>

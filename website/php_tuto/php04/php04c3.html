@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les expressions régulières</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			C'est la fonction <a
+				href="https://www.php.net/manual/fr/function.preg-replace.php" target="_blank">preg_replace()</a>
+			qui permet de rechercher un modèle et de le remplacer par la chaîne
+			de notre choix. La fonction prend en premier paramètre l'expression
+			régulière, en deuxième la chaîne de remplacement et en troisième la
+			chaîne à examiner.
+		</p>
+
+
+		<h3>Remplacement simple</h3>
+		<section>
+			<p>
+				Imaginons que nous avons développé un forum sur lequel nous voulons
+				que les messages restent corrects. Nous pouvons utiliser les
+				expressions régulières pour remplacer certains mots que nous jugeons
+				"déplacés".<br> Nous commencerons par le mot 'con'. Nous
+				voulons remplacer 'con' par '***' dans les expressions comme 't'es
+				un con, un connard', 'vous êtes des cons, des connards', mais pas
+				dans 'je suis content' ou dans 'c'est trop abscon'. L'expression
+				régulière est la suivante :<br> <span class="fp-code">/\bcon(nard)*?s*?\b/i</span>
+			</p>
+			<table>
+				<tr>
+					<td class="fp-code">\b</td>
+					<td>limite de mot</td>
+				</tr>
+				<tr>
+					<td class="fp-code">con</td>
+					<td>la chaîne littérale con</td>
+				</tr>
+				<tr>
+					<td class="fp-code">(nard)*?</td>
+					<td>la chaîne littérale nard 0 ou plusieurs fois</td>
+				</tr>
+				<tr>
+					<td class="fp-code">s*?</td>
+					<td>la chaîne littérale s, 0 ou plusieurs fois</td>
+				</tr>
+				<tr>
+					<td class="fp-code">\b</td>
+					<td>limite de mot</td>
+				</tr>
+			</table>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement');
+
+$txt = "T'es vraiment trop con. T'es un sale connard. Vous êtes tous des cons bande de connards et je suis trop content de vous le dire.";
+
+$exp = '/\bcon(nard)*?s*?\b/i';
+
+$txt = preg_replace($exp, '***', $txt);
+
+echo $txt;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Plutôt que de remplacer par '***', on pourrait remplacer par une
+				image : <img src="../phpimg/bulle.gif" width="16" height="16">
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement');
+
+$txt = "T'es vraiment trop con. T'es un sale connard. Vous êtes tous des cons bande de connards et je suis trop content de vous le dire.";
+
+$exp = '/\bcon(nard)*?s*?\b/i';
+
+$txt = preg_replace($exp, '&lt;img src="../phpimg/bulle.gif"&gt;', $txt);
+
+echo $txt;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Limiter les remplacements</h3>
+		<section>
+			<p>
+				Par defaut, la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-replace.php" target="_blank">preg_replace()</a>
+				remplace toutes les occurences qu'elle trouve. Nous pouvons utiliser
+				un quatrième paramètre qui définira le nombre maximum de
+				remplacements à faire.
+			</p>
+			<p>L'exemple suivant limite le remplacement des cons (vaste
+				programme) aux 2 premiers.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement limité
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement limité');
+
+$txt = "T'es vraiment trop con. T'es un sale connard. Vous êtes tous des cons bande de connards et je suis trop content de vous le dire.";
+
+$exp = '/\bcon(nard)*?s*?\b/i';
+
+$txt = preg_replace($exp, '***', $txt, 2);
+
+echo $txt;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Remplacement par tableaux</h3>
+		<section>
+			<p>
+				La langue française (comme toutes les autres) est très riche en mots
+				injurieux. Si on voulait vérifier aussi salop(e, ard), fuck, Dark
+				Vador et palsambleu devrait-on avoir autant de fonctions <a
+					href="https://www.php.net/manual/fr/function.preg-replace.php" target="_blank">preg_replace()</a>
+				que de mots ? Et bien non car la fonction accepte comme premier
+				argument un tableau d'expressions régulières.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement');
+
+$txt = "Palsambleu, ce prof est vraiment trop con. C'est un salopard qui fait des examens trop difficiles. Et fuck Dark Vador.";
+
+$exp = array();
+$exp[] = '/\bcon(nard)*?s*?\b/i';
+$exp[] = '/salop.*?\b/i';
+$exp[] = '/fuck/i';
+$exp[] = '/Dark\s*?Vador/i';
+
+$txt = preg_replace($exp, '&lt;img src="../phpimg/bulle.gif"&gt;', $txt);
+
+echo $txt;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Le deuxième argument de la fonction <a
+					href="https://www.php.net/manual/fr/function.preg-replace.php" target="_blank">preg_replace()</a>
+				peut aussi être un tableau. L'élément 0 du premier tableau sera
+				remplacé par l'élément 0 du second tableau, l'élément 1 du premier
+				tableau par l'élément 1 du second tableau, etc. Si le deuxième
+				tableau à moins d'éléments que le premier, les éléments sont
+				remplacés par une chaîne vide (ils sont supprimés).
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement');
+
+$txt = "Palsambleu, ce prof est vraiment trop con. C'est un salopard qui fait des examens trop difficiles. Et fuck Dark Vador.";
+
+$exp = array();
+$exp[] = '/\bcon(nard)*?s*?\b/i';
+$exp[] = '/salop.*?\b/i';
+$exp[] = '/fuck/i';
+$exp[] = '/Dark\s*?Vador/i';
+
+$t = array();
+$t[] = '****';
+$t[] = '&lt;img src="../phpimg/oh.gif"&gt;';
+$t[] = '&lt;img src="../phpimg/bulle.gif"&gt;';
+$t[] = 'XXXX';
+
+$txt = preg_replace($exp, $t, $txt);
+
+echo $txt;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.preg-replace.php" target="_blank">preg_replace()</a>
+				peut être utilisée pour supprimer les éléments trouvés : il suffit
+				de les remplacer par une chaîne vide. Si on reprend l'exemple des
+				messages sur un forum, certains sont mal sécurisés et laissent la
+				possibilité d'insérer du code JavaScript dans le texte, code qui
+				sera interprété par le navigateur au moment de la lecture. Pour
+				supprimer tout le code JavaScript qu'on pourrait avoir dans un
+				texte, on peut utiliser l'expression suivante :<br> <span
+					class="fp-code">/&lt;\s*?script.*?&lt;\s*?\/\s*?script\s*?&gt;/i</span>
+			</p>
+			<p>Démonstration ...</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement');
+
+$txt = "Bonjour &lt;script&gt;alert('ah ah')&lt;/script&gt; tout le monde";
+
+htmlInfo('Affichage de la chaîne avant traitement');
+echo $txt;
+
+$exp = '/&lt;\s*?script.*?&lt;\s*?\/\s*?script\s*?&gt;/i';
+
+$txt = preg_replace($exp, '', $txt);
+
+htmlInfo('Affichage de la chaîne après traitement');
+echo $txt;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+
+	</div>
+	<footer></footer>
+</body>
+</html>

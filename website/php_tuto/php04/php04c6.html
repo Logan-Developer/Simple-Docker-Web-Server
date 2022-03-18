@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Découpage de chaînes</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<section>
+			<p class="fp-puce fp-bottom0">
+				Une seule fonction permet de découper une chaîne suivant un modèle :
+				<a
+					href="https://www.php.net/manual/fr/function.preg-split.php" target="_blank">preg_split()</a>.
+				Dans sa forme la plus simple cette fonction utilise deux paramètres
+				:
+			</p>
+			<ul class="fp-ul-puce">
+				<li>l'expression régulière servant à faire le découpage,</li>
+				<li>la chaîne à découper.</li>
+			</ul>
+
+			<p>La fonction renvoie un tableau contenant les sous-chaînes
+				trouvées.</p>
+
+			<p>L'exemple suivant découpe une chaîne suivant les caractères de
+				ponctuation.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : découpage de chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Découpage de chaînes');
+
+$txt = "Il y a bien longtemps, dans une galaxie lointaine, l'Empire Impérial de l'Empereur triomphe sur tous les fronts, broyant tous ceux qui s'opposent à lui d'une main de fer dans un gant d'acier. Seul un petit groupe de rebelles se bat toujours pour la liberté face à la tyrannie, pour le chaos face à l'ordre, et d'abord on fait c'qu'on veut merde !";
+
+$exp = '/[,;.:?!]/';
+
+$t = preg_split($exp, $txt);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+			<p class="fp-remarque">On voit que la fonction a aussi capturé
+				les chaînes vides : le dernier élément du tableau correspond à ce
+				qui se trouve après le dernier point d'exclamation.</p>
+
+
+			<p>L'exemple suivant extrait les mots d'un texte. On considère
+				qu'un mot est composé de 1 ou plusieurs caractères, entourés par des
+				caractères d'espacement et/ou des signes de ponctuation.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : découpage de chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Découpage de chaînes');
+
+$txt = "Il y a bien bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar) ...";
+$exp = '/\W/';
+
+$t = preg_split($exp, $txt);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+
+			<p>On constate que l'expression \W récupère bien les mots, mais
+				aussi des chaînes vides, correspondant entre autres à la suite des
+				caractères de ponctuation.</p>
+
+			<p class="fp-puce fp-bottom0">
+				Pour éviter ces chaînes vides, nous pouvons appeler <a
+					href="https://www.php.net/manual/fr/function.preg-split.php" target="_blank">preg_split()</a>
+				avec des paramètres supplémentaire :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>un troisième paramètre qui définit le nombre de découpages
+					à faire (par défaut la fonction découpe jusqu'à ce qu'elle ne
+					trouve plus de correspondance au modèle)</li>
+				<li>un quatrième paramètre sous la forme d'une constante :
+					PREG_SPLIT_NO_EMPTY qui empêche le renvoi des chaînes vides, et
+					PREG_SPLIT_DELIM_CAPTURE qui demande à la fonction de retourner
+					aussi les délimiteurs (uniquement valable si les délimiteurs sont
+					entourés de parenthèses).</li>
+			</ul>
+
+			<p>Si on ne veut pas fixer le nombre de découpages et que l'on a
+				besoin d'utiliser le quatrième paramètre, le troisième paramètre
+				soit être -1, ce qui signifiera "découpage sans limite".</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : découpage de chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Découpage de chaînes');
+
+$txt = "Il y a bien bien longtemps, dans une très lointaine galaxie (36éme lune à gauche après le Djedaille's Bar) ...";
+
+$exp = '/\W/';
+
+$t = preg_split($exp, $txt, -1, PREG_SPLIT_NO_EMPTY);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>le Web et PHP</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+<link rel="stylesheet" href="specifique.css">
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p class="fp-puce">La validation de données autres que des nombres
+			est la chose la plus difficile, sauf si la chaîne doit obéir à un
+			masque clairement identifié comme par exemple un code composé de 2
+			lettres majuscules, suivies d'un nombre à 3 chiffres, puis d'un tiret
+			et de 3 lettres minuscules. Dans la réalité il est difficile de
+			trouver de telles modèles que l'on pourra traiter facilement avec des
+			expressions régulières (voir le chapitre qui leur est consacré).</p>
+		<p class="fp-bottom0 fp-puce">Donc à défaut de pouvoir appliquer
+			un masque de validation à une chaîne de caractères, les tests
+			minimums vont consister à :</p>
+		<ul class="fp-ul-puce">
+			<li>enlever les espaces blancs éventuels avant et après la
+				chaîne</li>
+			<li>vérifier que la chaîne n'est pas vide (sauf si il est
+				possible de ne rien saisir dans la zone)</li>
+			<li>si des limitations existent, vérifier que la chaîne est
+				d'une longueur minimum et/ou maximum</li>
+			<li>enlever les tags HTML que l'utilisateur aurait pu glisser
+				dans la chaîne pour effectuer par exemple une attaque XSS
+				(cross-site scripting)</li>
+		</ul>
+
+		<form method="post" class="TEST-form fp-bottom0">
+			<a class="TEST-lien" title="Afficher le code HTML"
+				onclick="top.FP.Voir.showPLUS('php06/formulaire02_code.html')"></a>
+			<p class="NO-TEST-titre fp-gras">Formulaire HTML côté client</p>
+
+			<div
+				style="width: 300px; float: left; padding-left: 10px; margin-top: -10px;">
+				<input type="hidden" name="hidSecret" value="pas vu"> <label
+					class="fp-label">Nom</label> <input type="text" name="txtNom"
+					style="width: 260px"> <label class="fp-label">Identifiant</label>
+				<input type="password" name="txtId" style="width: 120px"> <label
+					class="fp-label">Cursus</label>
+				<textarea name="txtCursus" rows="3" style="width: 260px"></textarea>
+			</div>
+
+			<label class="fp-label">Année</label> <input type="radio"
+				name="radAnnee" value="2"> L2 <input type="radio"
+				name="radAnnee" value="3" style="margin-left: 15px"> L3 <input
+				type="radio" name="radAnnee" value="4" checked
+				style="margin-left: 15px"> M1 <input type="radio"
+				name="radAnnee" value="5" style="margin-left: 15px"> M2 <label
+				class="fp-label">Langage préféré <select name="lisLangage"
+				size="1" style="width: 100px">
+					<option value="C ++">C ++</option>
+					<option value="Java">Java</option>
+					<option value="PHP" selected>PHP</option>
+					<option value="Aucun">Aucun</option>
+			</select>
+			</label> <label class="fp-label">Aimerait</label> <input type="checkbox"
+				name="chkCM" value="CM"> plus de cours magistraux<br> <input
+				type="checkbox" name="chkCL" value="CL"> plus de cours en
+			ligne<br> <input type="checkbox" name="chkTD" value="TD">
+			plus de TD<br> <input type="checkbox" name="chkTP" value="TP">
+			plus de TP
+
+			<div style="clear: both; text-align: center; padding: 10px 0;">
+				<input type="reset" name="btnReset" value=" Effacer "> <input
+					type="button" name="btnSubmit" value="Envoyer">
+			</div>
+		</form>
+
+		<p class="fp-inter2 fp-bottom0">Dans notre formulaire d'exemple
+			nous attendons que 4 zones contiennent des valeurs alphanumériques :</p>
+		<ul class="fp-ul-puce">
+			<li>le nom,</li>
+			<li>le cursus,</li>
+			<li>le langage préféré,</li>
+			<li>ce que l'étudiant aimerait en plus.</li>
+		</ul>
+
+		<p>Il pourrait sembler surprenant de tester la valeur reçue pour
+			le langage préféré et ce que l'étudiant aimerait le plus car cette
+			valeur n'est pas saisie, mais résulte du choix dans une liste
+			déroulante ou du choix de telle ou telle case à cocher. Nous sommes
+			dans le même cas que celui des boutons radio vu précédemment : ce
+			test est obligatoire, car rien n'empêche la personne qui va envoyer
+			le formulaire de modifier facilement les valeurs correspondantes à
+			ces zones avec les outils offerts par les navigateurs.</p>
+
+
+		<p class="fp-inter2 fp-puce">Commençons par le nom qui doit être
+			constitué de 2 à 50 caractères. Le test est très simple.</p>
+
+		<form id="post_01" method="post" action=""
+			class="TEST-form fp-bottom0">
+			<a class="TEST-lien" title="Afficher le code HTML"
+				onclick="top.FP.Voir.showPLUS('php06/formulaire07_code.html')"></a>
+			<p class="NO-TEST-titre fp-gras">Exemple de valeurs libres</p>
+			<div style="padding-left: 10px; margin-top: -10px;">
+				<label class="fp-label">Nom</label> <input type="text" name="txtNom"
+					style="width: 260px">
+			</div>
+			<div style="clear: both; text-align: center; padding: 10px 0;">
+				<input type="reset" name="btnReset" value=" Effacer "> <input
+					type="button" name="btnSubmit" value="Envoyer"
+					onclick="top.FP.Voir.testForm(this.form)">
+			</div>
+		</form>
+
+		<form action="" method="post" class="TEST-form fp-top0">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_05.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Traitement du formulaire côté serveur</strong>
+			</div>
+			<textarea data-binome="post_01" name="txtCode" class="TEST-textarea"
+				rows="30" cols="55">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Valider une chaîne de caractères');
+
+htmlInfo('Test du nom');
+
+$nom = trim($_POST['txtNom']);
+$long = strlen($nom);
+
+if ($long &lt; 2 || $long &gt; 50) {
+	echo 'Mauvaise longueur';
+} else {
+	echo 'Longueur Ok';
+}
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-inter2">On ne peut pas vraiment tester autre chose
+			sur un nom, à part peut-être obliger à ce que le premier caractère
+			soit un caractére majuscule. La suite est trop aléatoire, tant les
+			noms patronymique peuvent changer d'une société à une autres
+			(présence de tiret, d'apostrophe, d'espaces, etc.).</p>
+
+		<p class="fp-puce">
+			Nous allons maintenant enlever les tags HTML que l'utilisateur aurait
+			pu glisser dans la chaîne pour effectuer par exemple une attaque XSS
+			(cross-site scripting). Pour vous rendre compte de ce problème, dans
+			le formulaire suivant saisissez : <br> &lt;img
+			src="http://www.deguisement.fr/img/p-deguisement.fr/232-309-thickbox.jpg"&gt;<br>
+			puis soumettez le formulaire.
+		</p>
+		<p>
+			Vous pouvez aussi saisir par exemple : <br>
+			&lt;script&gt;location="http://google.fr"&lt;/script&gt;
+		</p>
+
+		<form id="post_02" method="post" action=""
+			class="TEST-form fp-bottom0">
+			<a class="TEST-lien" title="Afficher le code HTML"
+				onclick="top.FP.Voir.showPLUS('php06/formulaire07_code.html')"></a>
+			<p class="NO-TEST-titre fp-gras">Exemple de valeurs libres</p>
+			<div style="padding-left: 10px; margin-top: -10px;">
+				<label class="fp-label">Nom</label> <input type="text" name="txtNom"
+					style="width: 260px">
+			</div>
+			<div style="clear: both; text-align: center; padding: 10px 0;">
+				<input type="reset" name="btnReset" value=" Effacer "> <input
+					type="button" name="btnSubmit" value="Envoyer"
+					onclick="top.FP.Voir.testForm(this.form)">
+			</div>
+		</form>
+
+		<form action="" method="post" class="TEST-form fp-top0">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_05.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Traitement du formulaire côté serveur</strong>
+			</div>
+			<textarea data-binome="post_02" name="txtCode" class="TEST-textarea"
+				rows="30" cols="55">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Code inclus et exécuté au réaffichage');
+
+htmlInfo('Cross-site scripting simplifié');
+
+$nom = $_POST['txtNom'];
+
+echo $nom;
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-inter2">Le simple affichage du champ reçue du
+			formulaire provoque l'exécution du code saisi par l'utilisateur. Si
+			on imagine un site qui laisse ses visiteurs saisir des commentaires,
+			ou des posts dans un forum, avec un tel trou de sécurité, chaque fois
+			qu'un autre utilsateur voudra lire le commentaire ou le post, le code
+			sera exécuté dans son navigateur. A la place de l'adresse
+			"univ-fcomte.fr" on pourrait aisément avoir l'adresse d'une page qui
+			permette de pirater login et mot de passe en proposant une imitation
+			de la vraie page du site.</p>
+
+		<p class="fp-puce">
+			La fonction <a
+				href="https://www.php.net/manual/fr/function.strip-tags.php" target="_blank">strip_tags()</a>
+			va enlever tout ou partie des tags HTML qui pourrait être contenu
+			dans un texte. Même si certains tags peuvent sembler inoffencifs à
+			première vue, je vous conseille de systématiquement enlever tous les
+			tags.
+		</p>
+
+		<form id="post_03" method="post" action=""
+			class="TEST-form fp-bottom0">
+			<a class="TEST-lien" title="Afficher le code HTML"
+				onclick="top.FP.Voir.showPLUS('php06/formulaire07_code.html')"></a>
+			<p class="NO-TEST-titre fp-gras">Exemple de valeurs libres</p>
+			<div style="padding-left: 10px; margin-top: -10px;">
+				<label class="fp-label">Nom</label> <input type="text" name="txtNom"
+					style="width: 260px">
+			</div>
+			<div style="clear: both; text-align: center; padding: 10px 0;">
+				<input type="reset" name="btnReset" value=" Effacer "> <input
+					type="button" name="btnSubmit" value="Envoyer"
+					onclick="top.FP.Voir.testForm(this.form)">
+			</div>
+		</form>
+
+		<form action="" method="post" class="TEST-form fp-top0">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_05.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Traitement du formulaire côté serveur</strong>
+			</div>
+			<textarea data-binome="post_03" name="txtCode" class="TEST-textarea"
+				rows="30" cols="55">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Valider une chaîne de caractères');
+
+htmlInfo('Test du nom');
+
+$nom = trim($_POST['txtNom']);
+$long = strlen($nom);
+
+if ($long &lt; 2 || $long &gt; 50) {
+	echo 'Mauvaise longueur';
+} else {
+	echo 'Longueur Ok';
+}
+
+$clean = strip_tags($nom);
+if ($clean != $nom) {
+	echo '&lt;br&gt;Surveiller adresse IP, tentative de XSS ?';
+} else {
+	echo '&lt;br&gt;Pas de tags, Ok';
+}
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Sous-chaînes</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<section>
+			<p>
+				Pour construire des modèles généraux, gérer la répétition d'un
+				caractère est parfois insuffisant. On peut alors utiliser les <b>parenthèses</b>
+				ouvrante et fermante pour <b>délimiter des sous-chaînes</b> ou des <b>groupes</b>
+				de caractères.
+			<p>
+				Nous avons vu un peu plus haut comment tester la validité dune date
+				au format JJ/MM/AAAA avec l'expression régulière :<br> <span
+					class="fp-code">/^\d{2}\/\d{2}\/\d{4}$/</span>
+			<p>
+				Dans cette expression on voit que le modèle <span class="fp-code">\d{2}\/
+				</span>est répété deux fois (pour les jours et les mois). On peut donc
+				entourer ce modèle avec des parenthèses, et lui appliquer un
+				quantificateur :<br>
+			<p>
+				<span class="fp-code"><span class="fp-rouge">(</span>\d{2}\/<span
+					class="fp-rouge">){2}</span></span>
+			</p>
+			<p>
+				L'expression complète devient :<br>
+			<p>
+				<span class="fp-code">/^<span class="fp-rouge">(\d{2}\/){2}</span>\d{4}$/
+				</span>
+			</p>
+			<p>
+				Le raccourci est d'autant plus interessant que nous pouvons
+				facilement modifier l'expression pour tester les dates avec un
+				séparateur autre que le slash (/), comme le tiret (-), le point (.)
+				ou l'espace :<br> <span class="fp-code">/^(\d{2}<span
+					class="fp-rouge">[\/\-\. ]</span>){2}\d{4}$/
+				</span>
+			</p>
+			<p>Ainsi avec une seule expression on peut valider le format d'un
+				date comme 01/02/2003 ou 01-02-2003 ou 01.02.2003 ou 01 02 2003.</p>
+			<p>
+				Nous pouvons aller plus loin dans le contrôle du format, et la
+				facilité de saisie laissée à l'utilisateur, en spécifiant que le
+				jour et le mois peuvent avoir 1 ou 2 chiffres, et que l'année peut
+				avoir 2 ou 4 chiffres :<br> <span class="fp-code">/^(\d<span
+					class="fp-rouge">{1,2}</span>[\/\-\. ]){2}\d<span class="fp-code">{2,4}</span>$/
+				</span>
+			</p>
+			<p>Ainsi 1/2/03 est tout aussi valide que 1-02-2003 ou 1 2 03.</p>
+			<p class="fp-remarque">Remarque : l'expression régulière contrôle
+				simplement que la date saisie correspond à un format particulier,
+				mais ne contrôle pas la validité de la date elle même (ie 32/13/2345
+				est un format correcte, mais la date n'est pas valide)</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : répétitions de sous-chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Répétitions de sous-chaînes');
+
+htmlDebut('Tester un format de date');
+
+$exp = '/^(\d{1,2}[\/\-\. ]){2}\d{2,4}$/';
+
+testerExp($exp, '1/2/2003');
+testerExp($exp, '01 02 03');
+testerExp($exp, '1-02-03');
+testerExp($exp, '1 2 2003');
+testerExp($exp, '1.2.03');
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Vous vous souvenez de l'exemple de vérification du format d'un
+				nombre (-####.##), pour lequel l'expression régulière est un peu
+				longue si nous voulons gérer aussi la saisie d'un entier sans que
+				l'utilisateur soit obligé de taper le point (.) décimal :<br> <span
+					class="fp-code">/^-{0,1}\d{1,4}$|^-{0,1}\d{1,4}\.\d{0,2}$/</span>
+			</p>
+			<p>
+				Avec le groupement de caractère nous pouvons supprimer le <span
+					class="fp-code">ou</span> (|). Commençons par nous occuper du début
+				de la chaîne qui peut commencer éventuellement par le signe moins
+				(-) :<br> <span class="fp-code">/^<span class="fp-rouge">(-?)</span>\d{0,4}\.\d{0,2}$/
+				</span>
+			</p>
+			<p>
+				Pour spécifier que l'utilisateur n'a a saisir le point décimal que
+				si il y a des décimales, il faut grouper la fin de l'expression :<br>
+				<span class="fp-code">/^(-?)\d{0,4}<span class="fp-rouge">(\.\d{0,2})?</span>$/
+				</span>
+			</p>
+			<p>Et voilà !</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : répétitions de sous-chaînes
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Répétitions de sous-chaînes');
+
+htmlInfo('Un nombre à 2 décimales entre -9999.99 et 9999.99');
+
+$exp = '/^(-?)\d{0,4}(\.\d{0,2})?$/';
+
+testerExp($exp, 123.45);
+testerExp($exp, 1234.5);
+testerExp($exp, -12);
+testerExp($exp, -.12);
+testerExp($exp, .34);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<a id="verif_mail"></a>
+		<h3 class="fp-exo">Exercice : vérifier le format d'une adresse
+			e-mail</h3>
+		<section>
+			<p class="fp-bottom0">Ecrivez l'expression régulière qui permet
+				de vérifier une adresse e-mail répondant à la suite de caractères
+				suivante :</p>
+			<ul class="fp-ul-puce">
+				<li>un caractère alphabétique</li>
+				<li>éventuellement d'autres "caractères acceptables"</li>
+				<li>le caractère @</li>
+				<li>un caractère alphabétique</li>
+				<li>éventuellement d'autres "caractères acceptables"</li>
+				<li>le caractère .</li>
+				<li>de deux à six caractères alphabétiques.</li>
+			</ul>
+
+			<p>La chaîne ne doit contenir aucun espace et il ne peut y avoir
+				qu'un caractère @.</p>
+			<p class="fp-bottom0">Les "caractères acceptables" sont :</p>
+			<ul class="fp-ul-puce">
+				<li>les caractères alphabétiques (a à z), en minuscule ou
+					majuscule, caractères accentués exclus.</li>
+				<li>les chiffres de 0 à 9</li>
+				<li>l'underscore (_)</li>
+				<li>le tiret (-)</li>
+				<li>le point (.)</li>
+			</ul>
+
+			<p class="fp-remarque">Remarque : le test de validité est
+				volontairement simplifié. Vous trouverez dans la solution une
+				explication complète sur le format des adresses e-mail conformes à
+				la norme RFC2822.</p>
+			<p class="fp-bottom0">Exemples à tester :</p>
+			<ul class="fp-ul-puce">
+				<li>piat@univ-fcomte.frfr</li>
+				<li>piat@lifc.univ-fcomte.fr</li>
+				<li>piatunifc-fcomte.fr</li>
+				<li>piat@univfcomte-fr</li>
+			</ul>
+
+			<p class="fp-solution">
+				<a onClick="top.FP.Voir.showSolution('verif_mail_solu', 1)">Une
+					solution possible</a>
+			</p>
+			<div id="verif_mail_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-exp" title="Afficher un résumé des expressions"
+						onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : vérifier une adresse e-mail
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Vérifier une adresse e-mail');
+
+/*
+Vérifier une adresse e-mail répondant à la suite de caractères suivante :
+- un caractère alphabétique 
+        ^[a-zA-Z]
+- éventuellement d'autres "caractères acceptables" 
+        [a-zA-Z0-9_\.\-]*
+- le caractère @ 
+        @
+- un caractère alphabétique 
+        [a-zA-Z]
+- éventuellement d'autres "caractères acceptables" 
+        [a-zA-Z0-9_\.\-]*
+- le caractère . 
+        \.
+- de deux à six caractères alphabétiques. 
+        [a-zA-Z]{2,6}$ 
+        
+En regroupant on obtient :
+        ^[a-zA-Z][a-zA-Z0-9_\.\-]*@[a-zA-Z][a-zA-Z0-9_\.\-]*\.[a-zA-Z]{2,6}$ 
+
+Une autre expression possible :
+        ^[a-zA-Z][\w\-\.]*@[a-zA-Z][\w\-\.]*\.[a-zA-Z]{2,6}$
+*/
+
+$e = '/^[a-zA-Z][a-zA-Z0-9_\.\-]*@[a-zA-Z][a-zA-Z0-9_\.\-]*\.[a-zA-Z]{2,6}$/';
+
+$mail = 'piat@univ-fcomte.frfr';
+testerExp($e, $mail);
+
+$mail = 'piat@lifc.univ-fcomte.fr';
+testerExp($e, $mail);
+
+$mail = 'piatunifc-fcomte.fr';
+testerExp($e, $mail);
+
+$mail = 'piat@univfcomte-fr';
+testerExp($e, $mail);
+
+htmlFin();
+?&gt;					
+					</textarea>
+				</form>
+
+
+				<p>
+					Dans cet exercice nous avons vérifié une adresse e-mail tel qu'on
+					le fait le plus souvent, et comme vous en trouverez de nombreux
+					exemple sur le Web. Pourtant ces vérifications ne sont pas bonnes,
+					voire fantaisistes, et s'appuient sur ce que l'on croit que peut
+					être une adresse email valide. <br> Par exemple, on peut
+					tomber sur des validateurs qui estiment qu'un nom de grand domaine
+					ne peut pas faire plus de 3 caractères. C'est vrai pour les noms de
+					grands domaines géographiques (<span class="fp-code">.fr</span>, <span
+						class="fp-code">.de</span>, <span class="fp-code">.ru</span>),
+					pour le <span class="fp-code">.com</span>, mais faux pour les
+					nouveaux noms comme <span class="fp-code">.info</span>, <span
+						class="fp-code">.name</span>, <span class="fp-code">.museum</span>
+					ou <span class="fp-code">.aero</span>.<br> Le nom de domaine
+					est toujours considéré comme une chaîne de caractère, mais une
+					adresse IP comme <span class="fp-code">123.456.78.90</span> est
+					tout à fait valable.<br> D'autres exemples d'adresses valables
+					:<br> <span class="fp-code">&quot;Dark
+						Vador"@zeforce.com</span><br> <span class="fp-code">yoda@[123.124.233.4]</span><br>
+					<span class="fp-code">+1~1+@un-un.info</span><br> <span
+						class="fp-code">{o_o}@oeil.fr</span><br> <span
+						class="fp-code">&quot;[[ piat ]]&quot;@ok.com</span><br> <span
+						class="fp-code">&quot;C'est vraiment le meilleur&quot;
+						&lt;fp@piat.info&gt;</span><br> Surprenant non ?
+				</p>
+				<p>
+					Le format des adresses e-mail est défini par l'IETF (Internet
+					Engineering Task Force) dans la norme RFC2822 <a
+						href="http://www.ietf.org/rfc/rfc2822.txt" target="_blank">(http://www.ietf.org/rfc/rfc2822.txt</a>
+					) qui décrit plus généralement le &quot;format des messages
+					Internet&quot;. La RFC2822 spécifie ce qui est permis et ce qui ne
+					l'est pas dans une adresse e-mail, et partage une adresse en deux
+					parties séparées par le signe @ : <span class="fp-code">partie_locale@domaine</span>.
+				</p>
+				<p>
+					La <span class="fp-code">partie_locale</span> peut avoir de 1 à 64
+					caractères et peut être composée de 2 façons.
+				</p>
+				<p>
+					Elle peut être une suite de caractères parmi la sélection suivante
+					:<br> - a à z et A à Z<br> - 0 à 9<br> - les
+					caractères !, #, $, %, &amp;, ', *, +, -, /, =, ?, ^, _, `, {, |,
+					}, ~<br> - le point (.) peut être utilisé, sauf à la première
+					place.
+				</p>
+				<p>La deuxième façon de composer la partie locale est d'utiliser
+					n'importe quelle suite de caractères (sauf \) et de les entourer
+					avec des guillemets doubles.</p>
+				<p>
+					La <span class="fp-code">partie_locale</span> doit être traitée
+					comme respectant les différences majuscules et minuscules, même si
+					la norme &quot;décourage&quot; le mélange.
+				</p>
+				<p>
+					La partie <span class="fp-code">domaine</span> de l'adresse e-mail
+					peut elle aussi être composées de plusieurs façons, mais ne doit
+					jamais excéder 255 caractères au total. La forme la plus courante
+					du <span class="fp-code">domaine</span> est une série de chaînes de
+					caractères, séparées par un point (.). Une chaîne peut être
+					composée de 1 à 63 caractères parmi la sélection suivante :<br>
+					- a à z,<br> - 0 à 9,<br> - trait d'union.<br>
+					Officiellement la chaîne doit commencer par une lettre, mais dans
+					la pratique des noms de domaines commençant par un chiffre ont été
+					enregistrés.
+				</p>
+				<p>
+					Généralement la partie <span class="fp-code">domaine</span> est
+					composée de deux chaines, la seconde représentant le nom de grand
+					domaine (.fr par exemple).
+				</p>
+				<p>
+					La partie <span class="fp-code">domaine</span> ne fait pas de
+					différence entre les majuscules et les minuscules.
+				</p>
+				<p>
+					La partie <span class="fp-code">domaine</span> peut être composée
+					sous la forme d'une adresse IP, et dans ce cas elle peut être
+					entourée avec des guillements doubles.
+				</p>
+				<p>L'adresse e-mail peut être précédée d'un commentaire, entouré
+					de guillemets. L'adresse doit alors être elle même entourée par les
+					caractères &lt; et &gt;.</p>
+				<p>La vérification d'une adresse e-mail, si l'on veut se
+					conformer à la RFC 2822, est donc beaucoup plus complexe qu'on ne
+					le pense généralement, et ne peut être faite correctement avec une
+					seule expression régulière.</p>
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-exp" title="Afficher un résumé des expressions"
+						onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : vérifier une adresse e-mail
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Vérifier une adresse e-mail');
+
+testerMail('piat@univ-fcomte.frfr');
+testerMail('piat@lifc.univ-fcomte.fr');
+testerMail('piatunifc-fcomte.fr');
+testerMail('piat@univfcomte-fr');
+testerMail('"François Piat"@univ-fcomte.fr');
+testerMail('piat@194.57.91.223');
+
+htmlFin();
+
+//======================================================
+/** Vérifier une adresse e-mail en conformité avec la norme RFC 2822  (ou a peu près (:-))
+ *	@param string	$mail	Adresse à tester
+ **/
+function testerMail($mail) {
+    /* 
+    Nous commençons par vérifier que l'adresse contient
+    bien un @ (et un seul), et que les deux parties sont de
+    longueur correcte.
+    Il doit y avoir de 1 à 64 caractères, @ exclus
+     	[^@]{1,64} 
+    suivis de @ et de 1 à 255 caractères, @ exclus
+        @[^@]{1,255}
+    Comme la chaîne ne doit rien avoir d'autre, on l'entoure 
+    avec ^ (commence) et $ (fini)
+    */
+    
+    $exp = '/^[^@]{1,64}@[^@]{1,255}$/';
+    
+    if (! preg_match($exp, $mail)) {
+        echo "&lt;hr&gt;$mail n'est pas valide (longueur ou @)";
+        return;
+    }
+    
+    // On découpe l'adresse en 2 parties : locale et domaine
+    // Les tests seront plus faciles à faire.
+    $parties = explode('@', $mail);
+    
+    /*
+    La partie locale doit être conforme à une chaîne de 
+    caractères prèdéfinis et elle ne doit pas commencer 
+    par un point (.)
+        ^[A-Za-z0-9!#$%&'*+-\/=?^_`{|}~]
+    On peut ensuite avoir de 0 à 62 autres caractères 
+    prédéfinis
+        [A-Za-z0-9!#$%&'*+-\/=?^_`{|}~\.]{0,62}$
+     Ce qui donne :
+        ^[A-Za-z0-9!#$%&'*+-\/=?^_`{|}~][A-Za-z0-9!#$%&'*+-\/=?^_`{|}~\.]{0,62}$
+    
+    La chaîne peute aussi être composée de n'importe quels
+    caractères, sauf \, entourés de guillemets :
+        ^"[^(\\|")]{1,62}"$
+    Dans cette dernière expression, la sous-expression 
+    entre crochets signifie que l'on exclu (caractère ^) 
+    le caractère \ (protégé ici par un \) et le caractère " 
+    
+    Les deux expressions sont reliées avec un ou (|).
+    Pour ne pas provoquer de collision avec les guillemets
+    simples ou doubles contenus dans les expressions, nous
+    construisons la variable par plusieurs concaténations.
+    */
+    
+    $exp = '/';
+    $exp .= "^[A-Za-z0-9!#$%&'*+-\/=?^_`{|}~][A-Za-z0-9!#$%&'*+-\/=?^_`{|}~\.]{0,62}$";
+    $exp .= '|';
+    $exp .= '^"[^(\\|")]{1,62}"$';
+    $exp .= '/';
+    if (! preg_match($exp, $parties[0])) {
+        echo "&lt;hr&gt;$mail n'est valide (partie locale)";
+        return;
+    }
+
+    // On peut maintenant s'occuper de la partie domaine.
+    // On commence par récupèrer les parties séparées par
+    //  des points (.)
+    $domaines = explode('.', $parties[1]);
+    
+    /*
+    Si la première partie est composée de 1 à 3 chiffres,
+    on considère que le domaine est une adresse IP de la
+    forme 123.123.12.1 soit
+        ^(\d{1,3}\.){3}\d{1,3}$
+    Cette vérification d'adresse IP est un peu faible ...
+    */
+    
+    if (preg_match('/^\d{1,3}$/', $domaines[0])) {
+        if (preg_match('/^(\d{1,3}\.){3}\d{1,3}$/', $parties[1])) {
+            echo "&lt;hr&gt;$mail est une adress valide";
+        } else {
+            echo "&lt;hr&gt;$mail n'est pas valide (IP)";
+        }
+        return;
+    }
+    
+    /*
+    Le doamine peut aussi être une adresse IP de la forme 
+    [123.123.12.1] soit l'expression
+        ^\[(\d{1,3}\.){3}\d{1,3}\]$
+    */
+        
+    if (preg_match('/^\[\d{1,3}$/', $domaines[0])) {
+        if (preg_match('/^\[(\d{1,3}\.){3}\d{1,3}\]$/', $domaines)) {
+            echo "&lt;hr&gt;$mail est une adress valide";
+        } else {
+            echo "&lt;hr&gt;$mail n'est pas valide (IP [])";
+        }
+        return;
+    }
+    
+    /*
+    Si on passe ici c'est que le domaine n'est pas une
+    adresse IP. On considère que le domaine doit être au
+    moins composé de 2 parties comme monsite.com, bien 
+    que dans la norme rien ne l'oblige.
+    */
+    if (count($domaines) &lt; 2) {
+        echo "&lt;hr&gt;$mail n'est pas valide (domaine 2)";
+        return;    
+    }
+    
+    /* 
+    Chacune des parties du domaine doit être conforme à :
+    une lettre ou un chiffre, suivi de 0 à 61 lettres, 
+    chiffres ou tiret, suivi de une lettre ou un chiffre
+        ^[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]$
+    ou à l'expression :
+        ^[A-Za-z0-9]+$    
+    */
+    $exp = '/^[A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9]$|^[A-Za-z0-9]+$/';
+    
+    foreach ($domaines as $d) {
+        if (! preg_match($exp, $d)) {
+            echo "&lt;hr&gt;$mail n'est pas valide (partie domaine)";
+            return;
+        }
+    }
+    
+    echo "&lt;hr&gt;$mail est une adress valide";
+}
+
+?&gt;
+</textarea>
+				</form>
+
+
+			</div>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

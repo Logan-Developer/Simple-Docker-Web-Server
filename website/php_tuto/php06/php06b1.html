@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Télécharger des fichiers</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Le téléchargement de fichiers du client vers le serveur (upload
+			en bon français) est une opération de plus en plus courante et
+			extrêmement simple avec PHP.</p>
+
+		<h3>Le formulaire client</h3>
+		<section>
+			<p class="fp-puce">
+				Pour que l'utilisateur puisse choisir le fichier à télécharger sur
+				son ordinateur nous utilisons un formulaire et une zone de saisie <span
+					class="fp-code">&lt;input&gt;</span> de type <span class="fp-code">file,
+				</span>spécialement concue pour cet usage.
+			</p>
+			<pre class="PHP_HTML">
+&lt;form method="post" action="page.php" enctype="multipart/form-data"&gt;
+Choisissez un fichier à télécharger : 
+&lt;input type="file" name="uplFichier"&gt;
+&lt;input type="submit" name="btnUpload" value="Envoyer"&gt;
+&lt;/form&gt;</pre>
+
+			<p>
+				Le tag <span class="fp-code">&lt;form</span>&gt; doit contenir
+				l'attribut <span class="fp-code">enctype</span> avec la valeur <span
+					class="fp-code">multipart/form-data</span>. <br> Par défaut,
+				le type d'encodage (<span class="fp-code">enctype</span>) d'un
+				formulaire est <span class="fp-code">application/x-www-forme-urlencoded</span>
+				qui indique que les données saisies dans le formulaire seront
+				transmises au serveur sous la forme de l'encodage des URLs (<span
+					class="fp-code">Zone1=Valeur1&amp;Zone2=Valeur2&amp;...</span>). Ce
+				type est inefficace pour envoyer de grandes quantités de données
+				binaires ou des textes qui contiennent des caractères non-ASCII. <br>
+				La RFC2388 (<a href="http://www.faqs.org/rfcs/rfc2388.html"
+					target="_blank">http://www.faqs.org/rfcs/rfc2388.html</a>) définit
+				donc la valeur<span class="fp-code"> multipart/form-data</span> pour
+				l'attribut <span class="fp-code">enctype</span>. Cette valeur
+				prévient le serveur que le formulaire va envoyer éventuellement
+				autre chose que des données contenues dans des commandes HTTP, et
+				qu'il peut s'attendre à recevoir des données non-ASCII et des
+				données binaires (des fichiers par exemple).
+			</p>
+			<p class="fp-puce">
+				Ensuite, il faut prendre garde à la taille des fichiers téléchargés.
+				L'option de configuration <a
+					href="https://www.php.net/manual/fr/ini.core.php#ini.upload-max-filesize" target="_blank">upload_max_filesize</a>
+				dans le fichier php.ini détermine la taille maximum d'un fichier
+				uploadé (par défaut : 2 MB). Cette taille peut être réduite
+				ponctuellement si nous ajoutons une zone cachée dans le formulaire :<br>
+				<span class="fp-code">&lt;input type="hidden"
+					name="MAX_FILE_SIZE" value="10240"&gt;</span>
+			</p>
+			<p class="fp-remarque">
+				Si vous modifiez l'option de configuration <a
+					href="https://www.php.net/manual/fr/ini.core.php#ini.upload-max-filesize" target="_blank">upload_max_filesize</a>
+				il faut aussi modifier <a
+					href="https://www.php.net/manual/fr/ini.core.php#ini.post-max-size" target="_blank">post_max_size</a>
+				en conséquence.
+			</p>
+			<p>
+				Cette zone cachée doit se trouver <b>directement</b> aprés le tag <span
+					class="fp-code">&lt;form&gt;</span>, et <b>doit s'appeler</b> <span
+					class="fp-code">MAX_FILE_SIZE</span>. Sa valeur détermine la taille
+				maximum en KB du fichier qui pourra être téléchargé (dans la ligne
+				d'exemple 10 KB). Si cette valeur est supérieure à la valeur de
+				l'option de configuration <a
+					href="https://www.php.net/manual/fr/ini.core.php#ini.upload-max-filesize" target="_blank">upload_max_filesize</a>,
+				elle sera ignorée.
+			</p>
+			<p>Le code de notre formulaire devient :</p>
+			<pre class="PHP_HTML">
+&lt;form enctype="multipart/form-data" method="post" action="page.php"&gt;
+&lt;input type="hidden" name="MAX_FILE_SIZE" value="102400"&gt;
+Sélectionnez le	fichier à télécharger :
+&lt;input type="file" name="uplFichier"&gt;
+&lt;input type="submit" name="btnUpload" value="Envoyer"&gt;
+&lt;/form&gt;</pre>
+
+			<p>Le code de traitement pour le côté client est terminé. Nous
+				pouvons maintenant examiner ce qu'il y a à faire du côté serveur
+				pour correctement récupérer et traiter les informations passées par
+				le formulaire.</p>
+		</section>
+
+		<h3>Le traitement serveur</h3>
+		<section>
+			<p class="fp-puce">
+				Sur le serveur, les informations sur le fichier transmises par le
+				formulaire seront accessible dans le <b>tableau superglobal <span
+					class="fp-code">$_FILES</span></b>. Chaque élément du tableau
+				représentant un fichier télécharge est <b>lui même un tableau
+					associatif</b> de 4 éléments :
+			</p>
+
+			<table class="TAB-def">
+				<tr>
+					<td><span class="fp-code">name</span></td>
+					<td>le nom du fichier envoyé par le navigateur.</td>
+				</tr>
+				<tr>
+					<td><span class="fp-code">type</span></td>
+					<td>le type MIME du fichier uploadé, tel que déterminé par le
+						navigateur (exemples : application/zip, image/png, video/mp4,
+						application/pdf).</td>
+				</tr>
+				<tr>
+					<td><span class="fp-code">size</span></td>
+					<td>la taille en bytes du fichier uploadé. Si l'utilisateur
+						essaye de télécharger un fichier dont la taille est supérieure à
+						la limite autorisée, <span class="fp-code">size</span> sera égal à
+						0.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="fp-code">tmp_name</span></td>
+					<td>le nom du fichier temporaire créé sur le serveur. Si
+						l'utilisateur essaye de télécharger un fichier dont la taille est
+						supérieure à la limite autorisée, <span class="fp-code">tmp_name</span>
+						est egal à "none".
+					</td>
+				</tr>
+				<tr>
+					<td><span class="fp-code">error</span></td>
+					<td>code d'erreur<br> 0 = pas d'erreur / 1 = la taille du
+						fichier dépasse la taille de <span class="fp-code">upload_max_filesize</span>
+						dans php.ini / 2 = la taille du fichier dépasse la taille
+						spécifiée dans le formulaire HTML / 3 = fichier partiellement
+						uploadé / 4 = fichier introuvable.
+					</td>
+				</tr>
+			</table>
+			<p class="fp-bottom0 fp-puce">
+				La récupération du fichier sur le serveur doit se faire avec <b>2
+					fonctions dédiées</b> :
+			</p>
+			<ul class="fp-ul-puce">
+				<li><a
+					href="https://www.php.net/manual/fr/function.is-uploaded-file.php" target="_blank">is_uploaded_file()</a></li>
+				<li><a
+					href="https://www.php.net/manual/fr/function.move-uploaded-file.php" target="_blank">move_uploaded_file()</a></li>
+			</ul>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.is-uploaded-file.php" target="_blank">is_uploaded_file()</a>
+				prévient des erreurs de transfert et <b>garantit</b> que l'on
+				travaille bien avec un fichier téléchargé, et non un fichier "natif"
+				du serveur (prévention contre les risques d'attaque pirates).
+			</p>
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.move-uploaded-file.php" target="_blank">move_uploaded_file()</a>
+				nous permet de déplacer le fichier téléchargé du répertoire d'upload
+				vers son répertoire final sur le serveur. En effet, un fichier
+				téléchargé sur le serveur est toujours stocké dans un <b>répertoire
+					temporaire</b>, déterminé par l'option de configuration <a
+					href="https://www.php.net/manual/fr/ini.core.php#ini.upload-tmp-dir" target="_blank">upload_tmp_dir</a>
+				dans le fichier php.ini. Je vous recommande pour des raisons de
+				sécurité de ne <b>jamais</b> utiliser une fonction de copie de
+				fichier comme <a
+					href="https://www.php.net/manual/fr/function.copy.php" target="_blank">copy()</a>,
+				mais de toujours utiliser <a
+					href="https://www.php.net/manual/fr/function.move-uploaded-file.php" target="_blank">move_uploaded_file()</a>
+				qui vérifie que le fichier copié est bien un fichier téléchargé.
+			</p>
+			<p class="fp-remarque">Il faut bien entendu que le répertoire de
+				fichiers temporaire et le répertoire dans lequel vous voulez déposer
+				le fichier téléchargé permettent l'accès en lecture / écriture à
+				l'utilisateur système associé au serveur Web (par exemple
+				IUSR_NomMachine sous NT, l'utilisateur Apache ou nobody sous Linux).
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_06.html')"
+				title="Afficher la bibliothéque de fonctions"></a>			
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : upload de fichier
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+function afficherForm($err) {
+	if ($err != '') {
+		echo '&lt;p&gt;', $err, '&lt;/p&gt;';
+	}
+	
+	echo '&lt;form method="post" ',
+			' enctype="multipart/form-data" ',
+			'action="', $_SERVER['PHP_SELF'], '"&gt;',
+		'&lt;input type="hidden" name="MAX_FILE_SIZE" ',
+			'value="102400"&gt;',
+		'Sélectionnez le fichier à télécharger : ',
+		'&lt;input type="file" name="uplFichier"&gt;',
+		'&lt;input type="submit" name="btnUpl" value="Go"&gt;',
+		'&lt;/form&gt;';
+			
+	htmlFin();
+}
+
+htmlDebut('Upload de fichier');
+
+$err = '';
+
+// Premier affichage
+if (!isset($_POST['btnUpl'])) {
+	afficherForm($err);
+	exit();
+}
+
+// Phase traitement de la soumission du formulaire
+
+// Vérification si erreurs
+$f = $_FILES['uplFichier'];
+switch ($f['error']) {
+case 1:
+case 2:
+	$err = $f['name'].' est trop gros.';
+	break;
+case 3:
+	$err = 'Erreur de transfert de '.$f['name'];
+	break;
+case 4:
+	$err = $f['name'].' introuvable.';
+}
+
+if ($err != '') {
+	afficherForm($err);
+	exit();
+}
+
+// Pas d'erreur =&gt; placement du fichier
+if (! @is_uploaded_file($f['tmp_name'])) {
+	afficherForm('Erreur interne de transfert');
+	exit();
+}
+
+$place = realpath('.').'/'.$f['name'];
+if (@move_uploaded_file($f['tmp_name'], $place)) {
+	$err = $f['name'].' OK';
+} else {
+	$err = 'Erreur interne de transfert';
+}
+
+afficherForm($err);
+?&gt;</textarea>
+			</form>
+			<p>
+				Vous pouvez remarquer l'utilisation du caractère @ devant certaines
+				fonctions :<br> <span class="fp-code">if (! <span
+					class="fp-code fp-rouge">@</span>is_uploaded_file($f['tmp_name']))
+					{
+				</span><br> et<br> <span class="fp-code">if (<span
+					class="fp-code fp-rouge">@</span>move_uploaded_file($f['tmp_name'],
+					$place)) {
+				</span><br> Le caractère @ placé devant une fonction empêche tout
+				message d'erreur éventuel d'être affiché par le navigateur. Dans
+				notre cas, si une erreur se produit, aucune information sur des
+				répertoires ne sera affichée, rendant la page plus sécurisée.
+			</p>
+		</section>
+
+		<h3>Problèmes typiques</h3>
+		<section>
+			<p>Voici quelques problèmes typiques que l'on peut rencontrer
+				lors de l'upload de fichier.</p>
+			<p>
+				<b>Pas de fichier uploadé, pas de message d'erreur.</b><br> Le
+				plus souvent c'est dû à la taille du fichier qui dépasse le maximum
+				autorisé par PHP. Testez si un fichier de petite taille (quelque ko)
+				est correctement uploadé.
+			</p>
+			<p>
+				<b>Pas de fichier copié, erreur de permission.</b><br> Le
+				script doit avoir les droits d'écriture et de lecture sur le
+				répertoire final ou le fichier est uploadé.
+			</p>
+			<p>
+				<b>Pas de fichier uploadé ou copié, erreurs telles que
+					"open_basedir restriction", "Safe Mode Restriction", "function has
+					been disabled</b>"<br> PHP fonctionne en mode sécurisé (Safe
+				Mode), ce qui permet à l'administrateur de contrôler les fonctions
+				qu'un utilisateur a le droit d'exécuter, et d'interdire l'exécution
+				de certaines fonctions (comme la copie ou le transfert de fichiers)
+			</p>
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

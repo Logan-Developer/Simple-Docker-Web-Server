@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Correction Exercice</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+if (top.FP) {
+	document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+} else {
+	location.replace('../index.html?x=' + encodeURI(location.href));
+}
+</script>
+</head>
+<body>
+	<p>
+	<table border="0" cellspacing="0" cellpadding="2" width="600"
+		align="center">
+		<tr>
+			<td bgcolor="#FFFFCE">
+				<p>
+					<b><img src="../../_core/images/ico_exo.gif" width="22"
+						height="19" align=ABSMIDDLE> Exercice détail livre</b>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<b>Page liste des livres </b>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="listing">
+					<span class="S1">&lt;html lang=&quot;fr&quot;&gt;</span><span class="S0"><br />
+					</span> <span class="S1">&lt;head&gt;&lt;title&gt;</span><span class="S0">Liste
+						des livres</span><span class="S1">&lt;/title&gt;</span><span class="S0"><br />
+					</span> <span class="S1">&lt;script</span><span class="S8"> </span><span
+						class="S3">language</span><span class="S8">=</span><span
+						class="S6">"JavaScript"</span><span class="S1">&gt;</span><span
+						class="S40"><br /> </span> <span class="S47">var</span><span
+						class="S41"> </span><span class="S46">win</span><span class="S41">
+					</span><span class="S50">=</span><span class="S41"> </span><span
+						class="S46">null</span><span class="S50">;</span><span class="S41"><br />
+					</span> <span class="S47">function</span><span class="S41"> </span><span
+						class="S46">PopUp</span><span class="S50">(</span><span
+						class="S46">IDLivre</span><span class="S50">)</span><span
+						class="S41"> </span><span class="S50">{</span><span class="S41"><br />
+					</span> <span class="S41">&nbsp;&nbsp;</span><span class="S46">Quitter</span><span
+						class="S50">();</span><span class="S41"><br /> </span> <span
+						class="S41">&nbsp;&nbsp;</span><span class="S47">var</span><span
+						class="S41"> </span><span class="S46">sUrl</span><span class="S41">
+					</span><span class="S50">=</span><span class="S41"> </span><span
+						class="S49">'livre_detail.php?ID='</span><span class="S41">
+					</span><span class="S50">+</span><span class="S41"> </span><span
+						class="S46">IDLivre</span><span class="S50">;</span><span
+						class="S41"><br /> </span> <span class="S41">&nbsp;&nbsp;</span><span
+						class="S47">var</span><span class="S41"> </span><span class="S46">sOptions</span><span
+						class="S41"> </span><span class="S50">=</span><span class="S41">
+					</span><span class="S49">'width=500,height=400,scrollbars'</span><span
+						class="S50">;</span><span class="S41"><br /> </span> <span
+						class="S41">&nbsp;&nbsp;</span><span class="S46">win</span><span
+						class="S41"> </span><span class="S50">=</span><span class="S41">
+					</span><span class="S46">window.open</span><span class="S50">(</span><span
+						class="S46">sUrl</span><span class="S50">,</span><span class="S49">'livre'</span><span
+						class="S50">,</span><span class="S46">sOptions</span><span
+						class="S50">);</span><span class="S41"><br /> </span> <span
+						class="S50">}</span><span class="S41"><br /> </span> <span
+						class="S41"><br /> </span> <span class="S47">function</span><span
+						class="S41"> </span><span class="S46">Quitter</span><span
+						class="S50">()</span><span class="S41"> </span><span class="S50">{</span><span
+						class="S41"><br /> </span> <span class="S41">&nbsp;&nbsp;</span><span
+						class="S47">if</span><span class="S41"> </span><span class="S50">(</span><span
+						class="S46">win</span><span class="S41"> </span><span class="S50">!=</span><span
+						class="S41"> </span><span class="S46">null</span><span class="S41">
+					</span><span class="S50">&amp;&amp;</span><span class="S41"> </span><span
+						class="S50">!</span><span class="S46">win.closed</span><span
+						class="S50">)</span><span class="S41"> </span><span class="S46">win.close</span><span
+						class="S50">();</span><span class="S41"><br /> </span> <span
+						class="S50">}</span><span class="S41"><br /> </span> <span
+						class="S1">&lt;/script&gt;&lt;/head&gt;</span><span class="S0"><br />
+					</span> <span class="S1">&lt;body</span><span class="S8"> </span><span
+						class="S3">onunload</span><span class="S8">=</span><span
+						class="S6">"Quitter()"</span><span class="S1">&gt;</span><span
+						class="S0"><br /> </span> <span class="S18">&lt;?php</span><span
+						class="S118"><br /> </span> <span class="S121">require_once</span><span
+						class="S118"> </span><span class="S127">(</span><span class="S120">'fonctions.php'</span><span
+						class="S127">);</span><span class="S118"><br /> </span> <span
+						class="S125">//--- Connexion
+						------------------------------------</span><span class="S118"><br />
+					</span> <span class="S118">fp_connexion</span><span class="S127">();</span><span
+						class="S118"><br /> </span> <span class="S118"><br /> </span> <span
+						class="S125">//--- Requête
+						--------------------------------------</span><span class="S118"><br />
+					</span> <span class="S123">$sql</span><span class="S118"> </span><span
+						class="S127">=</span><span class="S118"> </span><span class="S120">'SELECT
+						* FROM livres ORDER BY liTitre'</span><span class="S127">;</span><span
+						class="S118"><br /> </span> <span class="S118"><br /> </span> <span
+						class="S123">$r</span><span class="S118"> </span><span
+						class="S127">=</span><span class="S118"> </span><span class="S121">mysqli_query</span><span
+						class="S127">(</span><span class="S123">$sql</span><span
+						class="S127">)</span><span class="S118"> or fp_erreur</span><span
+						class="S127">();</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S125">//---
+						Affichage de l'entête du tableau HTML --------</span><span class="S118"><br />
+					</span> <span class="S121">echo</span><span class="S118"> </span><span
+						class="S120">'&lt;table border="0"&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;tr&gt;&lt;td colspan="2"&gt;&lt;b&gt;Dans
+						nos rayons&lt;/td&gt;&lt;/tr&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;tr&gt;&lt;td
+						colspan="2"&gt;&lt;hr&gt;&lt;/td&gt;&lt;/tr&gt;'</span><span class="S127">;</span><span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+					</span> <span class="S118"><br /> </span> <span class="S125">//---
+						Traitement des enregistrements ---------------</span><span class="S118"><br />
+					</span> <span class="S121">while</span><span class="S118"> </span><span
+						class="S127">(</span><span class="S123">$enr</span><span
+						class="S118"> </span><span class="S127">=</span><span class="S118">
+					</span><span class="S121">mysqli_fetch_assoc</span><span class="S127">(</span><span
+						class="S123">$r</span><span class="S127">))</span><span
+						class="S118"> </span><span class="S127">{</span><span class="S118"><br />
+					</span> <span class="S118">&nbsp;&nbsp;</span><span class="S121">echo</span><span
+						class="S118"> </span><span class="S120">'&lt;tr&gt;'</span><span
+						class="S127">,</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td&gt;&lt;img src="../exemple/'</span><span
+						class="S127">,<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</span><span class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liPhoto'</span><span
+						class="S127">],</span><span class="S118"> </span><span
+						class="S120">'"&gt;&lt;/td&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td valign="top"&gt;&lt;b&gt;'</span><span
+						class="S127">,</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;a onclick="PopUp('</span><span class="S127">,</span><span
+						class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liID'</span><span
+						class="S127">],</span><span class="S118"> </span><span
+						class="S120">')"&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fp_htmlok</span><span
+						class="S127">(</span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liTitre'</span><span
+						class="S127">]),</span><span class="S120">'&lt;/a&gt;&lt;/b&gt;'</span><span
+						class="S127">,</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;br&gt;'</span><span class="S127">,</span><span
+						class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liAnnee'</span><span
+						class="S127">],<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</span><span class="S118"> </span><span class="S120">' - '</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liPages'</span><span
+						class="S127">],</span><span class="S120">' pages'</span><span
+						class="S127">,</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;br&gt;ISBN '</span><span class="S127">,</span><span
+						class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liISBN'</span><span
+						class="S127">],</span><span class="S118"> </span><span
+						class="S120">'&lt;/td&gt;&lt;/tr&gt;'</span><span class="S127">;</span><span
+						class="S118"><br /> </span> <span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;</span><span class="S121">echo</span><span
+						class="S118"> </span><span class="S120">'&lt;tr&gt;&lt;td
+						colspan="2"&gt;&lt;hr&gt;&lt;/td&gt;&lt;/tr&gt;'</span><span class="S127">;</span><span
+						class="S118"><br /> </span> <span class="S127">}</span><span
+						class="S118"><br /> </span> <span class="S121">echo</span><span
+						class="S118"> </span><span class="S120">'&lt;/table&gt;'</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+					</span> <span class="S125">//--- Déconnexion
+						----------------------------------</span><span class="S118"><br />
+					</span> <span class="S121">mysqli_free_result</span><span class="S127">(</span><span
+						class="S123">$r</span><span class="S127">);</span><span
+						class="S118"><br /> </span> <span class="S121">mysqli_close</span><span
+						class="S127">();</span><span class="S118"><br /> </span> <span
+						class="S18">?&gt;</span><span class="S0"><br /> </span> <span
+						class="S1">&lt;/body&gt;</span><span class="S0"><br /> </span> <span
+						class="S1">&lt;/html&gt;</span>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<b>Page détail d'un livre</b>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="listing">
+					<span class="S18">&lt;?php</span><span class="S118"><br />
+					</span> <span class="S121">require_once</span><span class="S118"> </span><span
+						class="S127">(</span><span class="S120">'fonctions.php'</span><span
+						class="S127">);</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S121">function</span><span
+						class="S118"> fp_ligne</span><span class="S127">(</span><span
+						class="S123">$lib</span><span class="S127">,</span><span
+						class="S118"> </span><span class="S123">$zone</span><span
+						class="S127">)</span><span class="S118"> </span><span class="S127">{</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;</span><span
+						class="S121">return</span><span class="S118"> </span><span
+						class="S120">'&lt;tr valign="top"&gt;'</span><span class="S118"><br />
+					</span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'&lt;td
+						align="right"&gt;&lt;b&gt;'</span><span class="S127">.</span><span
+						class="S118">fp_htmlok</span><span class="S127">(</span><span
+						class="S123">$lib</span><span class="S127">).</span><span
+						class="S120">'&lt;/b&gt;&lt;/td&gt;'</span><span class="S118"><br />
+					</span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'&lt;td&gt;'</span><span
+						class="S127">.</span><span class="S121">nl2br</span><span
+						class="S127">(</span><span class="S118">fp_htmlok</span><span
+						class="S127">(</span><span class="S123">$zone</span><span
+						class="S127">)).</span><span class="S120">'&lt;/td&gt;&lt;/tr&gt;'</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S127">}</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S125">//---
+						Connexion -------------------------------------</span><span class="S118"><br />
+					</span> <span class="S118">fp_connexion</span><span class="S127">();</span><span
+						class="S118"><br /> </span> <span class="S125">//---
+						Requête ---------------------------------------</span><span class="S118"><br />
+					</span> <span class="S123">$sql</span><span class="S118"> </span><span
+						class="S127">=</span><span class="S118"> </span><span class="S120">'SELECT
+						livres.*, editeurs.*, categories.* '</span><span class="S118"><br />
+					</span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'FROM livres,
+						editeurs, categories '</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S127">.</span><span
+						class="S119">"WHERE liID = '"</span><span class="S118"> </span><span
+						class="S127">.</span><span class="S118"> </span><span class="S123">$_GET</span><span
+						class="S127">[</span><span class="S120">'ID'</span><span
+						class="S127">]</span><span class="S118"> </span><span class="S127">.</span><span
+						class="S118"> </span><span class="S119">"' "</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'AND edID =
+						liIDEditeur '</span><span class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'AND caID =
+						liIDCat'</span><span class="S127">;</span><span class="S118"><br />
+					</span> <span class="S118"><br /> </span> <span class="S123">$r</span><span
+						class="S118"> </span><span class="S127">=</span><span class="S118">
+					</span><span class="S121">mysqli_query</span><span class="S127">(</span><span
+						class="S123">$sql</span><span class="S127">)</span><span
+						class="S118"> or fp_erreur</span><span class="S127">();</span><span
+						class="S118"><br /> </span> <span class="S118"><br /> </span> <span
+						class="S123">$livre</span><span class="S118"> </span><span
+						class="S127">=</span><span class="S118"> </span><span class="S121">mysqli_fetch_assoc</span><span
+						class="S127">(</span><span class="S123">$r</span><span
+						class="S127">);</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S125">//---
+						Requête auteurs -------------------------------</span><span class="S118"><br />
+					</span> <span class="S123">$sql</span><span class="S118"> </span><span
+						class="S127">=</span><span class="S118"> </span><span class="S120">'SELECT
+						auNom, auPrenom '</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S127">.</span><span
+						class="S120">'FROM auteurs, aut_livre '</span><span class="S118"><br />
+					</span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S119">"WHERE al_IDLivre =
+						'"</span><span class="S127">.</span><span class="S123">$_GET</span><span
+						class="S127">[</span><span class="S120">'ID'</span><span
+						class="S127">]</span><span class="S118"> </span><span class="S127">.</span><span
+						class="S118"> </span><span class="S119">"' "</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'AND auID =
+						al_IDAuteur '</span><span class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'ORDER BY auNom'</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S123">$r</span><span
+						class="S118"> </span><span class="S127">=</span><span class="S118">
+					</span><span class="S121">mysqli_query</span><span class="S127">(</span><span
+						class="S123">$sql</span><span class="S127">)</span><span
+						class="S118"> or fp_erreur</span><span class="S127">();</span><span
+						class="S118"><br /> </span> <span class="S118"><br /> </span> <span
+						class="S123">$htmlAuteur</span><span class="S118"> </span><span
+						class="S127">=</span><span class="S118"> </span><span class="S120">''</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S121">while</span><span
+						class="S118"> </span><span class="S127">(</span><span class="S123">$auteur</span><span
+						class="S118"> </span><span class="S127">=</span><span class="S118">
+					</span><span class="S121">mysqli_fetch_assoc</span><span class="S127">(</span><span
+						class="S123">$r</span><span class="S127">))</span><span
+						class="S118"> </span><span class="S127">{</span><span class="S118"><br />
+					</span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S123">$htmlAuteur</span><span class="S118"> </span><span
+						class="S127">.=</span><span class="S118"> fp_htmlok</span><span
+						class="S127">(</span><span class="S123">$auteur</span><span
+						class="S127">[</span><span class="S120">'auNom'</span><span
+						class="S127">].</span><span class="S120">' '</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S123">$auteur</span><span
+						class="S127">[</span><span class="S120">'auPrenom'</span><span
+						class="S127">]).</span><span class="S119">"\n"</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S127">}</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S125">//---
+						Déconnexion -----------------------------------</span><span class="S118"><br />
+					</span> <span class="S121">mysqli_free_result</span><span class="S127">(</span><span
+						class="S123">$r</span><span class="S127">);</span><span
+						class="S118"><br /> </span> <span class="S121">mysqli_close</span><span
+						class="S127">();</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S125">//---
+						Affichage HTML---------------------------------</span><span class="S118"><br />
+					</span> <span class="S121">echo</span><span class="S118"> </span><span
+						class="S120">'&lt;html lang=&quot;fr&quot;&gt;&lt;head&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;title&gt;Détail d\'un
+						livre&lt;/title&gt;&lt;/head&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;body bgcolor="#FFFFFF"&gt;'</span><span
+						class="S127">,</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S120">'&lt;table
+						border="0" width="400" align="center"&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Titre'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liTitre'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Auteur(s)'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$htmlAuteur</span><span
+						class="S127">),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Sommaire'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liSommaire'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Critique'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liCritique'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Editeur'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'edNom'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Catégorie'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'caNom'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Année'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liAnnee'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'NB pages'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liPages'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'ISBN'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liISBN'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Prix'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liPrix'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;fp_ligne</span><span
+						class="S127">(</span><span class="S120">'Langue'</span><span
+						class="S127">,</span><span class="S118"> </span><span class="S123">$livre</span><span
+						class="S127">[</span><span class="S120">'liLangue'</span><span
+						class="S127">]),</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="S120">'&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;'</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S18">?&gt;</span>
+				</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+</body>
+</html>

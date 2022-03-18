@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Objets : constructeur et destructeur</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			Quand on instancie une classe avec l'opérateur <code>new</code> un espace mémoire est attribué à
+			l'instance de l'objet créé. Cet espace mémoire est construit par une méthode particulière qui
+			s'appelle <strong>un constructeur</strong>.
+		</p>
+
+		<p>
+			Dans PHP, il existe également <strong>un destructeur</strong> qui est une méthode particulière
+			appelée juste avant que l'objet ne soit supprimé de la mémoire.
+		</p>
+
+		<h3>Constructeur</h3>
+		<section>
+			<p class="fp-cadre">Un constructeur sert essentiellement à initialiser les valeurs des
+				attributs d'un nouvel objet lors de l'instanciation de sa classe.</p>
+
+			<p>
+				Un constructeur peut être <strong>implicite</strong> ou <strong>explicite</strong>. Bien que
+				dans 99% des classes le constructeur soit explicite, nous commencerons par rapidement voir ce
+				qu'est un constructeur implicite.
+			</p>
+
+			<h4>Constructeur implicite</h4>
+			<section>
+				<p class="fp-puce">
+					Un constructeur implicite est un constructeur <strong>qui n'est pas défini</strong> par le
+					concepteur de la classe. Dans le code de la classe on ne trouvera aucune méthode particuliére
+					qui serait invoquée lors de l'instanciation.
+				</p>
+
+				<p class="fp-puce">
+					Dans le cas d'un constructeur implicite, si les attributs n'ont pas de valeur assignée lors de
+					leur définition, ils ont par défaut la valeur <code>NULL</code>.
+				</p>
+
+				<p class="fp-puce">
+					Si la classe a un constructeur implicite, les parenthèses qui suivent son nom lors de son
+					instanciation sont facultatives : <code>$objet = new Classe</code> est équivalent à <code>$objet
+						= new Classe()</code>.
+				</p>
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+
+					<div class="TEST-titre">
+						<strong>Exemple</strong> : constructeur implicite
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes = 6;
+
+	public function getModele() {
+		return $this-&gt;modele;
+	}
+	public function getCordes() {
+		return $this-&gt;cordes;
+	}
+	public function setModele($val) {
+		$this-&gt;modele = $val;
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Constructeur implicite');
+
+$guitare = new Guitare;
+
+$x = $guitare-&gt;getModele();
+
+htmlInfo('L\'attribut modèle est du type : '.gettype($x));
+htmlInfo("La valeur de modèle est : $x");
+
+$guitare-&gt;setModele('Gibson Hummingbird');
+
+$x = $guitare-&gt;getModele();
+htmlInfo('L\'attribut modèle est du type : '.gettype($x));
+htmlInfo("La valeur de modèle est : $x");
+
+$y = $guitare-&gt;getCordes();
+
+htmlInfo('L\'attribut nb cordes est du type : '.gettype($y));
+htmlInfo("La valeur de nb cordes est : $y");
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</section>
+
+			<h4>Constructeur explicite</h4>
+			<section>
+				<p class="fp-puce">
+					Un constructeur explicite est une méthode magique qui s'appelle <strong><code>__construct()</code></strong>.
+					Si cette méthode <code>__construct</code> est définie explicitement dans le code de la classe,
+					elle sera invoquée automatiquement par PHP lors de l'instanciation de la classe avec
+					l'opérateur <code>new</code>.
+				</p>
+
+				<p class="fp-puce">
+					La méthode constrcuteur <code>__construct()</code> accepte généralement un ou plusieurs
+					paramètres qui vont servir à initialiser la valeur d'attributs de la classe pour caractériser
+					l'instance du nouvel objet.
+				</p>
+
+				<p class="fp-puce">
+					Si le constructeur explicite n'a pas de paramètre, les parenthèses qui suivent le nom de la
+					classe lors de son instanciation sont facultatives. On peut écrire <code>$objet = new
+						Classe</code>.
+				</p>
+
+
+				<p class="fp-puce">
+					Si le constructeur explicite accepte des paramètres, les parenthèses qui suivent le nom de la
+					classe lors de son instanciation sont obligatoires. Il FAUT écrire <code>$objet = new
+						Classe()</code>.
+				</p>
+
+				<p class="fp-remarque">Avec PHP, il n'est pas possible (comme en Java par exemple) de
+					surcharger un constructeur.</p>
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exemple</strong> : constructeur explicite
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise;
+
+	// Constructeur
+	public function __construct($p1, $p2, $p3) {
+		$this-&gt;modele = $p1;
+		$this-&gt;prix = $p2;
+		$this-&gt;cordes = $p3;
+	}
+	
+	public function getModele() {
+		return $this-&gt;modele;
+	}
+	public function getCordes() {
+		return $this-&gt;cordes;
+	}
+	public function getRemise() {
+		return $this-&gt;remise;
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Constructeur explicite');
+
+$guitare = new Guitare('Gibson Hummingbird', 2033, 6);
+
+htmlInfo('Modèle : '.$guitare-&gt;getModele());
+htmlInfo('Nombre de cordes : '.$guitare-&gt;getCordes());
+
+// L'attribut remise n'est pas initialisé 
+// Il est donc de type NULL
+$x = $guitare-&gt;getRemise();
+htmlInfo('L\'attribut remise est du type : '.gettype($x));
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</section>
+			<h4>Validation des paramètres</h4>
+			<section>
+				<p class="fp-cadre">Si on passe des paramètres au constructeur, ceux-ci doivent être validés
+					avant d'être affectés comme valeur à des attributs.</p>
+
+				<p class="fp-puce">Si des setters sont implémentés pour les attributs, ils doivent être
+					appelés depuis le constructeur pour effectuer la mise à jour de la valeur de l'attribut.</p>
+
+				<p class="fp-puce">S'il n'y a pas de setter pour les attributs, la validation doit être
+					faite dans le constructeur.</p>
+
+				<p>L'exemple suivant est une classe Livre avec des attributs titre, auteur, nombre de pages,
+					prix et catégorie. Les valeurs de ces attributs sont validées dans le constructeur, sauf pour
+					le prix qui a un setter.</p>
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exemple</strong> : validation des paramètres du constructeur
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise;
+
+	public function __construct($p1, $p2, $p3){
+		$p1 = trim($p1);
+		if ($p1 == '') exit('Paramètre modèle invalide');
+		$this-&gt;modele = $p1;
+						
+		$ok = array(4, 6, 12);
+		if (!estEntier($p3) || !in_array($p3, $ok)) {
+			exit ('Paramètre nombre de cordes invalide');
+		}
+		$this-&gt;cordes = $p3;
+		
+		$this-&gt;setPrix($p2);
+		
+		$this-&gt;remise = 0;
+	}
+	
+	public function setPrix($val) {
+		if (!is_numeric($val) || $val &lt; 0) {
+			exit ('Valeur de prix invalide');
+		}		
+		$this-&gt;prix = $val;
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe ', __CLASS__, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;', 
+				$this-&gt;cordes, ' cordes&lt;br&gt;',
+				$this-&gt;prix, ' &amp;euro;';
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Constructeur explicite');
+
+htmlInfo('Constructeur avec paramètres valides'); 
+$ibanez = new Guitare('Ibanez PCBE12-OPN', 229, 4);
+$ibanez-&gt;decrire();
+
+htmlInfo('Constructeur avec paramètre invalide'); 
+$epiphone = new Guitare('Epiphone EJ-200CE', 334, 24);
+$epiphone-&gt;decrire();
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</section>
+
+			<h4>Paramètres dans un tableau</h4>
+			<section>
+				<p class="fp-puce">ASTUCE : quand un constructeur (ou une méthode ou une fonction) acceptent
+					un grand nombre de paramètres, il est pratique d'utiliser un tableau pour passer ces
+					paramètres.</p>
+
+				<p class="fp-puce">Le plus pratique est d'utiliser un tableau associatif. On peut ainsi
+					nommer les paramètres, les passer dans n'importe quel ordre et facilement en ajouter de
+					nouveaux.</p>
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exemple</strong> : paramètres dans un tableau associatif
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise;
+
+	public function __construct($p){
+		$p['modele'] = trim($p['modele']);
+		if ($p['modele'] == '') exit('Modèle invalide');
+		$this-&gt;modele = $p['modele'];
+						
+		$ok = array(4, 6, 12);
+		if (!estEntier($p['cordes']) 
+		|| !in_array($p['cordes'], $ok)) {
+			exit ('Nombre de cordes invalide');
+		}
+		$this-&gt;cordes = $p['cordes'];
+		
+		$this-&gt;setPrix($p['prix']);
+		
+		$this-&gt;remise = 0;
+	}
+	
+	public function setPrix($val) {
+		if (!is_numeric($val) || $val &lt; 0) {
+			exit ('Valeur de prix invalide');
+		}		
+		$this-&gt;prix = $val;
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe ', __CLASS__, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;', 
+				$this-&gt;cordes, ' cordes&lt;br&gt;',
+				$this-&gt;prix, ' &amp;euro;';
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Paramètres dans un tableau associatif');
+
+$p = array('modele' =&gt; 'Ibanez PCBE12-OPN',
+			'cordes' =&gt; 4,
+			'prix' =&gt; 229);
+
+$ibanez = new Guitare($p);
+$ibanez-&gt;decrire();
+
+$p = array('prix' =&gt; 334,
+		   	'modele' =&gt; 'Epiphone EJ-200CE',
+			'cordes' =&gt; 6);
+
+$epiphone = new Guitare($p);
+$epiphone-&gt;decrire();
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+
+				<p class="fp-puce">
+					Bien que d'un usage moins pratique, on peut aussi utiliser un tableau à index numérique.
+					<br>
+					L'exemple suivant instancie des guitares avec les informations trouvées dans un fichier texte
+					référençant nos guitares en vente. Le fichier s'appelle <code>guitares.txt</code> et se trouve
+					dans le dossier <code>stock</code>.
+					<br>
+					Le contenu du fichier est le suivant :
+				</p>
+				<pre>
+Guild D120|639|6
+Fender Villager|444|12
+Gibson Hummingbird|2033|6
+Ibanez PCBE12-OPN|229|4
+Epiphone EJ-200CE|334|6
+Gretsch Falcon|599|12</pre>
+
+				<p>
+					On trouve le même genre de formattage que celui utilisé dans la page sur <a
+						onclick="top.FP.Voir.showPageTuto('php09b1','')">la lecture de fichiers</a>.
+				</p>
+
+				<p>On considère que les informations trouvées dans le fichier sont valides et on ne fait
+					donc pas de vérifications dans le constructeur de la classe Guitare.</p>
+
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exemple</strong> : paramètres dans un tableau index numérique
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise;
+
+	public function __construct($p){
+		$this-&gt;modele = $p[0];
+		$this-&gt;prix = $p[1];
+		$this-&gt;cordes = $p[2];
+		$this-&gt;remise = 0;
+	}
+	
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe ', __CLASS__, '&lt;/h4&gt;',
+				$this-&gt;modele, '&lt;br&gt;', 
+				$this-&gt;cordes, ' cordes&lt;br&gt;',
+				$this-&gt;prix, ' &amp;euro;';
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Paramètres dans un tableau a index numérique');
+
+$stock = array(); // tableau contenant les guitares 
+
+$fichier = 'stock/guitares.txt';
+if (! is_file($fichier)) {
+	exit("$fichier n'est pas un fichier");
+}
+
+// Lecture du fichier et instanciation des guitares
+foreach (file($fichier) as $enreg) {
+	$stock[] = new Guitare(explode('|', $enreg));
+}
+
+// Affichage des guitares
+foreach ($stock as $guitare) {
+	$guitare-&gt;decrire();
+}
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</section>
+
+
+
+		</section>
+
+		<h3>Destructeur</h3>
+		<section>
+			<p class="fp-puce">
+				De la même façon qu'il y a une méthode magique <code>__construct()</code> invoquée
+				automatiquement par PHP lors de l'instanciation d'une classe, il existe une autre méthode
+				magique <code>__destruct()</code> qui, si elle est définie, sera invoquée automatiquement par
+				PHP lors qu'un objet sera supprimé de la mémoire car il n'existe plus aucune référence à
+				l'objet.
+			</p>
+
+			<p class="fp-remarque">
+				La méthode <code>__destruct()</code> de PHP est l'équivalent de la méthode <code>finalize()</code>
+				en Java.
+			</p>
+
+			<p class="fp-puce">
+				La méthode <code>__destruct()</code> n'accepte pas de paramètre. Si on la définit avec un ou des
+				arguments, le script n'est pas exécuté et s'arrête avec une erreur fatale.
+			</p>
+
+			<p>
+				L'exemple suivant montre une classe Stock qui contient les objets Guitare de notre stock.
+				<br>
+				Quand on détruit l'instance de Stock (<code>$stock = null;</code>) observez les appels de
+				destructeurs : le destructeur de l'objet Stock est d'abord invoqué, puis comme il n'existe plus
+				de référence aux objets Guitare leur destructeur est à leur tour invoqué.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : destructeur
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+class Stock {
+	private $guitares = array();
+	
+	public function __construct($fichier) {
+		foreach (file($fichier) as $e) {
+			$this-&gt;guitares[] = new Guitare(explode('|', $e));
+		}		
+	}
+	
+	public function afficher() {
+		htmlInfo('Modèles de guitare en stock');
+		foreach ($this-&gt;guitares as $guitare) {
+			echo $guitare-&gt;getModele(), '&lt;hr&gt;';
+		}
+	}
+	
+	public function __destruct() {
+		htmlInfo('Destruction du stock');
+	}
+}			// Fin de la classe Stock	
+
+class Guitare {
+	private $modele, $prix, $cordes, $remise;
+
+	public function __construct($p){
+		$this-&gt;modele = $p[0];
+		$this-&gt;prix = $p[1];
+		$this-&gt;cordes = $p[2];
+		$this-&gt;remise = 0;
+	}
+	
+	public function getModele() {
+		return $this-&gt;modele;
+	}
+	
+	public function __destruct() {
+		htmlInfo('Destruction de '.$this-&gt;modele);
+	}
+}			// Fin de la classe Guitare	
+
+htmlDebut('Méthode __destruct');
+
+$stock = new Stock('stock/guitares.txt'); 
+
+$stock-&gt;afficher();
+
+$stock = null;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+
+		<a id="exoConstructeur1"></a>
+		<h3>Exercice : constructeur explicite</h3>
+		<section>
+			<figure style="float: right; margin: 0 0 0 15px;">
+				<img src="../phpimg/poo_32.png" width="140" height="241">
+				<figcaption>la classe Livre</figcaption>
+			</figure>
+			<p>
+				Reprenez la classe <code>Livre</code> de <a
+					onclick="top.FP.Voir.showPageTuto('php10a2','exoGetSet')">l'exercice précédent</a> et faites
+				les tests de validité en appelant les setters dans le constructeur.
+			</p>
+
+			<p>
+				Les modifications suivantes doivent être apportées :
+				<br>
+				- si une ou des valeurs passées au constructeur ne sont pas valides, un message d'erreur doit
+				être affiché sans que le script soit arrêté,
+				<br>
+				- si une des valeurs passées au constructeur n'est pas valide, le nouvel objet est supprimé.
+				<br>
+				Le message d'erreur affiché doit être de la forme 'Valeur [valeur passée] invalide pour
+				l'attribut [nom attribut].'
+			</p>
+
+
+			<p>
+				Vous devez tester votre code en instanciant des <code>Livre</code> avec les informations
+				suivantes qui provoqueront toutes des erreurs :
+			</p>
+
+			<table style="float: left; width: 340px; font-size: 0.8em">
+				<tr>
+					<td>Titre</td>
+					<td>Auteur</td>
+					<td>Nb Pages</td>
+					<td>Prix</td>
+					<td>Cat.</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Pas de titre</td>
+					<td>70</td>
+					<td>17</td>
+					<td>Méthode</td>
+				</tr>
+				<tr>
+					<td>Pas d'auteur</td>
+					<td></td>
+					<td>160</td>
+					<td>4.90</td>
+					<td>Méthode</td>
+				</tr>
+				<tr>
+					<td>Mauvais nombre de pages</td>
+					<td>Mauvais prix</td>
+					<td>0</td>
+					<td>-21.90</td>
+					<td>Partition</td>
+				</tr>
+				<tr>
+					<td>Seulement le titre OK</td>
+					<td></td>
+					<td>inconnu</td>
+					<td>30 euros</td>
+					<td>Magazine</td>
+				</tr>
+			</table>
+
+
+			<figure style="float: right; margin: 0">
+				<img src="../phpimg/poo_33.png" width="240" height="350">
+				<figcaption>affichage obtenu</figcaption>
+			</figure>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exoConstructeur1_solu', 1)">Une solution possible</a>
+			</p>
+
+			<div id="exoConstructeur1_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : constructeur implicite
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+// Définition de la classe Livre
+class Livre {
+	private $titre, $auteur, $pages, $prix, $cat;
+	private $ok = true;
+
+	public function __construct($p1, $p2, $p3, $p4, $p5) {
+		$this-&gt;setTitre($p1);
+		$this-&gt;setAuteur($p2);
+		$this-&gt;setPages($p3);
+		$this-&gt;setPrix($p4);
+		$this-&gt;setCat($p5);
+	}
+	public function getOk() {
+		return $this-&gt;ok;
+	}
+	public function setTitre($val) {
+		$val = $this-&gt;verifChaine($val, 'titre');
+		($val != '') &amp;&amp; $this-&gt;titre = $val;
+	}
+	public function setAuteur($val) {
+		$val = $this-&gt;verifChaine($val, 'auteur');
+		($val != '') &amp;&amp; $this-&gt;auteur = $val;
+	}
+	public function setPages($val) {
+		if (is_numeric($val) &amp;&amp; estEntre($val, 10, 1000)) {
+			$this-&gt;pages = $val;
+		} else {
+			$this-&gt;afficheErreur($val, 'pages');
+		}
+	}
+	public function setPrix($val) {
+		if (is_numeric($val) &amp;&amp; estEntre($val, 0, 1000)) {
+			$this-&gt;prix = $val;
+		} else {
+			$this-&gt;afficheErreur($val, 'prix');
+		}
+	}
+	public function setCat($val) {
+		$oks = array('Méthode', 'Partition', 
+					 'Biographie', 'Autre');
+		if (in_array($val, $oks)) {
+			$this-&gt;cat = $val;
+		} else {
+			$this-&gt;afficheErreur($val, 'cat');
+		}
+	}
+	private function verifChaine($val, $attr) {
+		$val = trim($val);
+		($val == '') &amp;&amp; $this-&gt;afficheErreur($val, $attr);
+		return $val;
+	}
+	private function afficheErreur($val, $attr) {
+		$this-&gt;ok = false;
+		echo "&lt;hr&gt;Valeur '&lt;b&gt;$val&lt;/b&gt;' invalide pour
+			l'attribut &lt;b&gt;$attr&lt;/b&gt;.&lt;hr&gt;";
+	}
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe Livre&lt;/h4&gt;',
+				$this-&gt;titre, ' - ', $this-&gt;auteur, ' - ', 
+				$this-&gt;pages, ' pages - ', 
+				$this-&gt;prix, ' &amp;euro; - ', $this-&gt;cat, '&lt;hr&gt;';
+	}
+}			// Fin de la classe Livre
+
+// On passe une référence à l'objet avec &amp; pour que 
+// la suppression de l'objet se fasse correctement
+function verifLivre(&amp;$livre) {
+	if (! $livre-&gt;getOk()) {
+		$livre = null;
+		htmlInfo('Livre supprimé');
+	}
+}	
+
+htmlDebut('Constructeur implicite');
+
+$l1 = new Livre('', 'Pas de titre', 70, 17, 'Méthode');
+verifLivre($l1);
+
+$l2 = new Livre('Pas d\'auteur', '', 160, 4.90, 'Méthode');
+verifLivre($l2);
+
+$l3 = new Livre('Mauvais nombre de pages', 'Mauvais prix', 0, -21.90, 'Partition');
+verifLivre($l3);
+
+$l4 = new Livre('Seulement le titre OK', '', 'inconnu', '30 euros', 'Magazine');
+verifLivre($l4);
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+
+		<a id="exoConstructeur2"></a>
+		<h3>Exercice : tableau de paramètres</h3>
+		<section>
+
+			<table class="TAB-sans-bord">
+				<tr>
+					<td>
+						<p>
+							L'exercice consiste à instancier des <code>Livre</code> suivant la classe simplifiée
+							ci-contre avec les informations trouvées dans notre <a
+								onclick="top.FP.Voir.showPageTuto('php07a1','BD_test')">base de données exemple pour
+								MySQL</a>.
+							<br>
+							On a supprimé les setters de la classe car on considère que les informations provenant de la
+							base de données sont correctes et n'ont pas besoin d'être validées.
+						</p>
+					</td>
+					<td>
+						<figure style="margin: 0 0 1em 70px">
+							<img src="../phpimg/poo_28.png" width="130" height="153">
+							<figcaption>la classe Livre</figcaption>
+						</figure>
+					</td>
+				</tr>
+				<tr>
+					<td>
+
+						<figure style="margin: 0">
+							<img src="../phpimg/php_tuto_bd.png" width="359" height="356">
+							<figcaption>schéma de la base de données php_tuto</figcaption>
+						</figure>
+					</td>
+					<td style="vertical-align: middle">
+						<p>
+							Pour que l'exemple fonctionne, il faut bien sûr que la base de donnée de test <code>php_tuto</code>
+							soit toujours installée sur votre serveur MySQL. N'oubliez pas d'inclure la bibliothéque <code>bib_params.php</code>
+							pour les paramètres de connexion.
+						</p>
+						<p>
+							Les informations à passer au constructeur se trouvent dans la table <code>livres</code> et
+							dans la table <code>auteurs</code>. Tous les livres de la table <code>livres</code> seront
+							affichés triés par titre. Le tableau retourné par la fonction <a
+								href="https://www.php.net/manual/fr/mysqli-result.fetch-assoc.php" target="_blank">mysqli_fetch_assoc()</a>
+							sera passé tel quel au constructeur.
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<figure>
+				<img src="../phpimg/poo_34.png" width="560" height="407">
+				<figcaption>affichage obtenu</figcaption>
+			</figure>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exoConstructeur2_solu', 1)">Une solution possible</a>
+			</p>
+
+			<div id="exoConstructeur2_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_15.html')"
+						title="Afficher la bibliothéque de fonctions"></a><a class="TEST-lien-bd"
+						title="Afficher le schéma de la base"
+						onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : tableau de paramètres
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+// Définition de la classe Livre
+class Livre {
+	private $titre, $auteur, $pages, $prix, $cat;
+
+	public function __construct($p) {
+		$this-&gt;titre = $p['liTitre'];
+		$this-&gt;auteur = $p['auNom'];
+		$this-&gt;pages = $p['liPages'];
+		$this-&gt;prix = $p['liPrix'];
+		$this-&gt;cat = $p['liCat'];
+	}
+	public function decrire() {
+		echo '&lt;h4&gt;Instance de la classe Livre&lt;/h4&gt;',
+				$this-&gt;titre, ' - ', $this-&gt;auteur, ' - ', 
+				$this-&gt;pages, ' pages - ', 
+				$this-&gt;prix, ' &amp;euro; - ', $this-&gt;cat, '&lt;hr&gt;';
+	}
+}			// Fin de la classe Livre
+
+htmlDebut('Tableau de paramètres');
+
+$stock = array(); // tableau contenant les livres instanciés 
+
+$bd = bdConnecter();
+$sql = 'SELECT liTitre, liPages, liPrix, liCat, 
+			(SELECT auNom FROM auteurs, aut_livre
+			WHERE al_IDLivre = liID AND auID = al_IDAuteur 
+			LIMIT 1) as auNom
+		FROM livres		
+		ORDER BY liTitre';
+
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);;
+
+while ($enr = mysqli_fetch_assoc($r)) {
+	$stock[] = new Livre($enr);
+}
+
+foreach ($stock as $livre) {
+	$livre-&gt;decrire();
+}
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+
+		<a id="exoDestructeur"></a>
+		<h3>Exercice : destructeur</h3>
+		<section>
+
+
+			<p>
+				Réalisez une classe <code>BDD</code> (base de données, très simpliée, voire simpliste) avec une
+				méthode destucteur qui ferme la base de données quand l'objet base de donnée est supprimé.
+				<br>
+				Comme pour l'exercice précédent, on utilisera notre <a
+					onclick="top.FP.Voir.showPageTuto('php07a1','BD_test')">base de données exemple pour MySQL</a>.
+			</p>
+
+			<table class="TAB-sans-bord">
+				<tr>
+					<td>
+
+						<figure style="margin: 0">
+							<img src="../phpimg/php_tuto_bd.png" width="359" height="356">
+							<figcaption>schéma de la base de données php_tuto</figcaption>
+						</figure>
+					</td>
+					<td style="vertical-align: middle">
+						<p>
+							Pour que l'exemple fonctionne, il faut bien sûr que la base de donnée de test <code>php_tuto</code>
+							soit toujours installée sur votre serveur MySQL. N'oubliez pas d'inclure la bibliothéque <code>bib_params.php</code>
+							pour les paramètres de connexion.
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<table class="TAB-sans-bord">
+				<tr>
+					<td>
+						<p>
+							Le constructeur n'a pas de paramètre. Il réalise la connexion avec les constantes BD_SERVEUR,
+							BD_USER, BD_PASS, BD_NOM. Si la connexion n'est pas possible, la méthode <code>stopper()</code>
+							est appelée avec le message "Pas de connexion".
+						</p>
+
+						<p>
+							La méthode <code>lire()</code> a un seul paramètre : la requête <code>SELECT</code> à envoyer
+							à la base. Pour simplifier, on ne fera pas de test de validité pour s'assurer qu'on a bien
+							une requête <code>SELECT</code>.
+							<br>
+							Si cette requête provoque une erreur, la méthode <code>stopper()</code> est appelée avec le
+							message "Erreur requête".
+							<br>
+							Les enregistrements sélectionnés par la requête sont renvoyés par la méthode sous la forme
+							d'un tableau d'enregistrements (ie un tableau de tableaux).
+						</p>
+						<p>
+							La méthode <code>stopper()</code> a un seul paramètre : le texte d'un message d'erreur. Le
+							message d'erreur est affiché puis le script est arrêté.
+						</p>
+						<p>
+							Le destructeur ferme la base de données avec la fonction <a
+								href="https://www.php.net/manual/fr/mysqli.close.php" target="_blank">mysqli_close()</a>. Pour
+							contrôler que le destructeur est bien appelé, il affichera "Fin du destructeur BDD".
+						</p>
+
+						<p>
+							Le script doit afficher la liste des auteurs (nom et prénom) contenus dans la table <code>auteurs</code>.
+						</p>
+
+					</td>
+					<td>
+						<figure style="margin:0">
+							<img src="../phpimg/poo_35.png" width="130" height="124">
+							<figcaption>la classe BDD</figcaption>
+						</figure>
+
+						<figure>
+							<img src="../phpimg/poo_36.png" width="150" height="339">
+							<figcaption>affichage obtenu</figcaption>
+						</figure>
+					</td>
+				</tr>
+			</table>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('exoDestructeur_solu', 1)">Une solution possible</a>
+			</p>
+
+			<div id="exoDestructeur_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien" onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_15.html')"
+						title="Afficher la bibliothéque de fonctions"></a><a class="TEST-lien-bd"
+						title="Afficher le schéma de la base"
+						onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : destructeur
+					</div>
+					<textarea name="txtCode" class="TEST-textarea" data-wrap>
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+class BDD {
+	private $base;
+	
+	public function __construct() {
+		$this-&gt;base = mysqli_connect(BD_SERVEUR, BD_USER, BD_PASS, BD_NOM);
+
+		if ($this-&gt;base === FALSE) {
+			$this-&gt;stopper('Pas de connexion');
+		}
+	}
+	
+	public function lire($sql) {
+		$enrs = array();
+		$resultat = mysqli_query($this-&gt;base, $sql);
+		if ($resultat === false) {
+			$this-&gt;stopper('Erreur requête');
+		}
+		while ($enr = mysqli_fetch_assoc($resultat)) {
+			$enrs[] = $enr;
+		}
+		mysqli_free_result($resultat);
+		
+		return $enrs;		
+	}
+	
+	private function stopper($msg) {
+		exit($msg);
+	}
+		
+	public function __destruct() {
+		if ($this-&gt;base !== null) {
+			mysqli_close($this-&gt;base);
+		}
+		echo '&lt;h4&gt;Fin du destructeur&lt;/h4&gt;';
+	}
+}			// Fin de la classe BDD
+
+htmlDebut('Destructeur');
+
+$base = new BDD;
+
+$sql = 'SELECT auNom, auPrenom
+		FROM auteurs
+		ORDER BY auNom';
+ 
+$enrs = $base-&gt;lire($sql);
+
+$base = null;  // objet BDD supprimé
+
+htmlInfo('Liste des auteurs');
+foreach ($enrs as $enr) {
+	echo $enr['auNom'], ' ', $enr['auPrenom'], '&lt;br&gt;';
+}
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+		<footer></footer>
+	</div>
+</body>
+</html>

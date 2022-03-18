@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les sessions</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			Pour briller dans les conversations autour de la machine à café, vous
+			pouvez balancer une phrase du style : &quot;<i>HTTP est un
+				protocole sans état et le WEB est un environnement de développement
+				non connecté</i>&quot;.
+		</p>
+
+		<p>
+			En effet, chacune des requêtes que fait un client est indépendante
+			des autres et le serveur ne peut <b>pas savoir qu'une série de
+				demandes émane du même client</b>. Cela pose problème dans certaines
+			applications qui doivent pouvoir suivre les requêtes consécutives du
+			même client.
+		</p>
+		<p>
+			Les applications de commerce électronique constituent l'exemple le
+			plus évident de la nécessité de pouvoir regrouper les actions émanant
+			d'un même utilisateur et de les sauvegarder dans un &quot;panier
+			électronique&quot; qui suit le client tout au long de son parcours
+			dans le site de commerce. <br> Les applications qui gère
+			l'arrière-boutique (back-office en bon français) doivent aussi
+			pouvoir partager des informations sur l'utilisateur pour savoir qui
+			il est et à quelles pages il a accès pour effectuer les mises à jour
+			dans les bases de données. Sans un mécanisme de gestion d'état, il
+			faudrait que l'utilisateur se ré-authentifie chaque fois qu'il change
+			de page.
+		</p>
+
+
+		<p class="fp-puce">Le mécanisme des sessions permet de répondre à
+			ce besoin d'identification et de suivi d'un client dans les
+			différentes demandes qu'il fait au même serveur.</p>
+
+		<p class="fp-puce">La gestion d'une session permet de maintenir un
+			état sur une série de demandes émanant du même client pendant un
+			certain laps de temps, et le terme &quot;session&quot; fait référence
+			au temps qu'un utilisateur passe sur un site Web particulier.</p>
+
+		<p class="fp-puce">
+			La gestion des sessions va nous permettre d'<b>associer un
+				utilisateur avec des données</b>, tout au long de la visite qu'il fera
+			des différentes pages du site. Par exemple, dans le cas d'un site de
+			commerce, les différentes pages et actions peuvent être décomposées
+			en remplissage du panier électronique, création d'un compte ou
+			identification, vérification des articles, saisie des informations
+			d'adresse et de moyen de paiement et validation définitive de la
+			commande.
+		<p class="fp-puce fp-bottom0">PHP suporte en natif la gestion des
+			sessions :</p>
+		<ul class="fp-ul-puce">
+			<li>les "variables de session" sont stockées sur le serveur avec
+				le choix entre un stockage en mémoire, dans des fichiers texte, ou
+				dans une base de données.</li>
+			<li>une numéro de session (session ID ou SID) est
+				automatiquement généré pour identifier un utilisateur.</li>
+			<li>le numéro de session est passé au client, soit dans un
+				cookie, soit dans des en-tête GET/POST, soit dans l'URL de la page.</li>
+		</ul>
+
+		<h3>Commencer une session</h3>
+		<section>
+			<p class="fp-puce">
+				Pour commencer une session on utilise la fonction <a
+					href="https://www.php.net/manual/fr/function.session-start.php" target="_blank">session_start()</a>.
+			</p>
+
+			<p class="fp-puce">Comme la fonction génère un en-tête HTTP (un
+				cookie), les précautions habituelles doivent être respectées : pas
+				de sortie autre que des en-têtes avant l'appel de la fonction, ou
+				utilisation de la bufferisation (hautement conseillé).</p>
+
+			<p class="fp-puce">L'appel de cette fonction doit être fait dans
+				chacunes des pages qui vont utiliser le mécanisme des sessions.</p>
+
+			<p>Quand vous utilisez une session, je vous conseille d'avoir
+				toujours un début de script comme :</p>
+			<pre data-code="PHP_HTML">
+&lt;?php
+ob_start();			// Démarre la bufferisation
+session_start();	// Démarre-reprend la session
+...
+suite du script
+...
+</pre>
+
+			<p>
+				Quand nous utilisons <a
+					href="https://www.php.net/manual/fr/function.session-start.php" target="_blank">session_start()</a>,
+				PHP va vérifier si une session existe dèjà, c'est à dire si un
+				identifiant de session (SID) a été affecté. Si ce n'est pas le cas
+				(nouvelle session), PHP crée automatiquement un identifiant et
+				l'affecte à la session. Si l'identifiant existe déjà, les variables
+				de sessions sont chargées dans le tableau superglobal <span
+					class="fp-code">$_SESSION</span>.
+			<p class="fp-puce">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.session-id.php" target="_blank">session_id()</a>
+				renvoie l'identifiant affecté par PHP. Par défaut cet identifiant
+				est stocké côté client dans un cookie appelé <span class="fp-code">PHPSESSID</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_06.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : démarrer une session
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+session_start();
+
+require('bib_fonctions.php');
+
+htmlDebut('Session');
+
+
+echo '&lt;b&gt;Identifiant de session&lt;/b&gt;',
+     '&lt;br&gt;avec la fonction session_id :', session_id(),
+     '&lt;br&gt;dans le cookie : ', $_COOKIE['PHPSESSID'];
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Vous remarquerez que la première fois que vous testez cette page, le
+				cookie est vide. C'est normal, car rappelez-vous ce qui a été dit
+				avant : <i>"Les cookies écrits par un script ne sont pas
+					accessibles immédiatement à l'intérieur du script. Il faut attendre
+					que HTTP les ait transportés au moins une fois."</i>
+			</p>
+			<p>Si vous cliquez à nouveau sur le bouton 'Tester', vous verrez
+				que la valeur du cookie est bien là car il y aura eu une échange
+				HTTP.</p>
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

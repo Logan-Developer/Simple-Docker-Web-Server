@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Remplacer des caractères. Mise en majsucles/minuscules.</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<h3>Remplacer un caractère</h3>
+		<section>
+			<p class="fp-bottom0">
+				Nous avons vu la fonction <a
+					href="https://www.php.net/manual/fr/function.substr-replace.php" target="_blank">substr_replace()</a>
+				qui remplace une chaîne à l'intérieur d'une autre chaîne. PHP
+				fournit aussi la fonction <a
+					href="https://www.php.net/manual/fr/function.strtr.php" target="_blank">strtr()</a>
+				qui permet de remplacer chaque occurence d'un caractère par un
+				autre. Sous une première forme, la fonction accepte trois paramètres
+				:
+			</p>
+			<ul class="fp-ul-puce">
+				<li>la chaîne sur laquelle travailler</li>
+				<li>le ou les caractères à remplacer</li>
+				<li>le ou les caractères de remplacement.</li>
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement de caractères
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement de caractères');
+
+$x = 'Le langage PHP';
+echo '&lt;h4&gt;Chaîne de test&lt;/h4&gt;', $x;
+
+echo '&lt;h4&gt;Remplace "a" par "b"&lt;/h4&gt;';
+$x = strtr($x, 'a', 'b');
+echo $x;
+
+echo '&lt;h4&gt;Remplace "e" et "g" par "1" et "2"&lt;/h4&gt;';
+$x = strtr($x, 'eg', '12');
+echo $x;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2 fp-bottom0">
+				On peut aussi appeler la fonction <a
+					href="https://www.php.net/manual/fr/function.strtr.php" target="_blank">strtr()</a>
+				avec seulement 2 paramètres :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>la chaîne sur laquelle travailler</li>
+				<li>un tableau associatif contenant les paires de caractères à
+					remplacer.</li>
+			</ul>
+			<p>Ce qui est intéressant avec cette façon d'appeler la fonction,
+				c'est qu'on peut remplacer un caractère par plusieurs, ou plusieurs
+				par un, ou plusieurs par plusieurs.</p>
+			<p>
+				Nous verrons en détail dans le chapitre suivant ce que sont les
+				tableaux associatifs dans PHP. Dans un premier temps, voici un
+				exemple qui devrait vous permettre de comprendre facilement :<br>
+				<span class='fp-code'>array('a' =&gt; 'b', 'e' =&gt; '1',
+					'PHP' =&gt; 'HTML')</span><br>La fonction PHP <span class="fp-code">array()</span>
+				crée un tableau dans lequel à la clé 'a' correspond l'élément 'b', à
+				la clé 'e' correspond l'élément '1' et à la clé 'PHP' correspond
+				l'élément 'HTML'.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement de caractères
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement de caractères');
+
+$x = "Le langage PHP";
+echo '&lt;h4&gt;Chaîne de test&lt;/h4&gt;', $x;
+
+echo '&lt;h4&gt;Remplacement avec un tableau&lt;/h4&gt;';
+$t = array('a' =&gt; 'b', 'e' =&gt; '1', 'PHP' =&gt; 'HTML');
+echo strtr($x, $t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+
+		<h3>Majuscules et minuscules</h3>
+		<section>
+
+			<p>
+				Des fonctions permettent de <b>modifier les majuscules et les
+					minuscules</b> dans les chaînes.
+			<ul class="fp-ul">
+				<li><a
+					href="https://www.php.net/manual/fr/function.strtolower.php" target="_blank">strtolower()</a>
+					et <a
+					href="https://www.php.net/manual/fr/function.strtoupper.php" target="_blank">strtoupper()</a>
+					agissent sur l'ensemble de la chaîne.
+				<li><a
+					href="https://www.php.net/manual/fr/function.ucfirst.php" target="_blank">ucfirst()</a>
+					et <a
+					href="https://www.php.net/manual/fr/function.strtoupper.php" target="_blank">ucwords()</a>
+					agissent sur les premiers caractères d'une chaîne, ou des mots dans
+					une chaîne.
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : majuscules et minuscules
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Majuscules et minuscules');
+
+$x = 'le langage php';
+
+echo '&lt;h4&gt;Avant tranformation&lt;/h4&gt;', $x;
+
+$x = strtoupper($x);
+echo '&lt;h4&gt;Tout en majuscules&lt;/h4&gt;', $x;
+
+$x = strtolower($x);
+echo '&lt;h4&gt;Toute en minuscules&lt;/h4&gt;', $x;
+
+$x = ucfirst($x);
+echo '&lt;h4&gt;Premier caractère de la chaîne&lt;/h4&gt;', $x;
+
+$x = ucwords($x);
+echo '&lt;h4&gt;Premier caractère des mots&lt;/h4&gt;', $x;
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+
+	</div>
+	<footer></footer>
+</body>
+</html>

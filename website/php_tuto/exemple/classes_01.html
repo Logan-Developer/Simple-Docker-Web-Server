@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Bibliothéque de fonction</title>
+<link rel="stylesheet" href="../_core/def.css">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<style>
+#titre {
+	color: #FFF;
+	font-size: 17px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+	background: #8667BE;
+	box-shadow: 0 0 6px -2px #000000;
+	font-weight: bold;
+	height: 26px;
+	left: 0;
+	overflow: hidden;
+	padding: 5px 2px;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	}
+#btnClose {
+	background: url(images/__cancel24.png) no-repeat;
+	cursor: pointer;
+	height: 24px;
+	position: fixed;
+	right: 10px;
+	top: 6px;
+	width: 24px;
+	z-index: 10;
+	}
+
+#btnClose:hover {
+	background-image: url(../exemple/images/__cancel24_h.png);
+	}
+</style>
+</head>
+<body>
+
+<div id="titre"><div id="btnClose" onclick="top.FP.Voir.hidePLUS()"></div>monexception.class.php</div>
+
+<pre data-code="PHP" class="fp-petit" style="background: #F5F0FF">
+&lt;?php
+/**
+ * Gestion des exceptions pour les exemples du tutoriel
+ *
+ * @author François Piat
+ *
+ */
+class MonException extends Exception {
+	/** @var boolean Indique si phase développement ou production */
+	public static $is_dev = false;
+	/** @var boolean Indique si arrêt quand erreur */
+	protected $stop;
+	/** @var array Texte des messages d'erreur */
+	protected $textes = array(
+						'Erreur inconnue',
+						'Modèle invalide',
+						'Nombre de cordes invalide',
+						'Prix invalide');
+	
+	/**
+	 * Constructeur
+	 *
+	 * @param string|int	$p1		Texte ou numéro d'erreur
+	 * @param boolean		$p2		Indique si arrêt après erreur
+	 */
+	public function __construct($p1, $p2 = true) {
+		if (is_numeric($p1)) {
+			($p1 &lt; 0 || $p1 &gt;= count($this-&gt;textes)) &amp;&amp; $p1 = 0;
+			$msg = $this-&gt;textes[$p1];
+		} else {
+			$p1 = trim($p1);
+			if (trim($p1) != '') {
+				$msg = $p1;
+			} else {
+				$msg = $this-&gt;textes[0];
+			}
+		}
+		parent::__construct($msg, 0);
+		$this-&gt;stop = (bool) $p2;
+	}
+	/**
+	 * Affichage du message d'erreur et arrêt éventuel du script
+	 *
+	 */
+	public function __toString() {
+		if (! self::$is_dev) {
+			if ($this-&gt;stop) {
+				ob_end_clean();
+				exit('Site inaccessible');
+			}
+			return;
+		}
+		
+		echo '&lt;hr&gt;&lt;b&gt;Exception capturée : &lt;/b&gt;',
+			$this-&gt;getMessage(),
+			str_replace('#', '&lt;br&gt;#', $this-&gt;getTraceAsString());
+		
+		if ($this-&gt;stop) {
+			exit('&lt;hr&gt;');
+		}
+	}
+}
+?&gt;</pre>
+
+<script>
+CodeMirrorEditeur = {
+		dragDrop: false,
+		lineNumbers: true,
+		mode: 'application/x-httpd-php',
+		indentUnit: 4,
+		indentWithTabs: true,
+		enterMode: 'keep',
+		gutter: true,
+		fixedGutter: true,
+		readOnly: true,
+		tabMode: 'shift'
+	};
+CodeMirrorMode = {
+		PHP:		'text/x-php',
+		PHP_HTML:	'application/x-httpd-php'
+	};
+
+// On recherche tous les éléments avec des exemples de code.
+// Ils ont un attribut data-code qui indique comment afficher le code. 
+TCode = document.querySelectorAll('[data-code]');
+										
+for (i = 0; i < TCode.length; i++) {
+	TCode[i].classList.add('cm-s-default');
+	mode = TCode[i].getAttribute('data-code');
+	CodeMirror.runMode(TCode[i].textContent, CodeMirrorMode[mode], TCode[i]);
+}
+</script>
+</body>
+</html>

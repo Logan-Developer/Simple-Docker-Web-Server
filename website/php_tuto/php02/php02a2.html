@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les dates</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Comme nous venons de le voirs, le traitement des dates et du
+			temps repose sur l'utilisation du nombre de secondes écoulées depuis
+			le 01/01/1970. Ce nombre sert de base à toutes les fonctions traitant
+			des dates et qui permettent d'extraire les informations pertinentes :
+			année, mois, jour, heures, minutes, secondes, semaine, nom du jour,
+			numéro du jour dans l'année, année bissextile ou non, etc.</p>
+
+		<h3>La fonction mktime()</h3>
+		<section>
+			<p class="fp-puce">
+				Définir une date revient à déterminer son timestamp. Pour cela PHP
+				nous fournit la fonction <a
+					href="https://www.php.net/manual/fr/function.mktime.php" target="_blank">mktime()</a>
+				qui accepte en paramètres, dans l'ordre suivant, heures, minutes,
+				secondes, mois, jour et année de la date choisie.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : définir une date
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Définir une date');
+
+htmlInfo('Timestamp du 1er janvier 2000');
+echo mktime(0, 0, 0, 1, 1, 2000);
+
+htmlInfo('Timestamp du 1er décembre 1994 à 12h30');
+echo mktime(12, 30, 0, 12, 1, 1994);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>L'exemple suivant calcule le timestamp de votre date de
+				naissance et affiche le nom du jour où vous êtes né.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : définir une date
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Définir une date');
+
+// Modifiez les variables $JJ, $MM et $AA pour
+// les adapter à votre date de naissance
+$JJ = 25;
+$MM = 8;
+$AA = 1958;
+
+$t = mktime(12, 0, 0, $MM, $JJ, $AA);
+
+// Tableau des jours
+$jours = array('dimanche', 'lundi', 'mardi', 'mercredi', 
+				'jeudi', 'vendredi', 'samedi');
+
+echo 'Le ', date('d/m/Y', $t), 
+		' était un ', $jours[date('w', $t)];
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>Définir une date future ou passée</h3>
+		<section>
+			<p class="fp-puce">
+				Nous pouvons obtenir une date passée ou une date future en utilisant
+				les fonctions <a
+					href="https://www.php.net/manual/fr/function.mktime.php" target="_blank">mktime()</a>
+				et <a
+					href="https://www.php.net/manual/fr/function.getdate.php" target="_blank">getdate()</a>
+				ou <a
+					href="https://www.php.net/manual/fr/function.date.php" target="_blank">date()</a>.
+			</p>
+			<p>L'exemple suivant calcule à quelle date nous serons dans 45
+				jours et 18 heures.</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : définir une date dans le futur
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Définir une date dans le futur');
+
+// Eléments du jour
+$j = getdate(time());
+
+$t = mktime($j['hours'] + 18, 
+			$j['minutes'], 
+            $j['seconds'], 
+            $j['mon'], 
+            $j['mday'] + 45, 
+            $j['year']);
+
+echo 'Dans 45 jours et 18 heures, nous serons le ',
+     	date('d/m/Y \à H:i:s', $t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2">
+				Ce qui est agréable, c'est que la fonction <a
+					href="https://www.php.net/manual/fr/function.mktime.php" target="_blank">mktime()</a>
+				fait automatiquement les bons calculs de mois et d'heures avec les
+				arguments qu'on lui passe.
+			</p>
+			<p>
+				Dans l'exemple précédent nous commençons par récupérer les éléments
+				constituant la date du jour avec la fonction <a
+					href="https://www.php.net/manual/fr/function.getdate.php" target="_blank">getdate()</a>
+				qui comme nous l'avons vu précédemment renvoie un tableau de ces
+				divers constituants. Par exemple <span class="fp-code">$j['mday']</span>
+				contient le numéro du jour actuel et <span class="fp-code">$j['hours']</span>
+				contient l'heure du moment. <br> Pour calculer la date future
+				dans 45 jours, il nous suffit d'ajouter 45 au jour actuel : <span
+					class="fp-code">$j['mday'] + 45</span>. <br> Même chose pour
+				calculer la date dans 18 heures, il suffit d'ajouter 18 à l'heure
+				actuelle : <span class="fp-code">$j['hours'] + 18</span>. <br>
+				Pour récupérer le timestamp de la date dans 45 jours et 18 heures,
+				il suffit donc de passer les paramètres suivant à la fonction <a
+					href="https://www.php.net/manual/fr/function.mktime.php" target="_blank">mktime()</a>
+				: <br> <span class="fp-code">mktime(<span
+					class="fp-code fp-rouge">$j['hours'] + 18</span>, $j['minutes'],
+					$j['seconds'], $j['mon'], <span class="fp-code fp-rouge">$j['mday']
+						+ 45</span>, $j['year']);
+				</span>
+			</p>
+			<p>
+				Nous pourrions aussi utiliser la fonction <a
+					href="https://www.php.net/manual/fr/function.date.php" target="_blank">date()</a>
+				à la place de <a
+					href="https://www.php.net/manual/fr/function.getdate.php" target="_blank">getdate()</a>
+				:<br> <span class="fp-code">mktime(<span
+					class="fp-code fp-rouge">date('H') + 18</span>, date('i'),
+					date('s'), date('m'), <span class="fp-code fp-rouge">date('d')
+						+ 45</span>, date('Y'));
+				</span><br> Cette solution, si elle est identique en terme de
+				résultat, est par contre beaucoup plus consommatrice en temps de
+				traitement car la fonction <a
+					href="https://www.php.net/manual/fr/function.date.php" target="_blank">date()</a>
+				est appelée 6 fois de suite.
+			</p>
+
+			<p class="fp-inter2">Le même principe peut être utilisé pour
+				calculer une date passée. L'exemple suivant calcule la date d'il y a
+				1 an, 6 mois et 3 jours.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : définir une date dans le passé
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Définir une date dans le passé');
+
+// Eléments du jour
+$j = getdate(time());
+
+$t = mktime($j['hours'], 
+			$j['minutes'], 
+            $j['seconds'], 
+            $j['mon'] - 6, 
+            $j['mday'] - 3, 
+            $j['year'] - 1);
+
+echo 'Il y a 1 an, 6 mois et 3 jours, nous étions le ',
+     	date('d/m/Y', $t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<a id="newTimestamp"></a>
+		<h3 class="fp-exo">Exercice : fonction d'ajout de temps</h3>
+		<section>
+			<p>
+				PHP ne fournit pas directement une fonction qui permette d'ajouter
+				ou de retrancher un certain laps de temps à une date. Vous allez
+				donc écrire la fonction <span class="fp-code">newTimestamp()</span>
+				qui retroune un timestamp par ajout ou soustraction.
+			</p>
+			<p class="fp-bottom0">La fonction accepte trois paramètres :</p>
+			<ul class="fp-ul-puce">
+				<li>le laps de temps</li>
+				<li>le type du temps à ajouter / retrancher</li>
+				<li>le timestamp de la date à laquelle nous voulons
+					ajouter/retrancher le temps.</li>
+			</ul>
+			<p class="fp-bottom0">Le type du temps à ajouter est un caractère
+				alphabétique qui peut avoir les valeurs suivantes:</p>
+			<dl class="fp-dl-code">
+				<dt>a</dt>
+				<dd>: pour un nombre d'années</dd>
+				<dt>t</dt>
+				<dd>: pour un nombre de trimestres</dd>
+				<dt>m</dt>
+				<dd>: pour un nombre de mois</dd>
+				<dt>j</dt>
+				<dd>: pour un nombre de jours</dd>
+				<dt>w</dt>
+				<dd>: pour un nombre de semaines</dd>
+				<dt>h</dt>
+				<dd>: pour un nombre d'heures</dd>
+				<dt>i</dt>
+				<dd>: pour un nombre de minutes</dd>
+				<dt>s</dt>
+				<dd>: pour un nombre de secondes.</dd>
+			</dl>
+			<p>
+				La fonction <span class="fp-code">newTimestamp()</span> renvoie un
+				timestamp.
+			</p>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('newTimestamp_solu', 1)">Une
+					solution possible</a>
+			</p>
+
+			<div id="newTimestamp_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : fonction d'ajout de temps
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Fonction d\'ajout de temps');
+
+/**
+ * Ajoute ou retranche un laps de temps à un timestamp
+ *
+ * @param integer	$nbre	nombre d'unités
+ * @param string	$unite	unité : h, i, s, a, m, j, t, w
+ * @param integer	$debut	timestamp de départ du calcul
+ * @return integer	nouveau timestamp
+*/
+function newTimestamp($nbre, $unite, $debut) {
+    $d = getdate($debut);
+    $h = $d['hours'];
+    $i = $d['minutes'];
+    $s = $d['seconds'];
+    $a = $d['year'];
+    $m = $d['mon'];
+    $j = $d['mday'];
+  
+    switch ($unite) {
+    case('a'): 
+    	return mktime($h, $i, $s, $m, $j, $a + $nbre);
+    case('t'): 
+    	return mktime($h, $i, $s, $m + ($nbre * 3), $j, $a);
+    case('m'): 
+    	return mktime($h, $i, $s, $m + $nbre, $j, $a);
+    case('j'): 
+    	return mktime($h, $i, $s, $m, $j + $nbre, $a);
+    case('w'): 
+    	return mktime($h, $i, $s, $m, $j + ($nbre * 7), $a);
+    case('h'): 
+    	return mktime($h + $nbre, $i, $s, $m, $j, $a);
+    case('i'): 
+    	return mktime($h, $i + $nbre, $s, $m, $j, $a);
+    case('s'): 
+    	return mktime($h, $i, $s + $nbre, $m, $j, $a);
+    }
+   
+	// Si on est ici c'est que le 2éme paramètre 
+	// n'était pas bon. On retourne -1.
+	return -1;
+}
+
+//------------------------------------------------------
+// Utilisation de la fonction
+
+htmlInfo('Dans 15 jours');
+echo date('d/m/Y', newTimestamp(15, 'j', time()));
+
+htmlInfo('Dans 18 heures');
+echo date('d/m/Y H:i:s', newTimestamp(18, 'h', time()));
+
+htmlInfo('Dans 3 semaines'); 
+echo date('d/m/Y', newTimestamp(3, 'w', time()));
+
+htmlInfo('Il y a 90 minutes'); 
+echo date('H:i:s', newTimestamp(-90, 'i', time()));
+          
+htmlInfo('15 jours avant le 01/01/2000');
+$debut = mktime(0,0,0,1,1,2000);
+echo date('D d/m/Y', newTimestamp(-15, 'j', $debut));         
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+
+		<a id="getTimeDiff"></a>
+		<h3 class="fp-exo">Exercice : fonction de différence de temps</h3>
+		<section>
+			<p class="fp-bottom0">
+				Avec le principe du timestamp, il est très facile de calculer la
+				différence de temps entre 2 dates. Ecrivez la fonction <span
+					class="fp-code">getTimeDiff()</span> qui permet de calculer le laps
+				de temps écoulé entre 2 dates. La fonction accepte trois paramètres
+				:
+			</p>
+			<ul class="fp-ul-puce">
+				<li>le type du temps retourné</li>
+				<li>le timestamp de la date de début</li>
+				<li>le timestamp de la date de fin.</li>
+			</ul>
+
+			<p class="fp-bottom0">Le type du temps retourné est un caractère
+				alphabétique qui peut avoir les valeurs suivantes:</p>
+			<dl class="fp-dl-code">
+				<dt>j</dt>
+				<dd>: pour un nombre de jours</dd>
+				<dt>w</dt>
+				<dd>: pour un nombre de semaines</dd>
+				<dt>h</dt>
+				<dd>: pour un nombre d'heures</dd>
+				<dt>i</dt>
+				<dd>: pour un nombre de minutes</dd>
+				<dt>s</dt>
+				<dd>: pour un nombre de secondes.</dd>
+			</dl>
+
+			<p>Si la fonction est appelée avec seulement 2 paramètres, c'est
+				le timestamp de la date du jour qui est utilisé comme date de fin.</p>
+
+			<p>
+				La fonction <span class="fp-code">getTimeDiff()</span> renvoie le
+				nombre d'unités inférieure le plus proche (<a
+					href="https://www.php.net/manual/fr/function.floor.php" target="_blank">floor()</a>).
+			</p>
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('getTimeDiff_solu', 1)">Une
+					solution possible</a>
+			</p>
+
+			<div id="getTimeDiff_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_03.html')"
+						title="Afficher la bibliothéque de fonctions"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : fonction de différence de temps
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Fonction différence de temps');
+
+/**
+ * Calcul de la différence entre 2 timestamp
+ *
+ * @param string	$unite	unité : w , j, h, i, s
+ * @param integer	$debut	timestamp date début
+ * @param integer	$fin	timsetamp date de fin
+ * @return integer	nombre d'unité de différence
+*/
+function getTimeDiff($unite, $debut) {
+	if (func_num_args() == 2) {
+		$fin = time();
+	} else {
+		$fin = func_get_arg(2);
+	}
+	
+	$diff = $fin - $debut;
+	
+	switch ($unite) {
+	case 'w': 
+		return floor($diff / 604800);
+	case 'j': 
+		return floor($diff / 86400);
+	case 'h': 
+		return floor($diff / 3600);
+	case 'i': 
+		return floor($diff / 60);
+	case 's': 
+		return $diff;
+	}
+	
+	return -1;
+}
+
+//------------------------------------------------------
+// Utilisation de la fonction
+
+htmlInfo('Nombre de jours depuis ma naissance');
+echo getTimeDiff('j', mktime(0, 0, 0, 8, 25, 1958));
+
+htmlInfo('Nombre de minutes depuis le début de ce jour');
+$debut = mktime(0,0,0, date('m'), date('d'), date('Y'));
+echo getTimeDiff('i', $debut);
+
+htmlInfo('Nombre de semaines avant Noël');
+$fin = mktime(0,0,0, 12, 25, date('Y'));
+echo getTimeDiff('w', time(), $fin);
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+
+			</div>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

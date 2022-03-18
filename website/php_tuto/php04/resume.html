@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les expressions régulières</title>
+<link rel="stylesheet" href="../_core/def.css">
+<style>
+td:nth-child(1),
+td:nth-child(3) {
+	background-color: #F6ECFF;
+	font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', Monaco, 'Courier New', Courier, monospace;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+}
+#btnClose {
+	background: url(../exemple/images/__cancel24.png) no-repeat;
+	cursor: pointer;
+	height: 24px;
+	float: right;
+	width: 24px;
+	z-index: 10;
+	}
+
+#btnClose:hover {
+	background-image: url(../exemple/images/__cancel24_h.png);
+	}
+</style>
+</head>
+<body style="font-size: 11px">
+
+	<table>
+		<tr>
+			<td colspan="4"><div id="btnClose" onclick="top.FP.Voir.hidePLUS()"></div>Expressions régulières : motifs</td>
+		</tr>
+		<tr>
+			<td>^</td>
+			<td>Début de chaîne</td>
+			<td>$</td>
+			<td>Fin de chaîne</td>
+		</tr>
+		<tr>
+			<td>{n}</td>
+			<td>Le caractère précédent est répété exactement n fois.</td>
+			<td>{n,}</td>
+			<td>Le caractère précédent est répété n ou plus de fois.</td>
+		</tr>
+		<tr>
+			<td>{n,m}</td>
+			<td>Le caractère précédent est répété au moins n fois, et au
+				plus m fois.</td>
+			<td>*</td>
+			<td>Le caractère précédent est répété 0 ou plusieurs fois.</td>
+		</tr>
+
+		<tr>
+			<td>+</td>
+			<td>Le caractère précédent est répété une ou plusieurs fois.</td>
+			<td>?</td>
+			<td>Le caractère précédent est répété 0 ou une fois.</td>
+		</tr>
+
+		<tr>
+			<td>.</td>
+			<td>Remplace n'importe quel caractère.</td>
+			<td>[]</td>
+			<td>Liste de caractères. [abc] : les caractère a ou
+				b ou c. [a-z] : les caractères de a à z.</td>
+		</tr>
+		<tr>
+			<td>()</td>
+			<td>Encadrent une sous-chaîne.</td>
+			<td>|</td>
+			<td>Opérateur ou.</td>
+		</tr>
+		<tr>
+			<td>\b</td>
+			<td>Début ou une fin de &quot;mot&quot;</td>
+			<td>\B</td>
+			<td>Inverse de \b</td>
+		</tr>
+		<tr>
+			<td>\d</td>
+			<td>Tous les chiffres.</td>
+			<td>\D</td>
+			<td>Inverse de \d.</td>
+		</tr>
+		<tr>
+			<td>\s</td>
+			<td>Tous les caractères d'espace (espaces, tabulations, saut de
+				ligne, retour chariot).</td>
+			<td>\w</td>
+			<td>N'importe quel caractère de &quot;mot&quot; : une lettre
+				majuscule ou minuscule, un chiffre ou le caractère _.</td>
+		</tr>
+		<tr>
+			<td>\S</td>
+			<td>Inverse de \s.</td>
+			<td>\W</td>
+			<td>Inverse de \w.</td>
+		</tr>
+
+		<tr>
+			<td colspan="4">Expressions régulières : options</td>
+		</tr>
+		<tr>
+			<td>i</td>
+			<td>Insensible à la casse.</td>
+			<td>s</td>
+			<td>Le point reconnaît les sauts de ligne.</td>
+		</tr>
+		<tr>
+			<td>m</td>
+			<td>La chaîne est multilignes.</td>
+			<td>e</td>
+			<td>Du code PHP peut être évalué dans le remplacement.</td>
+		</tr>
+		<tr>
+			<td>U</td>
+			<td>Rend tous les quantificateurs non gourmands.</td>
+			<td>x</td>
+			<td>Permet de commenter les modèles.</td>
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>le Web et PHP</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+<link rel="stylesheet" href="specifique.css">
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p class="fp-bottom0">Nous en avons déjà parlé dans les 2 pages
+			précédentes : il faut vérifier les données reçues de zones qui ne
+			permettent pas directement de saisir des informations :</p>
+		<ul class="fp-ul-puce">
+			<li>les boutons radio</li>
+			<li>les cases à cocher</li>
+			<li>les listes déroulantes.</li>
+		</ul>
+
+		<p class="fp-puce">Quand ces zones doivent contenir des valeurs
+			numériques, on peut leur appliquer les tests sur les types
+			numériques.</p>
+		<p class="fp-puce">On peut aussi utiliser une autre méthode pour
+			vérifier que les données reçues sont bien dans la plage de celles
+			attendues: mettre les valeurs attendues dans un tableau et tester si
+			la valeur reçue se trouve bien dans le tableau.</p>
+
+
+
+		<form id="post_01" method="post" action=""
+			class="TEST-form fp-bottom0">
+			<a class="TEST-lien" title="Afficher le code HTML"
+				onclick="top.FP.Voir.showPLUS('php06/formulaire08_code.html')"></a>
+			<p class="NO-TEST-titre fp-gras">Exemple de valeurs non saisissables</p>
+			<div style="padding-left: 10px; margin-top: -10px;">
+				<label class="fp-label">Langage préféré <select
+					name="lisLangage" size="1" style="width: 100px">
+						<option value="C ++">C ++</option>
+						<option value="Java">Java</option>
+						<option value="PHP" selected>PHP</option>
+						<option value="Aucun">Aucun</option>
+				</select>
+				</label> <label class="fp-label">Aimerait</label> <input type="checkbox"
+					name="chkCM" value="CM"> plus de cours magistraux<br>
+				<input type="checkbox" name="chkCL" value="CL"> plus de
+				cours en ligne<br> <input type="checkbox" name="chkTD"
+					value="TD"> plus de TD<br> <input type="checkbox"
+					name="chkTP" value="TP"> plus de TP
+			</div>
+			<div style="clear: both; text-align: center; padding: 10px 0;">
+				<input type="reset" name="btnReset" value=" Effacer "> <input
+					type="button" name="btnSubmit" value="Envoyer"
+					onclick="top.FP.Voir.testForm(this.form)">
+			</div>
+		</form>
+
+		<form action="" method="post" class="TEST-form fp-top0">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_05.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Traitement du formulaire côté serveur</strong>
+			</div>
+			<textarea data-binome="post_01" name="txtCode" class="TEST-textarea"
+				rows="30" cols="55">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Valider une zone non saisissable');
+
+htmlInfo('Test du langage préféré');
+
+$t = array('C ++', 'Java', 'PHP', 'Aucun');
+if (in_array($_POST['lisLangage'], $t)) {
+	echo 'Ok';
+} else {
+	echo 'Surveiller adresse IP, valeur corrompue';
+}
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-inter2 fp-remarque">Utiliser un tableau avec les
+			valeurs permises fonctionne aussi très bien avec des valeurs
+			numériques qui ne seraient pas consécutives.</p>
+
+
+		<p class="fp-inter2 fp-puce">
+			Le traitement des zones de <b>cases à cocher</b> est un peu
+			particulier. Si l'utilisateur n'a pas coché la case, aucune
+			information ne sera transmise au serveur et on ne retrouvera rien
+			dans <a
+				href="https://www.php.net/manual/fr/reserved.variables.post.php" target="_blank">$_POST</a>.
+		</p>
+		<p class="fp-puce">
+			Avant de réaliser des tests sur les valeurs des cases à cocher, il
+			faut donc avant tout savoir si ces valeurs existent dans <a
+				href="https://www.php.net/manual/fr/reserved.variables.post.php" target="_blank">$_POST</a>
+			(ie si la case à été cochée). En conséquence, on commence par tester
+			avec la fonction <a
+				href="https://www.php.net/manual/fr/function.isset.php" target="_blank">isset()</a>
+			si la clé correspondante au nom de la case à cocher (attribut HTML <span
+				class="fp-code">name</span>) se trouve dans le tableau <a
+				href="https://www.php.net/manual/fr/reserved.variables.post.php" target="_blank">$_POST</a>.
+		</p>
+		<p>Une fois que l'on est sûr de la présence de l'élément à tester,
+			on peut comparer directement la valeur reçue avec celle attendue.</p>
+
+		<form id="post_02" method="post" action=""
+			class="TEST-form fp-bottom0">
+			<a class="TEST-lien" title="Afficher le code HTML"
+				onclick="top.FP.Voir.showPLUS('php06/formulaire08_code.html')"></a>
+			<p class="NO-TEST-titre fp-gras">Exemple de valeurs non saisissables</p>
+			<div style="padding-left: 10px; margin-top: -10px;">
+				<label class="fp-label">Langage préféré <select
+					name="lisLangage" size="1" style="width: 100px">
+						<option value="C ++">C ++</option>
+						<option value="Java">Java</option>
+						<option value="PHP" selected>PHP</option>
+						<option value="Aucun">Aucun</option>
+				</select>
+				</label> <label class="fp-label">Aimerait</label> <input type="checkbox"
+					name="chkCM" value="CM"> plus de cours magistraux<br>
+				<input type="checkbox" name="chkCL" value="CL"> plus de
+				cours en ligne<br> <input type="checkbox" name="chkTD"
+					value="TD"> plus de TD<br> <input type="checkbox"
+					name="chkTP" value="TP"> plus de TP
+			</div>
+			<div style="clear: both; text-align: center; padding: 10px 0;">
+				<input type="reset" name="btnReset" value=" Effacer "> <input
+					type="button" name="btnSubmit" value="Envoyer"
+					onclick="top.FP.Voir.testForm(this.form)">
+			</div>
+		</form>
+
+		<form action="" method="post" class="TEST-form fp-top0">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_05.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Traitement du formulaire côté serveur</strong>
+			</div>
+			<textarea data-binome="post_02" name="txtCode" class="TEST-textarea"
+				rows="30" cols="55">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Valider une zone non saisissable');
+
+htmlInfo('Test case à cocher 1');
+
+if (isset($_POST['chkCM'])) {
+	if ($_POST['chkCM'] == 'CM') {
+		echo 'Ok';
+	} else {
+		echo 'Surveiller adresse IP, valeur corrompue';
+	}
+}
+
+htmlInfo('Test case à cocher 2');
+
+if (isset($_POST['chkCL'])) {
+	if ($_POST['chkCL'] == 'CL') {
+		echo 'Ok';
+	} else {
+		echo 'Surveiller adresse IP, valeur corrompue';
+	}
+}
+
+htmlInfo('Test case à cocher 3');
+
+if (isset($_POST['chkTD'])) {
+	if ($_POST['chkTD'] == 'TD') {
+		echo 'Ok';
+	} else {
+		echo 'Surveiller adresse IP, valeur corrompue';
+	}
+}
+
+htmlInfo('Test case à cocher 4');
+
+if (isset($_POST['chkTP'])) {
+	if ($_POST['chkTP'] == 'TP') {
+		echo 'Ok';
+	} else {
+		echo 'Surveiller adresse IP, valeur corrompue';
+	}
+}
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-inter2">Comme vous le voyez, la vérification de cases
+			à cocher est une chose un peu pénible et je vous recommande, dans la
+			mesure du possible, de ne pas utiliser ce type de zone de saisie</p>
+	</div>
+	<footer></footer>
+</body>
+</html>

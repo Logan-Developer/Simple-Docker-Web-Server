@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Gestion de dossiers</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<ul id="MENU-page"></ul>
+
+		<p>
+			PHP fournit seulement <a
+				href="https://www.php.net/manual/fr/ref.dir.php" target="_blank">
+				quelques fonctions</a> pour traiter la gestion des dossiers. Nous
+			devrons pallier les manques en écrivant nos propres fonctions, avec
+			souvent le recours à la récursivité.
+		</p>
+
+
+		<div class="fp-clear">
+			<img src="../phpimg/test_repert.gif" width="155" height="418"
+				class="fp-f-right" style="margin-left: 10px">
+
+			<p>Pour les exemples, nous utiliserons l'aborescence de dossiers
+				ci-contre.</p>
+			<p>
+				Cet aborescence se trouve dans le dossier test du tutoriel. Vous
+				pouvez voir son contenu avec le bouton <img
+					src="../_core/images/__arbo.png" width="32" height="32"
+					style="display: table-cell; vertical-align: middle"> dans la
+				barre de menu du tutoriel.
+			</p>
+			<p class="fp-bottom0">
+				Si vous ne voyez pas cet aborescence, ou si vous voulez la
+				ré-initialiser <a
+					onclick="top.FP.Voir.showPLUS('exemple/init_chap09.php?x=d')">utilisez
+					ce script</a>.
+			</p>
+		</div>
+
+
+		<h3>Créer un dossier</h3>
+		<section>
+			<p class="fp-puce fp-bottom0">
+				La création d'un dossier se fait avec la fonction <a
+					href="https://www.php.net/manual/fr/function.mkdir.php" target="_blank">mkdir()</a>.
+			</p>
+			<ul class="fp-ul-puce">
+				<li>La fonction renvoie TRUE si la création a réussi, FALSE
+					sinon.</li>
+				<li><a
+					href="https://www.php.net/manual/fr/function.mkdir.php" target="_blank">mkdir()</a>
+					accepte comme premier paramètre le nom du dossier à créer. Ce nom
+					peut contenir un chemin d'accès (relatif ou absolu), et dans ce
+					cas, <b>tous les dossiers sauf le dernier doivent exister</b>.</li>
+				<li><a
+					href="https://www.php.net/manual/fr/function.mkdir.php" target="_blank">mkdir()</a>
+					accepte un deuxième paramètre facultatif qui représente les droits
+					d'accès au dossier (en notation octal comme sous Unix ou Linux).</li>
+			</ul>
+
+			<p>
+				Le script suivant présente la fonction <span class="fp-code">creerArbo</span>
+				qui permet de créer un dossier et tous les dossiers parents de
+				l'arborescence si ils n'existent pas.
+			</p>
+			<pre data-code="PHP">
+/**
+ * Création d'une arborescence de dossiers
+ * @param string    $arbo   Arborescence de dossiers
+ * @param integer   $mode   Droit d'accès dossiers en octal
+ * @return integer  1: ok, 2: déjà existant, 0: erreur
+ */
+function creerArbo($arbo, $mode = 0770) {
+    if (@is_dir($arbo)) {
+        return 2;
+	}
+	
+	$partie = '.';
+	foreach (explode('/', $arbo) as $dossier) {
+		$partie .= "/$dossier";
+		if (@is_dir($partie)) {
+			continue;
+		}		
+		@mkdir($partie, $mode);
+		if (! @is_dir($partie)) {
+			return 0;
+		}	
+	}
+
+    return 1;
+}</pre>
+			<p>
+				La fonction <span class="fp-code">creerArbo()</span>commence par
+				vérifier avec <a
+					href="https://www.php.net/manual/fr/function.is-dir.php" target="_blank">is_dir()</a>
+				que le dossier à créer n'existe pas. Si c'est le cas la fonction
+				s'arrête en renvoyant 2.
+			</p>
+			<p>
+				Ensuite on démonte l'arborescence en utilisant le caractère <span
+					class="fp-code">/</span> comme séparateur et une boucle <span
+					class="fp-code">foreach</span> joint les différentes parties en
+				créant le dossier si il n'existe pas déjà.
+			</p>
+
+			<p class="fp-remarque">Si cette fonction peut être utilisée pour
+				créer une arborescence de dossiers, elle fonctionne aussi très bien
+				pour créer une arborescence ... d'un seul dossier.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : création d'une arborescence de dossier
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Création d\'une arboresence');
+
+$arbo = 'test_repert/import/nouveau/textes';
+
+htmlInfo("Création de $arbo");
+
+$ok = creerArbo($arbo);
+
+if ($ok == 1) {
+	echo 'Création résussie';
+} elseif ($ok == 2) {
+	echo 'Dossier déjà existant';
+} else {
+	echo 'Erreur';
+}
+
+htmlFin();
+
+//=====================================================
+/**
+ * Création d'une arborescence de dossiers
+ * @param string    $arbo   Arborescence de dossiers
+ * @param integer   $mode   Droit d'accès dossiers en octal
+ * @return integer  1: ok, 2: déjà existant, 0: erreur
+ */
+function creerArbo($arbo, $mode = 0770) {
+    if (@is_dir($arbo)) {
+        return 2;
+	}
+	
+	$partie = '.';
+	foreach (explode('/', $arbo) as $dossier) {
+		$partie .= "/$dossier";
+		if (@is_dir($partie)) {
+			continue;
+		}		
+		@mkdir($partie, $mode);
+		if (! @is_dir($partie)) {
+			return 0;
+		}	
+	}
+
+    return 1;
+}
+?&gt;</textarea>
+			</form>
+
+			<a class="LIEN-rep"
+				onclick="top.FP.Voir.showPLUS('exemple/gestionrepert.php')">
+				Vérifier le contenu du dossier de travail</a>
+
+		</section>
+
+		<h3>Supprimer un dossier</h3>
+		<section>
+
+			<p class="fp-puce fp-bottom0">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.rmdir.php" target="_blank">rmdir()</a>
+				supprime un dossier <b>vide</b>.
+			</p>
+			<ul class="fp-ul-puce">
+				<li><a
+					href="https://www.php.net/manual/fr/function.rmdir.php" target="_blank">rmdir()</a>
+					accepte comme paramètre le nom du dossier à supprimer. Ce nom peut
+					contenir un chemin d'accès, relatif ou absolu.</li>
+				<li><a
+					href="https://www.php.net/manual/fr/function.rmdir.php" target="_blank">rmdir()</a>
+					renvoie TRUE si la suppression a réussi, FALSE sinon.</li>
+				<li>Si le dossier n'est pas vide la suppression ne peut pas
+					être faite.</li>
+
+			</ul>
+
+			<p>
+				Le script suivant présente la fonction <span class="fp-code">supprimerDossier</span>
+				qui supprime un dossier et son contenu éventuel. La fonction est
+				récursive car le dossier peut contenir des dossiers qui peuvent
+				contenir des dossiers qui peuvent etc.
+			</p>
+			<pre data-code="PHP">
+/**
+ * Suppression d'un dossier et de son contenu
+ * @param string    $nom	Nom du dossier
+ * @return boolean  TRUE si suppression effectuée
+ */
+function supprimerDossier($nom) {
+	if (!@is_dir($nom)) {
+		return false;
+	}
+  	//--- lecture du dossier 
+  	$dossier = @opendir($nom);
+	while (($elem = readdir($dossier)) !== FALSE) {
+		if ($elem == '.' || $elem == '..') {
+			continue;
+		}
+		
+		$complet = "$nom/$elem";
+		if(@is_dir($complet)) {
+			$ok = supprimerDossier($complet); 
+		} else {
+			$ok = @unlink($complet);
+  		}
+		
+		if (!$ok) {
+			return FALSE;
+		}
+	}
+	@closeDir($dossier);	
+
+	return @rmdir($nom);
+}</pre>
+			<p class="fp-bottom0">
+				La fonction commence par tester si le dossier existe bien. Si ce
+				n'est pas le cas, elle arrête le traitement et renvoie false. <br>
+				Le dossier est ensuite lu comme vu précédemment. Pour chaque élément
+				trouvé :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>si c'est un dossier, la fonction <span class="fp-code">supprimerDossier()</span>
+					est appelée (récursivité) pour supprimer le dossier et son contenu,
+				</li>
+				<li>si c'est un fichier, il est supprimé avec la fonction <a
+					href="https://www.php.net/manual/fr/function.unlink.php" target="_blank">unlink()</a></li>
+			</ul>
+			<p>
+				Quand tous les éléments du dossier ont été traité, la fonction
+				renvoie le résultat de <a
+					href="https://www.php.net/manual/fr/function.rmdir.php" target="_blank">rmdir()</a>
+				appliqué sur le dossier courant.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : suppression d'un dossier et de son
+					contenu
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Suppresion d\'un dossier');
+
+$dossier = 'test_repert/export';
+
+htmlInfo("Suppression de $dossier");
+
+$ok = supprimerDossier($dossier);
+
+if ($ok) {
+	echo 'Suppression résussie';
+} else {
+	echo 'Erreur pendant la suppression';
+}
+
+htmlFin();
+
+//=====================================================
+/**
+ * Suppression d'un dossier et de son contenu
+ * @param string    $nom	Nom du dossier
+ * @return boolean  TRUE si suppression effectuée
+ */
+function supprimerDossier($nom) {
+	if (!@is_dir($nom)) {
+		return false;
+	}
+  	//--- lecture du dossier 
+  	$dossier = @opendir($nom);
+	while (($elem = readdir($dossier)) !== FALSE) {
+		if ($elem == '.' || $elem == '..') {
+			continue;
+		}
+		
+		$complet = "$nom/$elem";
+    	//--- si dossier appel récursif
+    	//--- si fichier suppression
+		if(@is_dir($complet)) {
+			$ok = supprimerDossier($complet); 
+		} else {
+			$ok = @unlink($complet);
+  		}
+		
+		if (!$ok) {
+			return FALSE;
+		}
+	}
+	@closeDir($dossier);	
+
+	return @rmdir($nom);
+}
+?&gt;</textarea>
+			</form>
+
+			<a class="LIEN-rep"
+				onclick="top.FP.Voir.showPLUS('exemple/gestionrepert.php')">
+				Vérifier le contenu du dossier de travail</a>
+
+
+		</section>
+
+		<h3>Copier un dossier</h3>
+		<section>
+			<p class="fp-puce fp-bottom0">
+				PHP n'offre pas de fonction permettant de copier un dossier et if
+				faut donc en écrire une. La fonction <span class="fp-code">copierDossier()</span>
+				sera récursive. La fonction accepte comme paramètres le dossier
+				source et le dossier destination (qui ne doit pas exister). Le
+				traitement est simple :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>création du dossier de destination</li>
+				<li>boucle de lecture du dossier source</li>
+				<li>si l'élément lu est un fichier : copie du fichier</li>
+				<li>si l'élément lu est un dossier : appel de la fonction de
+					copie (récursivité)</li>
+			</ul>
+			<pre data-code="PHP">
+/**
+ * Copie d'un dossier et de son contenu
+ * @param string    $source	Nom du dossier source
+ * @param string	$cible	Nom du dossier destination
+ * @return integer  1: ok, 0: pas de dossier source, 
+ *					-1: erreur création destination
+ *					-2 : erreur de copie de fichier
+ */
+function copierDossier($source, $cible) {
+	if (!@is_dir($source)) {
+		return 0;	// Pas de dossier source
+	}
+	
+	if (creerArbo($cible) != 1) {
+		return -1;	// Erreur création dossier cible
+	}
+	
+	// Lecture du dossier source
+	$dossier = @opendir($source);
+	while (($elem = readdir($dossier)) !== FALSE) {
+		if ($elem == '.' || $elem == '..') {
+			continue;
+		}
+		$sourceComplet = "$source/$elem";
+		$cibleComplet = "$cible/$elem";
+
+		if (@is_dir($sourceComplet)) {
+			// Traitement récursif - sous-dossier
+			$ok = copierDossier($sourceComplet, $cibleComplet);
+		} else {
+			// Copie d'un fichier
+			$ok = @copy($sourceComplet, $cibleComplet) ? 1 : -2;
+		}
+		
+		if ($ok != 1) {
+			return $ok;
+		}
+	}
+	
+	@closeDir($dossier);
+	
+	return 1;
+}</pre>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : copie d'un dossier
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+&gt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('copie d\'un dossier');
+
+$source = 'test_repert/images';
+$cible = 'test_repert/sauve';
+
+htmlInfo("copie de $source dans $cible");
+
+$ok = copierDossier($source, $cible);
+
+if ($ok) {
+	echo 'Copie réussie';
+} elseif ($ok == 0) {
+	echo "Le dossier $source n'est pas accessible";
+} elseif ($ok == -1) {
+	echo "Le dossier $cible ne peut pas être créé";
+} elseif ($ok == -2) {
+	echo "Erreur dans la copie d'un fichier";
+}
+
+htmlFin();
+
+//=====================================================
+/**
+ * Copie d'un dossier et de son contenu
+ * @param string    $source	Nom du dossier source
+ * @param string	$cible	Nom du dossier destination
+ * @return integer  1: ok, 0: pas de dossier source, 
+ *					-1: erreur création destination
+ *					-2 : erreur de copie de fichier
+ */
+function copierDossier($source, $cible) {
+	if (!@is_dir($source)) {
+		return 0;	// Pas de dossier source
+	}
+	
+	if (creerArbo($cible) != 1) {
+		return -1;	// Erreur création dossier cible
+	}
+	
+	// Lecture du dossier source
+	$dossier = @opendir($source);
+	while (($elem = readdir($dossier)) !== FALSE) {
+		if ($elem == '.' || $elem == '..') {
+			continue;
+		}
+		$srcComplet = "$source/$elem";
+		$cblComplet = "$cible/$elem";
+
+		if (@is_dir($srcComplet)) {
+			// Traitement récursif - sous-dossier
+			$ok = copierDossier($srcComplet, $cblComplet);
+		} else {
+			// Copie d'un fichier
+			$ok = @copy($srcComplet, $cblComplet) ? 1 : -2;
+		}
+		
+		if ($ok != 1) {
+			return $ok;
+		}
+	}
+	
+	@closeDir($dossier);
+	
+	return 1;
+}
+//=====================================================
+/**
+ * Création d'une arborescence de dossiers
+ * @param string    $arbo   Arborescence de dossiers
+ * @param integer   $mode   Droit d'accès dossiers en octal
+ * @return integer  1: ok, 2: déjà existant, 0: erreur
+ */
+function creerArbo($arbo, $mode = 0770) {
+    if (@is_dir($arbo)) {
+        return 2;
+	}
+	
+	$partie = '.';
+	foreach (explode('/', $arbo) as $dossier) {
+		$partie .= "/$dossier";
+		if (@is_dir($partie)) {
+			continue;
+		}		
+		@mkdir($partie, $mode);
+		if (! @is_dir($partie)) {
+			return 0;
+		}	
+	}
+
+    return 1;
+}
+?&gt;</textarea>
+			</form>
+
+			<a class="LIEN-rep"
+				onclick="top.FP.Voir.showPLUS('exemple/gestionrepert.php')">
+				Vérifier le contenu du dossier de travail</a>
+
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

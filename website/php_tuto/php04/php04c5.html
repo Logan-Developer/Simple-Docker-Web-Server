@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Remplacements par fonctions</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<section>
+			<p class="fp-puce fp-bottom0">
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.preg-replace-callback.php" target="_blank">preg_replace_callback()</a>
+				permet <b>d'utiliser une fonction pour effectuer le remplacement</b>
+				des chaînes concordantes avec le modèle. <a
+					href="https://www.php.net/manual/fr/function.preg-replace-callback.php" target="_blank">preg_replace_callback()</a>
+				accepte trois paramètres :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>une expression régulière,</li>
+				<li>le nom de la fonction a exécuter pour faire le
+					remplacement,</li>
+				<li>la chaîne sur laquelle travailler.</li>
+			</ul>
+			<p class="fp-puce">La fonction qui effectue le remplacement
+				reçoit en paramètre le texte à remplacer sous la forme d'un tableau.
+				L'élément 0 du tableau contient toute la chaîne trouvée, les
+				éléments suivants correspondent aux parenthèse capturantes
+				éventuellement utilisées.</p>
+			<p>L'utilisation d'une fonction pour faire des remplacements peut
+				être interressante par exemple quand on a à gérer un site avec des
+				fonctionnalités utilisant un BBCode (Bulletin Board Code) ou une
+				syntaxe wiki, qui permettent à l'utilisateur de saisir facilement
+				des instructions de mise en forme (**gras** plutôt que
+				&lt;b&gt;gras&lt;/b&gt;) ou de faire des liens
+				([url]www.univ-fcomte.fr[/url] sera traduit par &lt;a
+				href="http://www.univ-fcomte.fr"&gt;www.univ-fcomte.fr&lt;/a&gt;).
+				On filtre donc le texte saisi puis on remplace certaines parties par
+				du code HTML permettant un affichage "correcte" dans un navigateur.</p>
+			<p class="fp-bottom0">Notre exemple gérera les remplacements
+				suivants :</p>
+			<ul class="fp-ul-puce">
+				<li><span class="fp-code">[url]adresse[/url]</span> devient <span
+					class="fp-code">&lt;a href="adresse"&gt;adresse&lt;/a&gt;</span></li>
+				<li><span class="fp-code">[img]adresse[/img]</span> devient <span
+					class="fp-code">&lt;img src="adresse"&gt;</span></li>
+				<li><span class="fp-code">**texte**</span> devient <span
+					class="fp-code">&lt;b&gt;texte&lt;/b&gt;</span></li>
+				<li><span class="fp-code">*n*Titre*n*</span> devient <span
+					class="fp-code">&lt;hn&gt;Titre&lt;/hn&gt;</span> (n variant de 1 à
+					6)</li>
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement par fonction
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement par fonction');
+
+// Tableau des expressions à remplacer
+$exp = array();
+$exp[] = '/\[(url|img)\](.+?)\[\/\1\]/i';
+$exp[] = '/(\*\*)(.+?)\1/i';
+$exp[] = '/(\*\d\*)(.+?)\1/i';
+
+// Texte
+$txt = '*4*Bonjour*4*
+Je suis **ton père** [img]dv.gif[/img].
+[url]www.dark-vador.net[/url]';
+
+// Remplacement
+$html = preg_replace_callback($exp, 'remplacer', $txt);
+
+echo $html;
+
+htmlFin();
+
+//======================================================
+function remplacer($x) {
+	// Pour voir ce qui est passé à la fonction
+	// décommentez la ligne suivante 
+	// infoTableau($x);
+	
+	// Remplacements
+	if ($x[1] == 'url') {
+    	return '&lt;a href="http://'.$x[2].'"&gt;'.$x[2].'&lt;/a&gt;'; 
+	}
+
+	if ($x[1] == 'img') {
+		return '&lt;img src="'.$x[2].'"&gt;';
+	}
+	
+	if ($x[1] == '**') {
+		return '&lt;b&gt;'.$x[2].'&lt;/b&gt;';
+  	}
+  	
+	return preg_replace('/\*(\d)\*(.+?)\*(\d)\*/', '&lt;h\\1&gt;\\2&lt;/h\\3&gt;', $x[0]);
+}
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-puce">L'exemple suivant met en majuscule et en rouge
+				tous les tags HTML contenus dans une chaîne.</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_14.html')"
+					title="Afficher la bibliothéque de fonctions"></a> <a
+					class="TEST-lien-exp" title="Afficher un résumé des expressions"
+					onclick="top.FP.Voir.showPLUS('php04/resume.html')"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : remplacement par fonction
+				</div>
+				<textarea name="txtCode" class="TEST-textarea" data-wrap="true">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Remplacement par fonction');
+
+// texte en heredoc
+$txt = &lt;&lt;&lt;_HTML_
+&lt;br&gt;
+&lt;table border="0" cellspacing="0" cellpadding="0"  width="460" align="center"&gt;
+  &lt;tr&gt; 
+    &lt;td&gt; 
+      &lt;p&gt;Pendant que nous sommes dans les tags HTML, voilà l'expression réguliére qui permet de capturer tous les tags HTML, qu'ils aient ou non des attributs :&lt;br&gt;
+        &lt;span class="code"&gt;&lt;\s*?(\w+)\b*?&gt;&lt;/span&gt;&lt;/p&gt;
+      &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name="2"&gt;&lt;/a&gt;
+_HTML_;
+
+$exp = '#&lt;\s*?(/?)\s*?(\w+)(\b.*?)&gt;#s';
+
+$html = preg_replace_callback($exp, 'remplacerTag', $txt);
+
+echo '&lt;pre&gt;', $html, '&lt;/pre&gt;';
+
+htmlFin();
+
+//=====================================================
+function remplacerTag($x) {
+	return '&amp;lt'		// le signe &lt;
+			.$x[1]		// le / si tag de fin
+			.'&lt;span style="color:red"&gt;'	// le tag en rouge		
+			.strtoupper($x[2])	// le tag en majsucule
+			.'&lt;/span&gt;'
+			.$x[3]		// les attributs éventuels
+			.'&amp;gt';		// le signe &gt;
+}
+?&gt;</textarea>
+			</form>
+
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

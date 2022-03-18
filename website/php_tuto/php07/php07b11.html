@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Exercices listes avec MySQL</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<a id="liste_editeurs"></a>
+		<h3 class="fp-exo">Liste des éditeurs</h3>
+		<section>
+			<p>Reprenez l'exemple de la liste des auteurs et présentez une
+				liste des éditeurs conçue sur le même principe.</p>
+
+			<figure>
+				<img src="../phpimg/liste_editeurs.png" width="391" height="246">
+				<figcaption>liste des éditeurs</figcaption>
+			</figure>
+
+
+			<ul class="fp-ul-1em">
+				<li>La liste est triée alplhabétiquement sur le nom de
+					l'éditeur.</li>
+				<li><span class="fp-code">edWeb</span> doit être un lien réel
+					sur le site de l'éditeur.</li>
+				<li><a
+					onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')">Schéma
+						de la base de données</a></li>
+			</ul>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('liste_editeurs_solu', 1)">Une
+					solution possible</a>
+			</p>
+			<div id="liste_editeurs_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_10.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-bd" title="Afficher le schéma de la base"
+						onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : Exercice : liste des éditeurs
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Liste des éditeurs', 'bd.css');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT edNom, edWeb
+		FROM editeurs
+		ORDER BY edNom';
+		
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+htmlTable(array('Nom', 'Site web'), 'tab-bd');
+
+while ($enr = mysqli_fetch_assoc($r)) {
+	$enr['edWeb'] = trim($enr['edWeb']);
+	htmlProteger($enr);
+	$enr['edWeb'] = '&lt;a href="http://'.$enr['edWeb'].'"&gt;'
+						.$enr['edWeb'].'&lt;/a&gt;';
+	htmlLigne($enr);
+}
+
+echo '&lt;/table&gt;';
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+			</div>
+		</section>
+
+		<a id="liste_livres"></a>
+		<h3 class="fp-exo">Liste des livres simple</h3>
+		<section>
+			<p>Reprenez l'exemple de la liste des auteurs et présentez une
+				liste des livres conçue sur le même principe.</p>
+
+			<figure>
+				<img src="../phpimg/liste_livres.png" width="590" height="367">
+				<figcaption>liste des livres</figcaption>
+			</figure>
+
+
+			<ul class="fp-ul-1em">
+				<li>La liste est triée alplhabétiquement sur le titre.</li>
+				<li>Quand le livre est écrit en français (<span class="fp-code">liLangue
+						= 'FR'</span>), le prix doit être affiché comme 123.45 € (le symbole €
+					est l'entité HTML <span class="fp-code">&amp;euro;</span>). Sinon
+					le prix doit être affiché comme $123.45.
+				</li>
+				<li>Le nom de l'éditeur est un lien vers son site web.</li>
+				<li><a
+					onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')">Schéma
+						de la base de données</a></li>
+			</ul>
+
+			<p class="fp-solution">
+
+				<a onclick="top.FP.Voir.showSolution('liste_livres_solu', 1)">Une
+					solution possible</a>
+			</p>
+			<div id="liste_livres_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_10.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-bd" title="Afficher le schéma de la base"
+						onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : Exercice : liste des livres simple
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Liste des livres', 'bd.css');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT	liTitre, liAnnee, liPages, 
+				liPrix, edNom, liLangue, edWeb
+		FROM	livres, 
+				editeurs
+		WHERE edID = liIDEditeur
+		ORDER BY liTitre';
+		
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+htmlTable(array('Titre', 'Année', 'Pages', 
+				'Prix', 'Editeur'), 
+		  'tab-bd');
+
+while ($enr = mysqli_fetch_assoc($r)) {
+	htmlProteger($enr);
+	// Mise en forme du prix
+	if ($enr['liLangue'] == 'FR') {
+		$enr['liPrix'] .= ' &amp;euro;';
+	} else {
+		$enr['liPrix'] = '$'.$enr['liPrix'];
+	}
+	
+	// Le nom de l'éditeur est un lien vers son site Web
+	$enr['edNom'] = '&lt;a href="http://'.trim($enr['edWeb']).'"&gt;'
+						.$enr['edNom'].'&lt;/a&gt;';
+	
+	// Suppression des éléments non affichés
+	unset($enr['liLangue'], $enr['edWeb']);
+	
+	htmlLigne($enr);
+}
+
+echo '&lt;/table&gt;';
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+
+				</form>
+			</div>
+		</section>
+
+		<a id="liste_livres_cat"></a>
+		<h3 class="fp-exo">Liste des livres par catégorie</h3>
+		<section>
+			<p>
+				Présentez la liste des livres par catégorie (<span class="fp-code">liCat</span>).
+			</p>
+			<p class="fp-t-center"></p>
+
+			<figure>
+				<img src="../phpimg/liste_livres_cat.png" width="590" height="516">
+				<figcaption>liste des livres par catégories</figcaption>
+			</figure>
+
+			<ul class="fp-ul-1em">
+				<li>On utilise une seule requête SQL, triée alplhabétiquement
+					sur la catégorie puis le titre.</li>
+				<li>On utilise une seule table HTML pour tout l'affichage. La
+					table fait 700 pixels de large.</li>
+				<li>Il faut ajouter des CSS pour la table. Par exemple : <pre>
+.tab-bd-700 {
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 0 auto;
+	width: 700px;
+	}
+.tab-bd-700 .tr-titre {
+	background: #eff9a7;
+	font-weight: bold;
+	}
+.tab-bd-700 .tr-sous-titre {
+	background: #ccc;
+	font-weight: bold;
+	}	
+.tab-bd-700 .tr-fonce {
+	background: #eee;
+	}
+.tab-bd-700 td {
+	border: 1px solid #ddd;
+	padding: 2px;
+	vertical-align: top;	
+	}</pre>
+				</li>
+				<li>Vous pouvez bien sûr modifier une ou des fonctions de la
+					bibliothéque <span class="fp-code">bib_fonctions.php</span>
+				<li><a
+					onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')">Schéma
+						de la base de données</a></li>
+			</ul>
+
+			<p class="fp-solution">
+				<a onclick="top.FP.Voir.showSolution('liste_livres_cat_solu', 1)">Une
+					solution possible</a>
+			</p>
+			<div id="liste_livres_cat_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_11.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-bd" title="Afficher le schéma de la base"
+						onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : Exercice : liste des livres par
+						catégorie
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Livres par catégorie', 'bd.css');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT	liTitre, liAnnee, liPages, 
+				edNom, liCat
+		FROM	livres, 
+				editeurs
+		WHERE edID = liIDEditeur
+		ORDER BY liCat, liTitre';
+		
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+$cat = '';
+$nb = 0;
+echo '&lt;table class="tab-bd-700"&gt;';
+
+while ($enr = mysqli_fetch_assoc($r)) {
+	// Rupture catégorie : on fait le titre catégorie 
+	// et le nouvel en-tête de table
+	if ($cat != $enr['liCat']) {
+		$cat = $enr['liCat'];
+		$nb = 0;
+		htmlLigne(array(htmlentities($cat, ENT_COMPAT, 
+		          'ISO-8859-1'), '', '', ''), 'tr-titre');
+		htmlLigne(array('Titre', 'Année', 'Pages', 'Editeur'),
+				 	'tr-sous-titre');
+	}	
+
+	// Affichage des lignes
+	unset($enr['liCat']);	// Suppression élt non affiché
+	htmlProteger($enr);
+	htmlLigne($enr, ($nb++ % 2) ? 'tr-fonce' : '');
+}
+
+echo '&lt;/table&gt;';
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+				</form>
+
+				<p class="fp-inter2">
+					La fonction <span class="fp-code">htmlLigne()</span> est modifiée
+					pour accepter un paramètre supplémentaire : une classe CSS pour la
+					ligne.
+				</p>
+				<pre data-code="PHP">
+/**
+ * Envoie à la sortie standard une ligne d'une table HTML
+ *
+ * @param array		$elts	Elements à afficher dans les colonnes
+ * @param string	$css	Classe CSS éventuelle de la ligne
+ */
+function htmlLigne($elts, $css = '') {
+	echo '&lt;tr', ($css == '') ? '&gt;' : " class='$css'&gt;";
+
+	foreach ($elts as $elt) {
+		echo '&lt;td&gt;', $elt, '&lt;/td&gt;';
+	}
+
+	echo '&lt;/tr&gt;';
+}</pre>
+			</div>
+		</section>
+
+
+		<a id="liste_livres_aut"></a>
+		<h3 class="fp-exo">Liste des livres et de leur(s) auteur(s)</h3>
+		<section>
+			<p>Présentez la liste des livres et de leur(s) auteur(s).</p>
+
+
+			<figure>
+				<img src="../phpimg/liste_livres_aut.png" width="590" height="457">
+				<figcaption>liste des livres par auteur</figcaption>
+			</figure>
+
+			<ul class="fp-ul-1em">
+				<li>La liste est triée alplhabétiquement sur le titre puis sur
+					le nom / prénom de(s) l'auteur(s).</li>
+				<li>On utilise une seule requête SQL.</li>
+				<li><a
+					onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')">Schéma
+						de la base de données</a></li>
+			</ul>
+
+			<p class="fp-solution">
+
+				<a onclick="top.FP.Voir.showSolution('liste_livres_aut_solu', 1)">Une
+					solution possible</a>
+			</p>
+			<div id="liste_livres_aut_solu" class="BLOC-solution">
+				<form action="" method="post" class="TEST-form">
+					<a class="TEST-lien"
+						onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_11.html')"
+						title="Afficher la bibliothéque de fonctions"></a> <a
+						class="TEST-lien-bd" title="Afficher le schéma de la base"
+						onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+					<div class="TEST-titre">
+						<strong>Exercice</strong> : Exercice : liste des livres et de
+						leur(s) auteur(s)
+					</div>
+					<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Livres avec les auteurs', 'bd.css');
+
+$bd = bdConnecter();
+
+//-- Requête ----------------------------------------
+$sql = 'SELECT	liID, liTitre, liAnnee, liPages, 
+				auNom, auPrenom
+		FROM	livres,
+				auteurs,
+				aut_livre
+		WHERE al_IDLivre = liID
+		AND	auID = al_IDAuteur
+		ORDER BY liTitre, auNom, auPrenom';
+		
+$r = mysqli_query($bd, $sql) or bdErreur($bd, $sql);
+
+//-- Traitement -------------------------------------
+$livreID = -1;
+$livre = array();	// stockage livre avant affichage
+
+htmlTable(array('Titre', 'Année', 'Pages', 'Auteur(s)'),
+		  	'tab-bd');
+
+while ($enr = mysqli_fetch_assoc($r)) {
+	// Même livre : il a donc plusieurs auteurs
+	if ($livreID == $enr['liID']) {
+		$livre['aut'] .= '&lt;br&gt;'
+		              .htmlentities($enr['auPrenom']
+					  .' '.$enr['auNom'], ENT_COMPAT, 
+		              'ISO-8859-1');
+		continue;
+	}
+	
+	// Affichage d'un livre
+	if ($livreID != -1) {
+		htmlLigne($livre);
+	}
+	
+	// Stockage des éléments du livre
+	$livre['titre'] = $enr['liTitre'];
+	$livre['an'] = $enr['liAnnee'];
+	$livre['pages'] = $enr['liPages'];
+	$livre['aut'] = $enr['auPrenom'].' '.$enr['auNom'];	
+	htmlProteger($livre);
+	
+	$livreID = $enr['liID'];
+}
+
+if ($livreID != -1) {
+	htmlLigne($livre);
+}
+
+echo '&lt;/table&gt;';
+
+// Libération de la mémoire associée au résultat de la requête
+mysqli_free_result($r);
+//-- Déconnexion ------------------------------------
+mysqli_close($bd);
+
+htmlFin();
+?&gt;</textarea>
+
+				</form>
+			</div>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

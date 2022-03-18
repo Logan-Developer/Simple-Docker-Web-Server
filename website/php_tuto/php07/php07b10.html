@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Libération des ressources</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		
+		<p class="fp-puce">
+			La fonction <a
+					href="https://www.php.net/manual/fr/mysqli-result.free.php" target="_blank">mysqli_free_result()</a>
+			libère la mémoire associée à un résultat. 
+			Vous devriez toujours libérer les résultats avec <a
+					href="https://www.php.net/manual/fr/mysqli-result.free.php" target="_blank">mysqli_free_result()</a>, 
+			lorsque votre objet de résultat ne vous est plus utile. 
+		</p>
+		
+		<p class="fp-puce">
+			La fonction <a
+					href="https://www.php.net/manual/fr/mysqli.close.php" target="_blank">mysqli_close()</a>
+			ferme la connexion au serveur MySQL et libère les ressources utilisées.
+		</p>
+		<p class="fp-puce">
+			Lorsqu'un script se termine, la connexion à la base et les jeux de résultats ouverts (objets de type <a 
+						href="https://www.php.net/manual/fr/class.mysqli-result.php" target="_blank">mysqli_result</a>)
+			sont automatiquement détruits par PHP. <br>Donc, la fermeture de la connexion et 
+			la libération des résultats sont optionnelles.<br>
+			Néanmoins, il est recommandé de le faire explicitement car
+			ça permet de retourner les ressources immédiatement à PHP et à MySQL, et donc d'améliorer les performances; 
+			notamment quand le script PHP a des traitements relativement lourds à faire après avoir récupéré
+			des enregistrements en base de données.
+		</p>
+
+
+	</div>
+	<footer></footer>
+</body>
+</html>

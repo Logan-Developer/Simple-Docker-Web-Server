@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Mise à jour - Recherche</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<!-- 
+		<p class="fp-remarque">
+			Rappel : si vous travaillez sur votre ordinateur personnel vous devez
+			<a onclick="top.FP.Voir.showPLUS('exemple/initbase.php')">créer
+				la base de données de test</a> pour que les exemples soient réalisables.
+		</p>
+-->
+		<figure>
+			<img src="../phpimg/auteurs_cherche.png" width="484" height="254">
+			<figcaption>page de recherche des auteurs</figcaption>
+		</figure>
+		
+		<figure class="fp-f-right" style="margin-left: 10px">
+			<img src="../phpimg/auteurs_orga_1.png" width="264" height="286">
+			<figcaption>liaisons page de recherche</figcaption>
+		</figure>
+		
+		<p class="fp-puce fp-bottom0">
+			La page <span class="fp-code">auteurs_cherche.php</span> est composée
+			d'un formulaire qui permet de rechercher des auteurs en fonction de
+			leur nom.
+		</p>
+		
+		
+		<ul class="fp-ul-puce">
+			<li>L'utilisateur peut choisir avec des boutons radio si il veut
+				que le nom des auteurs commence, contienne ou finisse par ce qu'il
+				saisit dans la zone de texte.</li>
+			<li>Le bouton "Rechercher" déclenche la sélection et l'affichage
+				du résultat (<span class="fp-code">auteurs_liste.php</span>).
+			</li>
+			<li>Le bouton "Ajouter" permet de passer directement à la phase
+				de création d'un nouvel auteur (<span class="fp-code">auteurs_maj.php</span>).
+			</li>
+		</ul>
+
+
+
+		<p>
+			Le code du script <span class="fp-code">auteurs_cherche.php</span> ne
+			présente pas de difficultés particulières. Quelques commentaires
+			après le code.
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_11.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<a class="TEST-lien-bd" title="Afficher le schéma de la base"
+				onclick="top.FP.Voir.showPLUS('exemple/php_tuto_bd.html')"></a>
+			<div class="NO-TEST-titre">Script auteurs_cherche.php</div>
+			<textarea name="txtCode" class="TEST-textarea" data-readonly="true">
+&lt;?php
+ob_start();
+session_start();
+
+$_SESSION['idAuteur'] = 0;
+$_SESSION['recherche'] = array();
+
+require('bib_params.php');
+require('bib_fonctions.php');
+
+htmlDebut('Recherche auteurs', 'bd.css');
+
+echo '&lt;form method="POST" class="maj w300" ',
+		'action="auteurs_liste.php"&gt;',
+		'Rechercher des auteurs dont le nom',
+
+		'&lt;label&gt;',
+		'&lt;input type="radio" name="radNom" ',
+			'value="1"&gt;commence par',
+		'&lt;/label&gt;',
+
+        '&lt;label&gt;',
+		'&lt;input type="radio" name="radNom" ',
+			'value="2" checked&gt;contient',
+		'&lt;/label&gt;',
+
+		'&lt;label&gt;',
+		'&lt;input type="radio" name="radNom" ',
+			'value="3"&gt;finit par',
+		'&lt;/label&gt;',
+
+		'&lt;input type="text" name="txtNom" ',
+			'style="width: 280px;"&gt;',
+
+		'&lt;p class="pagination"&gt;',
+		'&lt;input type="submit" value="Ajouter" ',
+			'name="btnNouveau" formaction="auteurs_maj.php"&gt;',
+		'&lt;input type="submit" value="Rechercher" ',
+			'name="btnChercher"&gt;',
+		'&lt;/p&gt;',
+
+	 '&lt;/form&gt;';
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-t-center">
+			<a onclick="top.FP.Voir.testCode(-1, '../test/auteurs_cherche.php')">Exécuter
+				auteurs_cherche.php</a>
+		</p>
+
+		<p class="fp-puce">
+			Nous utilisons 2 variables de sessions pour mémoriser : <br>
+			- l'ID de l'auteur choisi pour être modifié ou supprimé<br>
+			- la position du bouton radio et la chaine saisie dans l' <span class="fp-code">input</span>
+			de type <span class="fp-code">text</span> dans un tableau.<br>
+			Les variables de session sont à initialiser le plus tôt possible et ce
+			dans la page qui sert de point de départ à l'application ou à une
+			partie de l'application.
+		</p>
+
+		<p class="fp-puce">
+			Suivant le bouton sur lequel l'utilisateur va cliquer, une action
+			différente sera faite (liste ou nouvel utilisateur). Pour gérer cette
+			dualité nous profitons de l'attribut <span class="fp-code">formaction</span>
+			qui permet à un bouton de redéfinir l'url sur laquelle va pointer le
+			formulaire.
+		<p>
+	</div>
+	<footer></footer>
+</body>
+</html>

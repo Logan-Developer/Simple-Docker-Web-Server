@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Afficher des chaînes de caractères</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Quand on parle d'afficher "quelque chose", c'est en réalité
+			envoyer ce "quelque chose" au navigateur qui va lui réellement en
+			faire l'affichage dans sa fenêtre. Toute mise en forme de ce "quelque
+			chose" doit obgligatoirement être faite avec des balises HTML et/ou
+			des règles de style CSS.</p>
+		<p class="fp-remarque">La connaissance de HTML (et dans une
+			moindre mesure de CSS) est un pré-requis absolument nécessaire à
+			l'utilisation de PHP.</p>
+
+		<h3>echo</h3>
+		<section>
+			<p>
+				Nous avons déjà employé de nombreuses fois l'instruction <a
+					href="https://www.php.net/manual/fr/function.echo.php" target="_blank">echo</a>
+				qui est la <strong>méthode à privilégier</strong> pour afficher des
+				informations.
+			</p>
+
+			<p class="fp-puce">
+				L'instruction <a
+					href="https://www.php.net/manual/fr/function.echo.php" target="_blank">echo</a>
+				accepte autant de paramètres (ie les éléments à afficher) que
+				nécessaire. Cela nous permet de ne pas avoir besoin d'utiliser de
+				concaténation pour réaliser les affichages.
+			<p class="fp-remarque">Quelque soit le langage utilisé, les
+				concaténations sont toujours coûteuses en ressources, en particulier
+				mémoire, et doivent donc toujours être évitées quand c'est possible.</p>
+
+			<p class="fp-puce">
+				Les paramètres peuvent être de n'importe quel type (sauf un objet)
+				et un transtypage automatique sera fait éventuellement pour
+				l'affichage. Evidemment on ne passera pas un tableau, à <a
+					href="https://www.php.net/manual/fr/function.echo.php" target="_blank">echo</a>
+				puisque le résultat du transtypage serait 'Array'.
+			</p>
+
+			<p class="fp-puce">Les valeurs des paramètres peuvent être des
+				valeurs littérales, des variables et la valeur de retour de
+				fonctions.</p>
+			<form method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : l'instruction echo
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('L\'instruction echo');
+
+echo '&lt;h4&gt;Du code HTML et une expression littérale&lt;/h4&gt;';
+
+$prenom = 'François';
+$nbEnfants = 2;
+
+echo '&lt;p&gt;Je m\'appelle ', $prenom, 
+  	' et j\'ai ', $nbEnfants, ' enfants.';
+
+$nom = 'Piat';
+echo '&lt;p&gt;Mon nom est ', $nom, 
+  	", $prenom ", strtoupper($nom);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>print_r() et var_dump()</h3>
+		<section>
+			<p>
+				Les fonctions <a
+					onClick="top.FP.Voir.showPageTech('ref.var','function.print-r')">print_r</a>
+				et <a
+					onClick="top.FP.Voir.showPageTech('ref.var','function.var-dump')">var_dump</a>
+				servent pratiquement exclusivement pour le débuggage. Elles
+				affichent les variables qui leur sont passées sans faire de
+				conversion.
+			</p>
+			<p>
+				Ce qui est intéressant avec ces fonctions c'est que les tableaux
+				sont examinés récursivement et que les informations sur les clés et
+				les valeurs sont affichées. Pour que l'affichage des tableaux soient
+				lisibles, il faut utiliser les balises html <span class="fp-code">&lt;pre&gt;</span>
+				et <span class="fp-code">&lt;/pre&gt;</span>.
+			</p>
+
+			<form method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : les fonctions print_r() et var_dump()
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('print_r et var_dump');
+
+//---------------------------------------------------------
+function debugger($variable) {
+  echo '&lt;h4&gt;Debug&lt;/h4&gt;',
+    	'&lt;pre&gt;Avec print_r : &lt;br&gt;';
+  
+  print_r($variable);
+  
+  echo '&lt;br&gt;Avec var_dump : &lt;br&gt;';
+  
+  var_dump($variable);
+  
+  echo '&lt;/pre&gt;';
+}
+
+//---------------------------------------------------------
+$x = true;
+debugger($x);
+//---------------------------------------------------------
+$x = 'François Piat';
+debugger($x);
+//---------------------------------------------------------
+$x = array('François', 'Piat', 44);
+debugger($x);
+//---------------------------------------------------------
+$x = array('prenom'=&gt;'François', 'nom'=&gt;'Piat', 'age'=&gt;44);
+debugger($x);
+//---------------------------------------------------------
+class Voiture {
+  public $couleur = 'rouge';
+  private $roues = 4;
+  private $bruit = '';
+  function demarrer() {
+  	$this-&gt;bruit = 'vroum';
+  }
+}
+$x = new Voiture;
+debugger($x);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>printf()</h3>
+		<section>
+			<p>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.printf.php" target="_blank">printf()</a>
+				envoie une chaîne formatée au navigateur. Cette fonction est la même
+				que celle que l'on trouve dans d'autres langages (C par exemple). Le
+				premier argument à passer à la fonction est une chaîne décrivant le
+				format de sortie. Les arguments suivants sont les valeurs à
+				afficher.
+			</p>
+			Exemple :
+			<pre data-code="PHP" class="fp-top0">print("La date : %02d %02d %d", 20, 2, 2002)</pre>
+
+			<p class="fp-puce">Dans le format de sortie, le caractère %
+				indique une substitution de valeur. Ce caractère peut être suivi de
+				un ou plusieurs modificateurs de format, et d'un spécificateur de
+				type.</p>
+			<p class="fp-puce fp-bottom0">Les modificateurs de format doivent
+				respecter l'ordre suivant et sont :</p>
+			<ul class="fp-ul-puce">
+				<li>un caractère de justification à gauche</li>
+				<li>le nombre minimum de caractères</li>
+				<li>un nombre indiquant le nombre de chiffres aprés la virgule
+					pour les nombres à virgule flottante</li>
+			</ul>
+			<p class="fp-puce">Le caractère de justification indique quel
+				caractère sera utilisé pour justifier à gauche la valeur. Ce
+				caractère peut être un espace (valeur par défaut), 0 (zéro), ou
+				n'importe quel caractère précédé d'un guillemet simple. Le caractère
+				de justification doit être suivi d'un nombre indiquant la longueur
+				minimum de la valeur formatée.</p>
+
+			<form method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : modificateurs de format
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Modificateur de format');
+
+echo '&lt;h4&gt;Justification avec des 0 &lt;/h4&gt;';
+printf('%04d %04d %04d %04d', 1, 12, 123, 1234);
+
+echo '&lt;h4&gt;Justification avec *&lt;/h4&gt;';
+printf( "%'*4d %'*4d %'*4d %'*4d", 1, 12, 123, 1234);
+
+echo '&lt;h4&gt;Nombres à virgule&lt;/h4&gt;';
+printf(' %.2f', 1);
+printf(' %.2f', 1.23);
+printf(' %04.2f', 123.4);
+printf(' %f', 1234);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-remarque">Dans la réalité cette fonction est très
+				rarement utilisée. Elle sert surtout à l'affichage des décimales
+				dans les nombres à virgules.</p>
+
+			<p>Pour être complet, le spécificateur de type indique le type de
+				données passées en argument. Les spécificateurs possibles sont :</p>
+			<dl class="fp-dl-code">
+				<dt>%</dt>
+				<dd>: aucun argument nécessaire</dd>
+				<dt>b</dt>
+				<dd>: l'argument est traité comme un entier, et représenté
+					comme un nombre binaire.</dd>
+				<dt>c</dt>
+				<dd>: l'argument est traité comme un entier, et représenté
+					comme un nombre ascii.</dd>
+				<dt>d</dt>
+				<dd>: l'argument est traité comme un entier, et représenté
+					comme un nombre décimal.</dd>
+				<dt>u</dt>
+				<dd>: l'argument est traité comme un entier, et représenté
+					comme un nombre décimal non signé.</dd>
+				<dt>f</dt>
+				<dd>: l'argument est traité comme un double, et représenté
+					comme un nombre à virgule flottante.</dd>
+				<dt>o</dt>
+				<dd>: l'argument est traité comme un entier, et représenté
+					comme un nombre octal.</dd>
+				<dt>s</dt>
+				<dd>: l'argument est traité tel quel, et représenté comme une
+					chaîne.</dd>
+				<dt>x</dt>
+				<dd>: l'argument est traité comme un entier, et représenté
+					comme un nombre hexadécimal (en minuscules).</dd>
+				<dt>X</dt>
+				<dd>: l'argument est traité comme un entier, et représenté
+					comme un nombre hexadécimal (en majuscules).</dd>
+			</dl>
+
+			<form method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : spécificateur de type
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Spécificateur de type');
+
+printf('&lt;h4&gt; %d vaut %b en binaire&lt;/h4&gt;', 1234, 1234);
+
+printf('&lt;h4&gt; %d vaut %c en ascii&lt;/h4&gt;', 123, 123);
+
+printf('&lt;h4&gt; %d vaut %o en octal&lt;/h4&gt;', 1234, 1234);
+
+printf('&lt;h4&gt; %d vaut %x en hexa&lt;/h4&gt;', 1234, 1234);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+		<h3>print()</h3>
+		<section>
+			<p>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.print.php" target="_blank">print()</a>
+				envoie son argument au navigateur. Elle retourne <span
+					class="fp-code">true</span> si la chaîne a bien été envoyée, <span
+					class="fp-code">false</span> sinon.
+			</p>
+
+			<p class="fp-puce">
+				Le fait que cette fonction n'accepte qu'un paramètre oblige soit à
+				concaténer, soit à appeler la fonction plusieurs fois de suite. Dans
+				tous les cas c'est une perte de temps et de ressources. Préférez
+				toujours <a
+					href="https://www.php.net/manual/fr/function.echo.php" target="_blank">echo</a>
+				à cette fonction.
+			</p>
+
+			<p class="fp-puce">La valeur de retour de cette fonction est
+				totalement inutile et totalement inutilisée.</p>
+		</section>
+	</div>
+	<footer></footer>
+</body>
+</html>

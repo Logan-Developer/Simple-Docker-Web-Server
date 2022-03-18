@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Variables et types de données</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+
+		<ul id="MENU-page"></ul>
+		<p>Comme la majorité des autres langages, PHP permet de définir
+			des constantes.</p>
+		<ul class="fp-ul-1em">
+			<li>Une constante représente une <b>valeur simple</b>,
+				identifiée par un <b>nom</b>.
+			</li>
+			<li>En PHP5, seuls les types de données scalaires (booléen, entier,
+				double, chaîne de caractères, ou NULL) peuvent être utilisés comme valeur
+				d'une constante. En PHP7, les valeurs tableaux sont aussi autorisées. 
+			</li>
+			<li>La valeur d'une constante ne peut jamais être modifiée
+				durant l'exécution du script.</li>
+			<li>Les noms de constantes suivent <b>les mêmes règles que
+					les noms en PHP</b>. Un nom de constante valide commence par une lettre
+				ou un underscore (_), suivi d'un nombre quelconque de lettres, chiffres
+				ou underscores. Le nom d'une constante est sensible aux
+				majuscules/minuscules.
+			</li>
+			<li>Par convention, les constantes sont toujours nommées en
+				majuscules.</li>
+			<li>Les constantes ont automatiquement une <b>portée globale</b>
+				: elles sont accessibles par toutes les parties du script où elles
+				sont définies.
+			</li>
+			<li>Une constante est définie avec la fonction <a
+				href="https://www.php.net/manual/fr/function.define.php" target="_blank">define()</a>
+				: <span class="fp-code">define('NOM_CONSTANTE', valeur);</span></li>
+			<li>Une fois qu'une constante est définie, elle ne peut plus
+				être modifiée, ou détruite.</li>
+			<li>Pour accéder à la valeur d'une constante, on spécifie
+				simplement son nom, qui NE DOIT PAS être préfixé par le caractère $
+				comme pour le variables.</li>
+		</ul>
+
+		<form action="" method="post" class="TEST-form">
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : constante
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Constantes&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;?php
+define('NOM', 'Piat');  // definition de la constante
+
+echo '&lt;hr&gt;Dans le script ',
+	'valeur de la constante NOM : ', NOM;
+
+uneFonction();  // appel d'une fonction
+
+//------------------------------------------------------
+function uneFonction() {
+	echo '&lt;hr&gt;Dans la fonction ',
+		'valeur de la constante NOM : ', NOM;
+}
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+		</form>
+
+		<p>
+			La fonction <a
+				href="https://www.php.net/manual/fr/function.get-defined-constants.php" target="_blank">get_defined_constants()</a>
+			renvoie la liste de toutes les constantes définies dans PHP. Cette
+			liste peut varier d'une installation à une autre, selon les modules
+			additionnels qui sont compilés avec PHP.
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : les constantes de PHP
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;title&gt;Les constantes de PHP&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;
+&lt;?php
+define('NOM', 'Piat');
+print_r(get_defined_constants());
+?&gt;
+&lt;/pre&gt;
+&lt;/body&gt;</textarea>
+
+		</form>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

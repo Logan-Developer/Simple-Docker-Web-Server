@@ -1,0 +1,76 @@
+.tab-bd {
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 0 auto;
+	min-width: 340px;
+	}
+.tab-bd tr:nth-child(odd) {
+	background: #eee;
+	}
+.tab-bd tr:first-child {
+	background: #ccc;
+	font-weight: bold;
+	}
+.tab-bd td {
+	border: 1px solid #ddd;
+	padding: 2px;
+	vertical-align: top;
+	}
+
+.tab-bd-700 {
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 0 auto;
+	width: 700px;
+	}
+.tab-bd-700 .tr-titre {
+	background: #eff9a7;
+	font-weight: bold;
+	}
+.tab-bd-700 .tr-sous-titre {
+	background: #ccc;
+	font-weight: bold;
+	}	
+.tab-bd-700 .tr-fonce {
+	background: #eee;
+	}
+.tab-bd-700 td {
+	border: 1px solid #ddd;
+	padding: 2px;
+	vertical-align: top;
+	}
+	
+.pagination {
+	text-align: center;
+	}
+
+
+.maj {
+	margin: 10px auto;
+	width: 400px;
+	}
+.maj label {
+	display: block;
+	margin: 10px auto;
+	width: 300px
+	}
+
+.maj label input[type="text"],
+.maj label select,
+.maj label textarea {
+	display: block;
+	width: 300px;
+	}
+
+.maj input[type="submit"] {
+	width: 80px;
+	margin-right: 10px;
+	}
+.w300 {
+	width: 300px;
+	}
+.err {
+	color: red;
+	font-weight: normal;
+	}
+}

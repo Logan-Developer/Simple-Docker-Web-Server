@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lire un fichier</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p class="fp-bottom0">
+			Pour les exemples, nous utiliserons le fichier &quot;<span
+				class="fp-code">commentaires.txt</span>&quot; du dossier <span
+				class="fp-code">test_fichiers</span>.
+		</p>
+		<ul class="fp-ul-puce">
+			<li>Le fichier contient des commentaires laissés par les
+				visiteurs d'un site.</li>
+			<li>Un enregistrement "commentaire" est composé de 4 zones : nom
+				du visiteur, adresse email, date du commentaire, texte du
+				commentaire.</li>
+			<li>Les zones sont séparées par le caractère |.</li>
+			<li>Les enregistrements sont séparés par une marque de nouvelle
+				ligne (line feed, soit <span class="fp-code">\n</span>).
+			</li>
+		</ul>
+
+		<p class="fp-code fp-petit">
+			Gaston Lagaffe|gl@xyz.com|22/10/2012|Quel excellent site sur
+			JAVA.&lt;br&gt;Je le recommande à tous les internautes.<br>Florence
+			Arto|lamer@quonvoitdanser.fr|25/10/2012|La navigation est parfois
+			difficile mais les&lt;br&gt;recherches sont toujours récompensées.<br>
+			Darth V|dv@starwars.com|27/10/2012|Je sens la FORCE ici ...<br>Le
+			Grinch|grinch@couine.com|27/10/2012|Ce site est nul. Venez plutôt
+			voir le mien : http://www.zegrinch.com
+		</p>
+
+		<p class="fp-remarque fp-inter2">
+			Si vous ne voyez pas le dossier <span class="fp-code">test_fichiers</span>
+			et le fichier <span class="fp-code">commentaires.txt</span>, ou si
+			vous voulez le ré-initialiser <a
+				onclick="top.FP.Voir.showPLUS('exemple/init_chap09.php?x=f')">utilisez
+				ce script</a>.
+		</p>
+
+		<h3>Lire un fichier entier (tableau)</h3>
+		<section>
+			<p class="fp-puce fp-bottom0">
+				La façon la plus simple de lire un fichier est d'utiliser la
+				fonction <a
+					href="https://www.php.net/manual/fr/function.file.php" target="_blank">file()</a>
+				qui :
+			</p>
+			<ul class="fp-ul-puce">
+				<li>ouvre le fichier,</li>
+				<li>lit son contenu entier,</li>
+				<li>ferme le fichier,</li>
+				<li>renvoie <b>le contenu du fichier sous la forme d'un
+						tableau à indices numériques</b>. Les élements du tableau sont constitués de chacune
+					des lignes du fichier (marquées par un caractère de saut de ligne).
+				</li>
+			</ul>
+
+			<p>
+				<a
+					href="https://www.php.net/manual/fr/function.file.php" target="_blank">file()</a>
+				est donc particulièrement adaptée pour lire des fichiers contenant
+				des <b>enregistrements de longueur variable</b>, séparés par une
+				marque de <b>nouvelle ligne</b> (par défaut \r\n sous Windows, \n
+				sous un autre système), et d'une taille.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : lire un fichier avec file()
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Lire un fichier avec file');
+
+$nom = 'test_fichiers/commentaires.txt';
+
+if (! is_file($nom)) {
+	htmlInfo("$nom n'est pas un fichier");
+	htmlFin();
+	exit();
+}
+
+// Lecture
+$enregs = file($nom);  
+
+// Affichage des enregistrements
+$iMax = count($enregs);
+for ($i = 0; $i &lt; $iMax; $i++) {
+	htmlInfo("Enregistrement $i");
+	echo $enregs[$i];
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2 fp-puce">
+				Pour extraire les différents champs d'un enregistrement, nous
+				pouvons utiliser la fonction <a
+					href="https://www.php.net/manual/fr/function.explode.php" target="_blank">explode()</a>
+				avec le caractère | comme délimiteur.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : lire un fichier avec file()
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Lire un fichier avec file');
+
+$nom = 'test_fichiers/commentaires.txt';
+
+if (! is_file($nom)) {
+	htmlInfo("$nom n'est pas un fichier");
+	htmlFin();
+	exit();
+}
+
+// Lecture
+$enregs = file($nom);  
+
+// Affichage des enregistrements
+$iMax = count($enregs);
+for ($i = 0; $i &lt; $iMax; $i++) {
+	htmlInfo("Enregistrement $i");
+	foreach (explode('|', $enregs[$i]) as $champ) {
+		echo '&lt;br&gt;Champ : ', $champ;
+	}
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Lire un fichier entier (buffer)</h3>
+		<section>
+
+			<p class="fp-puce">Nous pouvons récupèrer le contenu d'un fichier
+				dans un buffer : une variable qui recevra tout le contenu du
+				fichier.</p>
+
+			<p class="fp-puce fp-bottom0">Nous devons alors exécuter les
+				opérations suivantes :</p>
+			<ul class="fp-ul-puce">
+				<li><b>ouvrir le fichier</b> avec la fonction <a
+					href="https://www.php.net/manual/fr/function.fopen.php" target="_blank">fopen()</a>
+					qui renvoie un pointeur sur la ressource (le fichier physique), ou
+					FALSE si le fichier ne peut pas être ouvert (pas les permissions,
+					mauvais nom, etc.). La fonction accepte comme premier argument le
+					nom du fichier à ouvrir et comme second argument le type
+					d'opération à effectuer, ici <span class="fp-code">r</span> pour <span
+					class="fp-code">read</span>.</li>
+				<li><b>lire le fichier </b> en utilisant le pointeur avec la
+					fonction <a
+					href="https://www.php.net/manual/fr/function.fread.php" target="_blank">fread()</a>
+					qui <b>renvoie le nombre de caractères désirés</b> du fichier. Pour
+					lire le fichier en entier, le nombre de caractères est la taille du
+					fichier, donnée par la fonction <a
+					href="https://www.php.net/manual/fr/function.filesize.php" target="_blank">filesize()</a>.</li>
+				<li><b>fermer le fichier</b> avec la fonction <a
+					href="https://www.php.net/manual/fr/function.fclose.php" target="_blank">fclose()</a>
+					qui va aussi libérer le pointeur de ressource.</li>
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : lire un fichier avec fread
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Lire un fichier avec fread');
+
+$nom = 'test_fichiers/commentaires.txt';
+
+if (! is_file($nom)) {
+	htmlInfo("$nom n'est pas un fichier");
+	htmlFin();
+	exit();
+}
+
+// Ouverture, lecture, fermeture du fichier
+$fichier = fopen($nom, 'r');
+$buffer = fread($fichier, filesize($nom));
+fclose($fichier);
+
+// Affichage des enregistrements
+$enregs = explode("\n", $buffer);
+$iMax = count($enregs);
+for ($i = 0; $i &lt; $iMax; $i++) {
+	htmlInfo("Enregistrement $i");
+	foreach (explode('|', $enregs[$i]) as $champ) {
+		echo '&lt;br&gt;Champ : ', $champ;
+	}
+}
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Lire un fichier ligne par ligne</h3>
+		<section>
+			<p class="fp-puce fp-bottom0">Pour lire un fichier
+				séquentiellement, ligne par ligne, on réalisera les opérations
+				suivantes :</p>
+			<ul class="fp-ul-puce">
+				<li><b>ouvrir le fichier</b> avec la fonction <a
+					href="https://www.php.net/manual/fr/function.fopen.php" target="_blank">fopen()</a>
+					qui renvoie un pointeur sur la ressource (le fichier physique), ou
+					FALSE si le fichier ne peut pas être ouvert (pas les permissions,
+					mauvais nom, etc.). La fonction accepte comme premier argument le
+					nom du fichier à ouvrir et comme second argument le type
+					d'opération à effectuer, ici <span class="fp-code">r</span> pour <span
+					class="fp-code">read</span>.</li>
+				<li>dans une boucle <b>lire une ligne</b> en utilisant le
+					pointeur avec la fonction <a
+					href="https://www.php.net/manual/fr/function.fgets.php" target="_blank">fgets()</a>
+					qui <b>renvoie une ligne</b> du fichier.
+				</li>
+				<li>la fin de boucle est définie avec la fonction <a
+					href="https://www.php.net/manual/fr/function.feof.php" target="_blank">feof()</a>
+					qui <b>teste la fin de fichier</b>.
+				</li>
+				<li><b>fermer le fichier</b> avec la fonction <a
+					href="https://www.php.net/manual/fr/function.fclose.php" target="_blank">fclose()</a>
+					qui va aussi libérer le pointeur de ressource.</li>
+			</ul>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : lire un fichier ligne par ligne
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Lire un fichier séquentiellement');
+
+$nom = 'test_fichiers/commentaires.txt';
+
+if (! is_file($nom)) {
+	htmlInfo("$nom n'est pas un fichier");
+	htmlFin();
+	exit();
+}
+
+// Ouverture du fichier
+$fichier = fopen($nom,'r');
+
+// Boucle de lecture
+while (! feof($fichier) ) {
+	// Lecture d'une ligne
+	$enreg = fgets($fichier);
+	htmlInfo('Enregistrement');
+	foreach (explode('|', $enreg) as $champ) {
+		echo '&lt;br&gt;Champ : ', $champ;
+	}
+}
+
+// Fermeture du fichier
+fclose($fichier);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+			<p>
+				Si le fichier contenait des <b>enregistrements de longueur fixe</b>,
+				nous pourrions utiliser la fonction <a
+					href="https://www.php.net/manual/fr/function.fread.php" target="_blank">fread()</a>à
+				la place de <a
+					href="https://www.php.net/manual/fr/function.fgets.php" target="_blank">fgets()</a>.<br>
+				Pour un fichier dont les enregistrements seraient tous de 120
+				caractères, nous aurions le code suivant :
+			</p>
+			<pre data-code="PHP">
+// Boucle de lecture
+while (! feof($fichier) ) {
+	// Lecture d'une ligne
+	$enreg = fread($fichier, 120);
+  	... traitement ...
+}
+</pre>
+
+		</section>
+
+		<footer></footer>
+	</div>
+</body>
+</html>

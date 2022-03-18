@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les tableaux</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<a id="extraire_liens"></a>
+
+		<p>Cherchez et affichez la valeur des liens contenus dans la page
+			HTML suivante :
+		<pre data-code="PHP_HTML">
+&lt;!DOCTYPE HTML&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;Page&lt;/title&gt;
+    &lt;link rel="stylesheet" href="test.css"&gt;
+    &lt;script src="fonctions.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p&gt;On a ici un lien sur une image &lt;img src="images/
+	smiley.gif"&gt; et là un lien sur une page &lt;a href=
+	"test1/page1_a.html"&gt;page1_a.html&lt;/a&gt;&lt;/p&gt;
+    
+    &lt;p&gt;Encore un lien sur une image 
+	&lt;img src="images/smiley_bad.gif"&gt; et un lien sur 
+	une page html &lt;a href='test1/page1_a.html'&gt;
+	page1_a.html&lt;/a&gt;&lt;/p&gt;
+    
+    &lt;p&gt;On va commencer par un lien sur une page &lt;a 
+    href="test1/page1_c.html"&gt;page1_c.html&lt;/a&gt; suivi d'un 
+	lien sur une image &lt;img src="images/smiley_good.gif"&gt;
+	&lt;/p&gt;
+    
+    &lt;p&gt;Un lien sur une image &lt;img src="images/smiley.gif"&gt; 
+	et un autre lien sur une image &lt;img 
+	src="images/smiley_bad.gif"&gt;&lt;/p&gt;
+    
+    &lt;p&gt;&lt;a href="test2/page2_a.html"&gt;page2_a.html&lt;/a&gt; 
+    lien sur une page suivi d'un lien sur une autre page 
+	&lt;a href="http://www.php.net/index.php"&gt;www.php.net&lt;/a&gt;
+	&lt;/p&gt;
+    
+    &lt;p&gt;&lt;img src="images/smiley.gif"&gt;&lt;img src="images/
+	smiley_bad.gif"&gt;&lt;a 
+	href="http://www.nimporte.quoi/index.html" 
+	target="_blank"&gt;n'importe quoi&lt;/a&gt;&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+
+		<figure class="fp-f-right" style="margin-left: 10px">
+			<img src="../phpimg/extraire_liens.png" width="232" height="400">
+			<figcaption>Résultat attendu</figcaption>
+		</figure>
+
+
+
+		<p>
+			Utilisez la notation <span class="fp-code">heredoc</span> pour mettre
+			le code HTML sous la forme d'une variable.
+		</p>
+		<p>
+			Les liens peuvent être contenus dans les attributs <span
+				class="fp-code">href</span> et <span class="fp-code">src</span> des
+			tags HTML.
+		</p>
+
+		<p>Cette exercice mêle l'utilisation des tableaux et le découpage
+			de chaînes de caractères.</p>
+
+		<p>Le résultat de l'extraction des liens doit être identique à la
+			capture ci-contre.</p>
+
+		<p class="fp-solution">
+			<a onclick="top.FP.Voir.showSolution('extraire_liens_solu', 1)">Une
+				solution possible</a>
+		</p>
+
+		<div id="extraire_liens_solu" class="BLOC-solution">
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exercice</strong> : extraire les liens d'une page HTML
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+$code = &lt;&lt;&lt;_CODE_HTML_
+&lt;!DOCTYPE HTML&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;Page&lt;/title&gt;
+    &lt;link rel="stylesheet" href="test.css"&gt;
+    &lt;script src="fonctions.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p&gt;On a ici un lien sur une image &lt;img src="images/
+	smiley.gif"&gt; et là un lien sur une page &lt;a href=
+	"test1/page1_a.html"&gt;page1_a.html&lt;/a&gt;&lt;/p&gt;
+    
+    &lt;p&gt;Encore un lien sur une image 
+	&lt;img src="images/smiley_bad.gif"&gt; et un lien sur 
+	une page html &lt;a href='test1/page1_a.html'&gt;
+	page1_a.html&lt;/a&gt;&lt;/p&gt;
+    
+    &lt;p&gt;On va commencer par un lien sur une page &lt;a 
+    href="test1/page1_c.html"&gt;page1_c.html&lt;/a&gt; suivi d'un 
+	lien sur une image &lt;img src="images/smiley_good.gif"&gt;
+	&lt;/p&gt;
+    
+    &lt;p&gt;Un lien sur une image &lt;img src="images/smiley.gif"&gt; 
+	et un autre lien sur une image &lt;img 
+	src="images/smiley_bad.gif"&gt;&lt;/p&gt;
+    
+    &lt;p&gt;&lt;a href="test2/page2_a.html"&gt;page2_a.html&lt;/a&gt; 
+    lien sur une page suivi d'un lien sur une autre page 
+	&lt;a href="http://www.php.net/index.php"&gt;www.php.net&lt;/a&gt;
+	&lt;/p&gt;
+    
+    &lt;p&gt;&lt;img src="images/smiley.gif"&gt;&lt;img src="images/
+	smiley_bad.gif"&gt;&lt;a 
+	href="http://www.nimporte.quoi/index.html" 
+	target="_blank"&gt;n'importe quoi&lt;/a&gt;&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+_CODE_HTML_;
+
+// On supprimer tous les caractères de saut de ligne
+// ou de tabulation qui sont dans le code
+$code = str_replace("\r", '', $code);
+$code = str_replace("\n", '', $code);
+$code = str_replace("\t", '', $code);
+
+// On stocke les liens dans un tableau associatif.
+// La clé est le lien et la valeur est le nombre de fois
+// que le lien a été trouvé dans la page.
+// Il y a un tableau pour les liens avec href, et un autre
+// pour les liens src
+
+// On découpe la chaîne dans un tableau 
+// avec href comme séparateur et on extrait les liens
+$parties = explode(' href=', $code);
+$liensHref = extraireLiens($parties);
+
+// On découpe la chaîne dans un tableau 
+// avec src comme séparateur et on extrait les liens
+$parties = explode(' src=', $code);
+$liensSrc = extraireLiens($parties);
+
+$liens = array_merge($liensHref, $liensSrc);
+
+htmlDebut('Extraction de liens');
+
+// On affiche le tableau des liens 
+// obtenus après extraction
+foreach($liens as $nom =&gt; $nombre) {
+	htmlInfo($nom);
+	echo $nombre, ' référence(s)';
+}
+
+htmlFin();
+
+//_____________________________________________
+/**
+ * Extrait les liens dans du code HTML
+ * @param array		$parts	morceaux de code HTML
+ * @return array	lien =&gt; nb de fois 
+*/
+function extraireLiens($parts) {
+	$liens = array();   
+    for ($i = 1, $iMax = count($parts); $i &lt; $iMax; $i++){
+        $link = '';
+        $debut = $fin = 0;
+		$carDebut = $parts[$i]{0};
+        $fin = strpos($parts[$i], $carDebut, 1);
+        $link = substr($parts[$i], 1, $fin - 1);
+               
+		if ($link == '') {
+			continue;  // Pas de lien
+		}
+        if (isset($liens[$link])) {  
+			// Le lien existe déjà dans le tableau
+            $liens[$link] ++;
+        } else {  
+			// nouveau lien
+            $liens[$link] = 1;
+        }
+    }
+
+    return $liens;
+}
+?&gt;</textarea>
+			</form>
+		</div>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

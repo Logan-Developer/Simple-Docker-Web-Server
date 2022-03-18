@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Tutoriel PHP</title>
+
+<link rel="stylesheet" href="../_core/def.css">
+<style>
+body { overflow-y: scroll; }
+
+#SOM-tuto {	margin-top: 16px; }
+
+#SOM-tuto > div {
+	background: #FFEA56;
+	border-radius: 15px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+	margin-bottom: 1em;
+	}
+	
+.SOM-tuto-titre-chap {
+	background: url("../_core/images/_folder.png") no-repeat 10px center;
+	border-radius: 15px 15px 15px 15px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	clear: both;
+	cursor: pointer;
+	font-size: 17px; /*rem;*/
+	font-weight: bold;
+	line-height: 34px;
+	padding: 4px 4px 0 46px;
+	}
+
+/* liste des pages d'un chapitre */
+.SOM-tuto-chapitre {
+	font-size: 13px;
+	margin: 10px 1em 1em 1em;
+	padding-bottom: 1px;
+	overflow: auto;
+	}
+	
+/* moitiés des pages d'un chapitre */
+.SOM-tuto-chapitre ul {
+	float: left;
+	width: 280px;
+	margin: 0;
+	padding: 0;
+	}
+	
+.SOM-tuto-chapitre ul:first-of-type {
+	margin: 0 14px 0 0;
+	}
+
+/* une page d'un chapitre */
+.SOM-tuto-chapitre li {
+	background: #fffbe0;
+	border: 1px solid #fffbe0;
+	border-radius: 10px;
+	cursor: pointer;
+	margin: 4px 0 5px 6px;
+	padding: 4px 4px 4px 20px;
+	position: relative;
+	}
+	
+.SOM-tuto-chapitre li:hover .SOM-tuto-titre-page {
+	color: #AA0026;
+	}
+
+.SOM-tuto-nun-page {
+	background: url("../_core/images/_document25x32.png") no-repeat;
+	color: #ffffff;
+	font-weight: bold;
+	height: 32px;
+	left: -8px;
+	line-height: 38px;
+	position: absolute;
+	text-align: center;
+	top: -5px;
+	width: 25px;
+	}
+	
+.SOM-tuto-titre-page {
+	display: block;
+	font-weight: bold;
+	line-height: 1.6;
+	}
+	
+.SOM-tuto-resume-page {
+	line-height: 1.3;
+	margin: 0;
+	padding: 0;
+	}
+	
+.SOM-tuto-lien-exo {
+	color: #009EAF;
+	background: url('../_core/images/_pencil13x13.png') no-repeat 0 4px;
+	margin: 0 10px 0 0;
+	padding: 0 0 0 15px;
+	text-decoration: underline;
+	}
+	
+.SOM-tuto-lien-exo:hover { color: #AA0026; }
+
+.SOM-tuto-plus-detail {
+	cursor: pointer;
+	font-size: 13px;
+	padding: 10px 0;
+	text-align: center;
+	}
+</style>
+<script>
+//si problème avec chrome (accès fichiers locaux)
+//modifier le raccourci de démarrage de chrome
+//en ajoutant --allow-file-access-from-files
+//après chrome.exe
+
+if (top.FP) {
+	document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+} else {
+	location.replace('../index.html?x=' + encodeURI(location.href));
+}
+	
+function showHide(idx) {
+	var B = document.getElementById('SOM_' + idx);
+	
+	if (!B) {
+		return;
+	}
+	
+	if (B.style.display == 'none') {
+		B.style.display = 'block';
+		B = document.getElementById('BAS_' + idx);
+		B.style.display = 'none';
+	} else {
+		B.style.display = 'none';
+		B = document.getElementById('BAS_' + idx);
+		B.style.display = 'block';
+	}
+}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<div id="SOM-tuto"></div>
+		<div class="fp-clear"></div>
+	</div>
+	
+	<footer></footer>
+</body>
+</html>

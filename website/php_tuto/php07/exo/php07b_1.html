@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Correction Exercice</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+
+</head>
+<body>
+	<p>
+	<table border="0" cellspacing="0" cellpadding="2" width="600"
+		align="center">
+		<tr>
+			<td bgcolor="#FFFFCE">
+				<p>
+					<b><img src="../../_core/images/ico_exo.gif" width="22"
+						height="19" align=ABSMIDDLE> Exercice</b> <b>liste des
+						livres</b>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="listing">
+					<span><span class="S1">&lt;html lang=&quot;fr&quot;&gt;</span><span class="S0"><br />
+					</span> <span class="S1">&lt;head&gt;&lt;title&gt;</span><span class="S0">Première
+							page dynamique</span><span class="S1">&lt;/title&gt;&lt;/head&gt;</span><span
+						class="S0"><br /> </span> <span class="S1">&lt;body&gt;</span><span
+						class="S0"><br /> </span> <span class="S0">Liste de la
+							table livres</span><span class="S1">&lt;p&gt;</span><span class="S0"><br />
+					</span> <span class="S18">&lt;?php</span><span class="S118"><br />
+					</span> <span class="S121">require_once</span><span class="S118"> </span><span
+						class="S127">(</span><span class="S120">'fonctions.php'</span><span
+						class="S127">);</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S125">//---
+							Connexion --------------------------------------</span><span
+						class="S118"><br /> </span> <span class="S118">fp_connexion</span><span
+						class="S127">();</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S125">//---
+							Requête ----------------------------------------</span><span
+						class="S118"><br /> </span> <span class="S123">$sql</span><span
+						class="S118"> </span><span class="S127">=</span><span class="S118">
+					</span><span class="S120">'SELECT liTitre, liAnnee, liISBN, liPages
+							'</span><span class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'FROM livres '</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S127">.</span><span class="S120">'ORDER BY liTitre'</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S123">$r</span><span
+						class="S118"> </span><span class="S127">=</span><span class="S118">
+					</span><span class="S121">mysqli_query</span><span class="S127">(</span><span
+						class="S123">$sql</span><span class="S127">)</span><span
+						class="S118"> or fp_erreur</span><span class="S127">();</span><span
+						class="S118"><br /> </span> <span class="S118"><br /> </span> <span
+						class="S125">//--- Affichage de l'entête du tableau HTML
+							----------</span><span class="S118"><br /> </span> <span class="S121">echo</span><span
+						class="S118"> </span><span class="S120">'&lt;table
+							border="0"&gt;&lt;tr bgcolor="#FFFFBD"&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td width="100"
+							align="center"&gt;Titre&lt;/td&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td width="100"
+							align="center"&gt;Année&lt;/td&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td width="100"
+							align="center"&gt;ISBN&lt;/td&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td width="100" align="center"&gt;Nb
+							pages&lt;/td&gt;&lt;/tr&gt;'</span><span class="S127">;</span><span
+						class="S118"><br /> </span> <span class="S118"><br /> </span> <span
+						class="S125">//--- Traitement des enregistrements
+							-----------------</span><span class="S118"><br /> </span> <span
+						class="S123">$nb</span><span class="S118"> </span><span
+						class="S127">=</span><span class="S118"> </span><span class="S122">0</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S121">while</span><span class="S118"> </span><span
+						class="S127">(</span><span class="S123">$enr</span><span
+						class="S118"> </span><span class="S127">=</span><span class="S118">
+					</span><span class="S121">mysqli_fetch_assoc</span><span class="S127">(</span><span
+						class="S123">$r</span><span class="S127">))</span><span
+						class="S118"> </span><span class="S127">{</span><span class="S118"><br />
+					</span> <span class="S118">&nbsp;&nbsp;</span><span class="S123">$nb</span><span
+						class="S118"> </span><span class="S127">++;</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;</span><span
+						class="S121">echo</span><span class="S118"> </span><span
+						class="S127">(</span><span class="S118"> </span><span class="S127">(</span><span
+						class="S123">$nb</span><span class="S118"> </span><span
+						class="S127">%</span><span class="S118"> </span><span class="S122">2</span><span
+						class="S127">)</span><span class="S118"> </span><span class="S127">?</span><span
+						class="S118"> </span><span class="S120">'&lt;tr&gt;'</span><span
+						class="S127">:</span><span class="S120">'&lt;tr
+							bgcolor="#FFFFCE"&gt;'</span><span class="S127">),</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td&gt;'</span><span class="S127">,</span><span
+						class="S118"> fp_htmlok</span><span class="S127">(</span><span
+						class="S123">$enr</span><span class="S127">[</span><span
+						class="S120">'liTitre'</span><span class="S127">]),</span><span
+						class="S118"> </span><span class="S120">'&lt;/td&gt;'</span><span
+						class="S127">,</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td align="center"&gt;'</span><span class="S127">,</span><span
+						class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liAnnee'</span><span
+						class="S127">],</span><span class="S118"> </span><span
+						class="S120">'&lt;/td&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td&gt;'</span><span class="S127">,</span><span
+						class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liISBN'</span><span
+						class="S127">],</span><span class="S118"> </span><span
+						class="S120">'&lt;/td&gt;'</span><span class="S127">,</span><span
+						class="S118"><br /> </span> <span class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+						class="S120">'&lt;td align="center"&gt;'</span><span class="S127">,</span><span
+						class="S118"> </span><span class="S123">$enr</span><span
+						class="S127">[</span><span class="S120">'liPages'</span><span
+						class="S127">],</span><span class="S120">&lt;td&gt;&lt;/tr&gt;'</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S127">}</span><span class="S118"><br /> </span> <span
+						class="S118"><br /> </span> <span class="S121">echo</span><span
+						class="S118"> </span><span class="S120">'&lt;/table&gt;'</span><span
+						class="S127">;</span><span class="S118"><br /> </span> <span
+						class="S118">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+					</span> <span class="S125">//--- Déconnexion
+							------------------------------------</span><span class="S118"><br />
+					</span> <span class="S121">mysqli_free_result</span><span class="S127">(</span><span
+						class="S123">$r</span><span class="S127">);</span><span
+						class="S118"><br /> </span> <span class="S118"> </span><span
+						class="S121">mysqli_close</span><span class="S127">();</span><span
+						class="S118"><br /> </span> <span class="S18">?&gt;</span><span
+						class="S0"><br /> </span> <span class="S1">&lt;/body&gt;</span><span
+						class="S0"><br /> </span> <span class="S1">&lt;/html&gt;</span></span>
+				</p>
+			</td>
+		</tr>
+	</table>
+	<br>
+</body>
+</html>

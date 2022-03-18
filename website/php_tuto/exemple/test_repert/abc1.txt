@@ -1,0 +1,4 @@
+Emmanuel Laguerrie|el@xyz.com|22/10/2002|Ce site est excellent, surtout les informations sur PHP.<BR>Je le recommande à tous les internautes.
+Sylvie Casas|casas@azerty.fr|25/10/2002|Beaucoup d'informations introuvables ailleurs.<BR>La navigation est parfois difficile mais les<BR>recherches sont toujours récompensées.
+Damien Perre|damien@perre.com|26/10/2002|Ce site est nul. Venez plutôt voir le mien : http://www.perre.com
+Darth Vador|dv@starwars.com|27/10/2002|Je sens la FORCE ici ...

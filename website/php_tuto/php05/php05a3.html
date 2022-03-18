@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les tableaux</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			<b>PHP ne supporte pas directement les tableaux multi-dimensions
+				ou les matrices.</b>
+		</p>
+
+		<p class="fp-puce">Pour réaliser un tableau à plusieurs
+			dimensions, il suffit que les valeurs des éléments du tableau soient eux-même des
+			tableaux. Si on veut vraiment réaliser une matrice, c'est à nous de
+			veiller à ce que ces tableaux "internes" aient le même nombre
+			d'éléments.</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : tableau à plusieurs dimensions
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau à plusieurs dimensions');
+
+$t['B41d'] = array('Pierre','03 81 60 20 66','Professeur');
+$t['C24a'] = array('Paul','03 80 60 20 19','Maitre de conf');
+$t['D12z'] = array('Jacques','03 80 60 20 36','Doctorant');
+
+foreach ($t as $cle =&gt; $tableau) {
+	htmlInfo("Bureau $cle");
+	echo 'occupé par ', $tableau[0],
+		'&lt;br&gt;téléphone : ', $tableau[1],
+		'&lt;br&gt;fonction : ', $tableau[2];
+}
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-puce fp-inter2">
+			Les valeurs des éléments des tableaux à plusieurs dimensions sont <b>accessibles
+				avec la syntaxe<br></b> <span class="fp-code">$t[i_dimension1][i_dimension2]...[i_dimensionN]</span>
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : tableau à plusieurs dimensions
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau à plusieurs dimensions');
+
+$t['B41d'] = array('Pierre','03 81 60 20 66','Professeur');
+$t['C24a'] = array('Paul','03 80 60 20 19','Maitre de conf');
+$t['D12z'] = array('Jacques','03 80 60 20 36','Doctorant');
+
+htmlInfo('Le bureau B41d est occupé par ');
+echo $t['B41d'][0];
+
+htmlInfo('Le téléphone du bureau C24a est le ');
+echo $t['C24a'][1];
+
+htmlInfo('Dans le bureau D12z il y a un ');
+echo $t['D12z'][2];
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<p class="fp-puce fp-inter2">
+			PHP fournit la fonction <a
+				href="https://www.php.net/manual/fr/function.array-chunk.php" target="_blank">array_chunk()</a>
+			qui permet de <b>construire un tableau à indices numériques à deux dimensions à
+				partir d'un tableau à une dimension</b>. Un premier argument est le nom
+			du tableau à découper, un deuxième argument détermine la taille du
+			tableau de la deuxième dimension, et un troisième argument facultatif
+			indique si les clés doivent être préservées ou non.
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_04.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : tableau à plusieurs dimensions
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Tableau à plusieurs dimensions');
+
+$t[] = 'Pierre';
+$t[] = '03 81 60 20 66';
+$t[] = 'professeur';
+$t[] = 'Paul';
+$t[] = '03 80 60 20 19';
+$t[] = 'maitre de conf';
+$t[] = 'Jacques';
+$t[] = '03 80 60 20 36';
+$t[] = 'thésard';
+
+infoTableau($t);
+
+$tt = array_chunk($t, 3);
+
+infoTableau($tt);
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+	</div>
+	<footer></footer>
+</body>
+</html>

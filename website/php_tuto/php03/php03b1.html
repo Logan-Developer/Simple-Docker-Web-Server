@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Les chaînes de caractères</title>
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>
+			La fonction <a
+				href="https://www.php.net/manual/fr/function.strlen.php" target="_blank">strlen()</a>
+			renvoie le nombre de caractères dans une chaîne. Nous pouvons
+			atteindre chaque caractère d'une chaîne en utilisant la syntaxe des
+			tableaux [et] ou la syntaxe des accolades {et} (à préférer). <b>Le
+				premier caractère d'un chaîne est à la position 0</b>, le second à la
+			position 1, et le dernier à la position (longueur de la chaîne) - 1.
+		</p>
+
+		<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+			<div class="TEST-titre">
+				<strong>Exemple</strong> : nombre de caractères
+			</div>
+			<textarea name="txtCode" class="TEST-textarea">&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Nombre de caractères');
+
+$x = 'abcdefghijklmnopqrstuvwxyz';
+
+echo strlen($x), ' caractères dans la chaîne ', $x;
+
+for ($i = 0; $i &lt; strlen($x); $i++) {
+  echo '&lt;br&gt;Position ', $i, ' = ', $x{$i};
+}
+
+htmlFin();
+?&gt;</textarea>
+		</form>
+
+		<h3>Enlever les espaces blancs en début/fin de chaîne</h3>
+		<section>
+			<p class="fp-bottom0">Pour PHP, les espaces blancs sont :</p>
+			<dl class="fp-dl-code">
+				<dt>&nbsp;
+				<dt>
+				<dd>ou 0x20 : espace</dd>
+				<dt>\t
+				<dt>
+				<dd>ou 0x09 : tabulation</dd>
+				<dt>\n
+				<dt>
+				<dd>ou 0x0A : nouvelle ligne (new line)</dd>
+				<dt>\r
+				<dt>
+				<dd>ou 0x0D : retour chariot (carriage return)</dd>
+				<dt>\0
+				<dt>
+				<dd>ou 0x00 : null</dd>
+				<dt>\x08
+				<dt>
+				<dd>ou 0x08 : tabulation verticale</dd>
+			</dl>
+
+
+			<ul class="fp-ul-1em">
+				<li><a
+					href="https://www.php.net/manual/fr/function.trim.php" target="_blank">trim()</a>
+					renvoie une copie de la chaîne débarassée des espaces blancs de
+					début et de fin.
+				<li><a
+					href="https://www.php.net/manual/fr/function.ltrim.php" target="_blank">ltrim()</a>
+					renvoie une copie de la chaîne débarassée des espaces blancs de
+					début.
+				<li><a
+					href="https://www.php.net/manual/fr/function.rtrim.php" target="_blank">rtrim()</a>
+					renvoie une copie de la chaîne débarassée des espaces blancs de
+					fin.
+			</ul>
+
+			<p>Les 3 fonctions acceptent un second argument qui permet de
+				spécifier d'autres caractères à supprimer en début et/ou fin de
+				chaîne.
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_01.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : enlever les espaces blancs
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+require('bib_fonctions.php');
+
+htmlDebut('Enlever les espaces blancs');
+
+$x = ' François Piat
+  ';
+
+echo '&lt;h4&gt;Avant tranformation&lt;/h4&gt;', '|', $x, '|';
+
+echo '&lt;h4&gt;Sans espaces devant&lt;/h4&gt;', '|', ltrim($x), '|';
+
+echo '&lt;h4&gt;Sans espaces derrière&lt;/h4&gt;', '|', rtrim($x), '|';
+
+echo '&lt;h4&gt;Sans espaces&lt;/h4&gt;', '|', trim($x), '|';
+
+$x = '#####François Piat##';
+echo '&lt;h4&gt;Avant tranformation&lt;/h4&gt;', '|', $x, '|';
+
+echo '&lt;h4&gt;Sans # &lt;/h4&gt;', '|', trim($x, '#'), '|';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+	</div>
+	<footer></footer>
+</body>
+</html>

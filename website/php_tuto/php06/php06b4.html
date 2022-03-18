@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Gestion des cookies</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+		
+		<p>Une page web peut enregistrer des informations dans un fichier
+			sur le disque dur du visiteur. Ces informations sont appelées cookies
+			et leur taille et leur nombre est limités. Les cookies permettent
+			d'échanger des informations entre les pages au cours d'une même
+			session de navigation, ou de garder ces informations dans le temps et
+			de les rendre disponibles d'une connexion du client à une autre.</p>
+		<p>
+			Les spécifications techniques de fonctionnement des cookies sont
+			définies dans la recommandation RFC 2965 : <a
+				href="http://www.faqs.org/rfcs/rfc2965" target="_blank">http://www.faqs.org/rfcs/rfc2965</a>
+		</p>
+
+		<p class="fp-puce">La transmission des cookies du serveur au
+			client et du client au serveur se fait dans un en-tête HTTP. Il faut
+			donc prendre les mêmes précautions que pour les redirections, et
+			encore une fois les mécanismes de bufferisation seront
+			particulièrement utiles.</p>
+		<p class="fp-puce">
+			<b>Tous</b> les dialogues client-serveur contiennent automatiquement
+			dans leurs en-têtes HTTP <b>tous</b> les cookies auxquels une page à
+			accès.
+		</p>
+
+		<h3>Créér des cookies</h3>
+		<section>
+			<p class="fp-puce">
+				L'envoi de cookie à un navigateur se fait très simplement avec la
+				fonction <a
+					href="https://www.php.net/manual/fr/function.setcookie.php" target="_blank">setcookie()</a>.
+			</p>
+			<p>
+				L'instruction<br> <span class="fp-code">setcookie('Nom',
+					'Piat', time()+3600*24, '/', '.monsite.fr');</span><br> envoie un
+				cookie non sécurisé, appelé Nom, qui a la valeur Piat, dont la durée
+				de vie sera de 24 heures, et qui sera accessible à toutes les pages
+				du domaine 'site.fr'.
+			</p>
+			<p class="fp-puce fp-inter2">
+				La <b>valeur</b> du cookie est automatiquement encodée URL lors de
+				l'envoi du cookie, et automatiquement décodée lors de la réception
+				du cookie.
+			</p>
+			<p class="fp-puce fp-inter2">
+				La<b> date d'expiration</b> indique la durée de vie du cookie sur le
+				client. Si aucune date n'est donnée, le cookie expire quand
+				l'utilisateur ferme son navigateur. Si une date est donnée, elle
+				doit être un timestamp valide qu'on peut obtenir par exemple avec <a
+					href="https://www.php.net/manual/fr/function.time.php" target="_blank">time()</a>,
+				ou <a
+					href="https://www.php.net/manual/fr/function.mktime.php" target="_blank">mktime()</a>.
+				La date d'expiration est comparée avec le temps du client qui peut
+				être différent de celui du serveur.
+			</p>
+			<table>
+				<tr>
+					<td>
+						<p>Date d'expiration</p>
+					</td>
+					<td>Cookie valable</td>
+				</tr>
+				<tr>
+					<td>
+						<p>pas spécifiée</p>
+					</td>
+					<td>jusqu'à ce que l'utilisateur ferme son navigateur</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">time()+3600*12</p>
+					</td>
+					<td>
+						<p>12 heures à partir de maintenant</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">time()+3600*48</p>
+					</td>
+					<td>
+						<p>2 jours à partir de maintenant</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">mktime(0,0,0,12,31,2020)</p>
+					</td>
+					<td>
+						<p>jusqu'au 31 décembre 2020</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">time() - 3600</p>
+					</td>
+					<td>le cookie est supprimé car sa date est dépassée</td>
+				</tr>
+			</table>
+
+			<p class="fp-puce fp-inter2">
+				<img src="../_core/images/puce_important.gif" width="15" height="11">Le
+				<b>chemin</b> indique le répertoire du site où le cookie possède une
+				validité.
+			<table>
+				<tr>
+					<td>
+						<p>Chemin</p>
+					</td>
+					<td>Accessibilité</td>
+				</tr>
+				<tr>
+					<td>
+						<p>pas spécifié</p>
+					</td>
+					<td>
+						<p>seules les pages du répertoire de la page qui a défini le
+							cookie ont accès au cookie.</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">/</p>
+					</td>
+					<td>
+						<p>toutes les pages du domaine ont accès au cookie.</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">/repert</p>
+					</td>
+					<td>
+						<p>
+							seules les pages du répertoire <span class="fp-code">repert</span>
+							et de ses sous-répertoires éventuels ont accès au cookie.
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<p class="fp-puce fp-inter2">
+				Le <b>domaine</b> indique le nom DNS du site pour lequel le cookie
+				est accesible. Par défaut, le nom du domaine est celui de la page
+				qui a défini le cookie. La valeur de cet argument doit <b>absolument</b>
+				comporter <b>deux points</b>.
+			</p>
+
+			<table>
+				<tr>
+					<td>
+						<p>Domaine</p>
+					</td>
+					<td>Accessibilité</td>
+				</tr>
+				<tr>
+					<td>
+						<p>pas spécifié</p>
+					</td>
+					<td>
+						<p>seules les pages du sous-domaine de la page qui a défini le
+							cookie ont accès au cookie.</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">.monsite.fr</p>
+					</td>
+					<td>
+						<p>toutes les pages de tous les sous domaine du domaine
+							monsite.fr ont accès au cookie.</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p class="fp-code">www.monsite.fr</p>
+					</td>
+					<td>
+						<p>seules les pages du sous-domaine www du domaine monsite.fr
+							ont accès au cookie.</p>
+					</td>
+				</tr>
+			</table>
+			<p class="fp-puce fp-inter2">
+				La <b>sécurisation</b> indique si le cookie doit être transmis avec
+				une connexion sécurisée HTTPS (1) ou avec une connexion HTTP normale
+				(0). La valeur par défaut est 0.
+			</p>
+			
+			
+			<p class="fp-puce">Les cookies écrits par un script ne sont
+				pas accessibles immédiatement à l'intérieur du script. Il faut attendre que
+				HTTP les ait transportés au moins une fois.</p>
+		</section>
+
+
+		<h3>Lire les cookies</h3>
+		<section>
+			<p>
+				Sur le serveur, la récupèration des cookies du client se fait par
+				l'intermédiaire du tableau superglobal <a
+					href="https://www.php.net/manual/fr/reserved.variables.cookies.php" target="_blank">$_COOKIE</a>.
+				Les clés du tableau sont les noms des cookies, associées aux valeurs
+				correspondantes.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+			<a class="TEST-lien"
+				onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_06.html')"
+				title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : cookie
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+
+require('bib_fonctions.php');
+
+htmlDebut('Lire / écrire un cookie');
+
+//------------------------------------------------------
+// Phase de soumission du formulaire ?
+//------------------------------------------------------
+ 
+// Si c'est le bouton Ecrire qui soumet le formulaire,
+// on écrit un cookie temporaire
+if (isset($_POST['btnEcrire'])) {
+	$nom = trim($_POST['txtNom']);
+	if ($nom != '') {
+		setcookie($nom, $_POST['txtVal']);
+	}
+}
+
+// Si c'est le bouton Lire qui soumet le formulaire, 
+// on affiche la valeur du cookie du nom saisi,
+// ou on fait une boucle dans le tableau $_COOKIE 
+// pour afficher tous les cookies trouvés
+if (isset($_POST['btnLire'])) {
+	$nom = trim($_POST['txtNom']);
+	if ($nom != '') { 
+		htmlInfo("Valeur du cookie $nom");
+		echo $_COOKIE[$nom];
+	} else {  
+		foreach ($_COOKIE as $cle =&gt; $val) {
+			htmlInfo($cle);
+			echo $val;
+		}
+	}
+}
+//------------------------------------------------------
+// Affichage du formulaire
+//------------------------------------------------------
+echo '&lt;form method="post" ',
+		'action="', $_SERVER['PHP_SELF'], '"&gt;',
+	'&lt;label&gt;Nom&lt;/label&gt;',
+	'&lt;input type="text" name="txtNom"&gt;',
+	'&lt;label&gt;Valeur&lt;/label&gt;',
+	'&lt;input type="text" name="txtVal"&gt;',
+	'&lt;p&gt;&lt;input type="submit" value="Ecrire" ',
+	'name="btnEcrire"&gt;',
+	'&lt;input type="submit" value="Lire" name="btnLire"&gt;',
+	'&lt;/form&gt;';
+
+htmlFin();
+
+ob_end_flush;
+?&gt;</textarea>
+			</form>
+
+			<p class="fp-inter2 fp-puce">
+				La manipulation du tableau <a
+					href="https://www.php.net/manual/fr/reserved.variables.cookies.php" target="_blank">$_COOKIE</a> n'a
+				aucune influence sur les cookies.<br>On pourrait penser qu'en ajoutant
+				un élement au tableau <a
+					href="https://www.php.net/manual/fr/reserved.variables.cookies.php" target="_blank">$_COOKIE</a> : <br>
+				<span class="fp-code">$_COOKIE['nouveau'] = 'ça marche';</span><br>
+				on créait un cookie. Il n'en est rien. Un nouvel
+				élément sera bien ajouté au tableau, mais aucun cookie de nom <span
+					class="fp-code">nouveau</span> avec la valeur '<span
+					class="fp-code">ça marche</span>' ne sera créé est envoyé au
+				client.
+			</p>
+			<p class=fp-puce>
+				De la même façon la <b>modification</b> de la valeur d'un cookie
+				doit se faire absolument avec la fonction <a
+					href="https://www.php.net/manual/fr/function.setcookie.php" target="_blank">setcookie()</a>.
+				Si par exemple il existe un cookie avec le nom <span class="fp-code">test</span>
+				et la valeur <span class="fp-code">1</span>, l'instruction<br>
+				<span class="fp-code">$_COOKIE['test'] = 2;</span><br> n'aura
+				aucune influence sur la valeur envoyée au client.
+			</p>
+		</section>
+
+		<h3>Supprimer les cookies</h3>
+		<section>
+			<p class="fp-puce">
+				Pour supprimer un cookie, la page doit avoir accès au cookie, et il
+				faut utiliser la fonction <a
+					href="https://www.php.net/manual/fr/function.setcookie.php" target="_blank">setcookie()</a>
+				avec strictement les mêmes paramètres que ceux utilisés lors de la
+				création du cookie.
+			</p>
+			<p class="fp-puce">
+				Une valeur non spécifiée, ou vide supprime le cookie :<br> <span
+					class="fp-code">setcookie('Nom', '');</span><br> est
+				équivalent à <br> <span class="fp-code">setcookie('Nom');</span><br>
+				et supprime le cookie appelé <span class="fp-code">Nom.</span>
+			</p>
+			<p class="fp-puce">
+				On peut aussi définir une date d'expiration dépassée (<span
+					class="fp-code">time() - 3600</span> par exemple) :<br> <span
+					class="fp-code">setcookie('Nom', '', time() - 3600);</span>
+			</p>
+		</section>
+		<footer></footer>
+	</div>
+</body>
+</html>

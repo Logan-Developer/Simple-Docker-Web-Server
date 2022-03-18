@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Informations sur un fichier</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="../_local/codemirror.css">
+<script src="../_local/codemirror_pour_php.js"></script>
+
+<link rel="stylesheet" href="../_core/def.css">
+<script>
+	if (top.FP) {
+		document.addEventListener('DOMContentLoaded', top.FP.initPage, false);
+	} else {
+		location.replace('../index.html?x=' + encodeURI(location.href));
+	}
+</script>
+</head>
+<body>
+	<div id="MENU-top"></div>
+	<nav id="MENU-tuto"></nav>
+
+	<div id="PAGE-tuto">
+		<header></header>
+		<ul id="MENU-page"></ul>
+
+		<p>Si le stockage et l'accès à des données se fait très souvent
+			par l'intermédiaire de bases de données, le recours à de simples
+			fichiers est parfois utile, voire nécessaire.</p>
+		<p>
+			Comme à son habitude, PHP fournit un grand nombre de <a
+				href="https://www.php.net/manual/fr/ref.filesystem.php" target="_blank">
+				fonctions pour traiter les fichiers</a>.
+		</p>
+
+		<div class="fp-remarque">
+			<img src="../phpimg/test_fichiers.png" width="149" height="131"
+				border="0" class="fp-f-right" style="margin-left: 10px">
+			<p>
+				Pour les exemples, nous utiliserons le dossier <span class="fp-code">test_fichiers</span>
+				avec le contenu et l'arborescence ci-contre.
+			</p>
+			<p>
+				Ce dossier se trouve dans le dossier test du tutoriel. Vous pouvez
+				voir son contenu avec le bouton <img
+					src="../_core/images/__arbo.png" width="32" height="32"
+					style="display: table-cell; vertical-align: middle"> dans la
+				barre de menu du tutoriel.
+			</p>
+			<p class="fp-bottom0">
+				Si vous ne voyez pas ce dossier, ou si vous voulez le ré-initialiser
+				<a onclick="top.FP.Voir.showPLUS('exemple/init_chap09.php?x=f')">utilisez
+					ce script</a>.
+			</p>
+		</div>
+
+		<h3>Existence d'un fichier</h3>
+		<section>
+			<p>
+				Nous commencerons par <b>déterminer si un fichier existe</b> avec la
+				fonction <a
+					href="https://www.php.net/manual/fr/function.file-exists.php" target="_blank">file_exists()</a>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : existence d'un fichier
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Existence d\'un fichier');
+
+//------------------------------------------------------
+$fichier = 'test_fichiers/commentaires.txt';
+
+htmlInfo($fichier);
+
+if (file_exists($fichier)) {
+	echo 'Existe';
+} else {
+	echo 'N\'existe pas';
+}
+
+//------------------------------------------------------
+$fichier = 'test_fichiers/remarques.txt';
+
+htmlInfo($fichier);
+
+echo (file_exists($fichier)) ? 'Existe' : 'N\'existe pas';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+
+			<p>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.file-exists.php" target="_blank">file_exists()</a>
+				ne <b>différencie pas les fichiers des dossiers</b>. Si nous
+				l'utilisons avec un nom de dossier, elle renverra aussi <span
+					class="fp-code">TRUE</span> si le dossier existe, <span
+					class="fp-code">FALSE</span> sinon. Notre dossier test contient un
+				sous-dossier <span class="fp-code">images</span> et un sous-dossier
+				<span class="fp-code">export</span>. Si nous passons ces noms comme
+				argument à <a
+					href="https://www.php.net/manual/fr/function.file-exists.php" target="_blank">file_exists()</a>,
+				le résultat sera <span class="fp-code">TRUE</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : existence d'un fichier
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Existence d\'un fichier');
+
+//------------------------------------------------------
+$fichier = 'test_fichiers/commentaires.txt';
+
+htmlInfo($fichier);
+echo (file_exists($fichier)) ? 'Existe' : 'N\'existe pas';
+
+//------------------------------------------------------
+$fichier = 'test_fichiers/images';
+
+htmlInfo($fichier);
+echo (file_exists($fichier)) ? 'Existe' : 'N\'existe pas';
+
+//------------------------------------------------------
+$fichier = 'test_fichiers/export';
+
+htmlInfo($fichier);
+echo (file_exists($fichier)) ? 'Existe' : 'N\'existe pas';
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+
+		<h3>Dossier ou fichier ?</h3>
+		<section>
+			<p>
+				Heureusement, des fonctions nous indiquent quel est <b>le type
+					d'un fichier</b>, et en particulier : <a
+					href="https://www.php.net/manual/fr/function.is-dir.php" target="_blank">is_dir()</a>
+				et <a
+					href="https://www.php.net/manual/fr/function.is-file.php" target="_blank">is_file()</a>.
+			</p>
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : existence et type d'un fichier
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+//======================================================
+/**
+ * Renvoie des informations sur un fichier
+ * @param string	$fichier	Fichier
+ * @return array	Tableau associatif d'informations
+ */
+function fichierInfos($fichier) {
+	$t = array('file' =&gt; '---');
+ 	if (!file_exists($fichier)) {
+		return $t;
+	}
+	$t['file'] = is_file($fichier) ?  'oui' : 'non';
+	
+	return $t;
+}
+//======================================================
+
+htmlDebut('Existence d\'un fichier');
+
+$fichier = 'test_fichiers/commentaires.txt';
+htmlInfo($fichier);
+$f = fichierInfos($fichier);
+infoTableau($f);
+
+$fichier = 'test_fichiers/remarques.txt';
+htmlInfo($fichier);
+$f = fichierInfos($fichier);
+infoTableau($f);
+
+$fichier = 'test_fichiers/images';
+htmlInfo($fichier);
+$f = fichierInfos($fichier);
+infoTableau($f);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+		</section>
+
+
+
+		<h3>Chemin d'accès</h3>
+		<section>
+
+			<p>
+				Nous pouvons obtenir le <b>chemin d'accès complet et absolu d'un
+					fichier</b> avec la fonction <a
+					href="https://www.php.net/manual/fr/function.realpath.php" target="_blank">realpath()</a>.
+				Cette fonction ne vérifie pas que le fichier existe. Elle renvoie un
+				chemin d'accès à partir de la racine du disque dur du serveur.
+			</p>
+
+			<ul class="fp-ul">
+				<li>Si le nom de fichier passé en argument commence par un / ou
+					un \, la fonction ne calcule pas le chemin car elle considère que
+					l'on se trouve à la racine du disque.
+				<li>Si le nom de fichier passé en argument contient des liens
+					symboliques comme ./ ou ../, la fonction les résoud.
+			</ul>
+
+			<p>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.dirname.php" target="_blank">dirname()</a>
+				renvoie la partie dossiers d'un chemin d'accès. La fonction <a
+					href="https://www.php.net/manual/fr/function.basename.php" target="_blank">baseName()</a>
+				renvoie le nom de fichier d'un chemin d'accès.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : chemin absolu
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Chemin absolu');
+
+//------------------------------------------------------
+$fichier = 'test_fichiers/commentaires.txt';
+htmlInfo("Chemin Absolu de $fichier");
+
+$absolu = realpath($fichier);
+
+echo $absolu;
+
+//------------------------------------------------------
+htmlInfo('Dirname');
+echo dirname($absolu);
+
+//------------------------------------------------------
+htmlInfo('Basename');
+echo baseName($absolu);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+
+
+			<p>
+				La fonction <a
+					href="https://www.php.net/manual/fr/function.pathinfo.php" target="_blank">pathinfo()</a>
+				renvoie des informations sur un chemin sous la forme d'un tableau
+				associatif de trois clés : <span class="fp-code">dirname</span>, <span
+					class="fp-code">baseName</span> et <span class="fp-code">extension</span>.
+			</p>
+
+			<form action="" method="post" class="TEST-form">
+				<a class="TEST-lien"
+					onclick="top.FP.Voir.showPLUS('exemple/bib_fonctions_13.html')"
+					title="Afficher la bibliothéque de fonctions"></a>
+				<div class="TEST-titre">
+					<strong>Exemple</strong> : chemin
+				</div>
+				<textarea name="txtCode" class="TEST-textarea">
+&lt;?php
+ob_start();
+require('bib_fonctions.php');
+
+htmlDebut('Chemin');
+
+//------------------------------------------------------
+$fichier = 'test_fichiers/commentaires.txt';
+htmlInfo("Chemin Absolu de $fichier");
+
+$absolu = realpath($fichier);
+
+echo $absolu;
+
+//------------------------------------------------------
+htmlInfo('Pathinfo');
+$t = pathinfo($absolu);
+
+infoTableau($t);
+
+htmlFin();
+?&gt;</textarea>
+			</form>
+		</section>
+		<footer></footer>
+	</div>
+</body>
+</html>
