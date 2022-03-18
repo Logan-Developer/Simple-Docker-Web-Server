@@ -1,0 +1,8 @@
+version: "latest"
+services:
+  web:
+    image: "httpd:alpine"
+    ports:
+      - "80:80"
+    volumes:
+      - ./website:/var/www/html  
